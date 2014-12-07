@@ -1,0 +1,11 @@
+Cosma\Bundle\TestingBundle\Entity\Address:
+    address_1:
+        streetName: <streetName()>
+        streetNumber: <buildingNumber()>
+        postCode: <postcode()>
+        users: [ @user_1, @user_2 ]
+    address_2:
+        streetName: <streetName()>
+        streetNumber: <buildingNumber()>
+        postCode: <postcode()>
+        users: [ @user_1, @user_4 ]

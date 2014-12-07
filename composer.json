@@ -35,7 +35,7 @@
         "doctrine/cache": "For using alternative cache drivers"
     },
     "autoload": {
-        "psr-0": { "Symfony\\Bundle\\FrameworkBundle\\": "" }
+        "psr-0": { "Cosma\\Bundle\\TestingBundle\\": "" }
     },
     "target-dir": "Cosma/Bundle/TestingBundle",
     "minimum-stability": "dev",
