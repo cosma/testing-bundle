@@ -14,7 +14,6 @@
     ],
     "require": {
         "php": ">=5.3.3",
-        "nelmio/solarium-bundle": "2.*",
         "h4cc/alice-fixtures-bundle": "*"
     },
     "require-dev": {
@@ -27,18 +26,12 @@
         "liip/functional-test-bundle": "1.0.*@dev"
     },
     "suggest": {
-        "symfony/console": "For using the console commands",
-        "symfony/finder": "For using the translation loader and cache warmer",
-        "symfony/form": "For using forms",
-        "symfony/validator": "For using validation",
-        "symfony/yaml": "For using the config:debug and yaml:lint commands",
-        "doctrine/cache": "For using alternative cache drivers"
     },
     "autoload": {
         "psr-0": { "Cosma\\Bundle\\TestingBundle\\": "" }
     },
     "target-dir": "Cosma/Bundle/TestingBundle",
-    "minimum-stability": "dev",
+        "minimum-stability": "dev",
     "extra": {
         "branch-alias": {
             "dev-master": "1.0-dev"
