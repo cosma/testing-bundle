@@ -15,15 +15,15 @@
     "require": {
         "php": ">=5.3.3",
         "h4cc/alice-fixtures-bundle": "*"
-    },
-    "require-dev": {
-        "sensio/generator-bundle": "~2.3",
 
+        "sensio/generator-bundle": "~2.3",
         "phpunit/phpunit": "~4.3",
         "phpunit/php-invoker": "*",
         "phpunit/phpunit-selenium": "~1.4",
         "doctrine/doctrine-fixtures-bundle": "2.2.*@dev",
         "liip/functional-test-bundle": "1.0.*@dev"
+    },
+    "require-dev": {
     },
     "suggest": {
     },
