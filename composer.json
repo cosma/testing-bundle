@@ -14,12 +14,13 @@
     ],
     "require": {
         "php": ">=5.3.3",
+        "symfony/framework-bundle": "~2.6.*",
         "h4cc/alice-fixtures-bundle": "0.5.*"
     },
-    "provide": {
+    "require-dev": {
         "phpunit/phpunit": "~4.3"
     },
-    "require-dev": {
+    "provide": {
         "phpunit/phpunit": "~4.3"
     },
     "suggest": {
@@ -28,7 +29,7 @@
         "liip/functional-test-bundle": "Functional test"
     },
     "autoload": {
-        "psr-0": { "Cosma\\Bundle\\TestingBundle\\": "" }
+        "psr-4": { "Cosma\\Bundle\\TestingBundle\\": "" }
     },
     "target-dir": "Cosma/Bundle/TestingBundle",
     "minimum-stability": "dev",
