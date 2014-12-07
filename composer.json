@@ -14,7 +14,7 @@
     ],
     "require": {
         "php": ">=5.3.3",
-        "h4cc/alice-fixtures-bundle": "*"
+        "h4cc/alice-fixtures-bundle": "*",
 
         "sensio/generator-bundle": "~2.3",
         "phpunit/phpunit": "~4.3",
