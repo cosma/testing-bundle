@@ -17,7 +17,7 @@
         "h4cc/alice-fixtures-bundle": "0.5.*",
 
         "sensio/generator-bundle": "~2.3",
-        "phpunit/phpunit": "~3.7",
+        "phpunit/phpunit": "~4.3",
         "phpunit/php-invoker": "*",
         "phpunit/phpunit-selenium": "~1.4",
         "doctrine/doctrine-fixtures-bundle": "2.2.*@dev",
