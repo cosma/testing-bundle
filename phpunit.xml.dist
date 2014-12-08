@@ -13,6 +13,10 @@
         </testsuite>
     </testsuites>
 
+    <php>
+        <server name="KERNEL_DIR" value="vendor/symfony/http-kernel/Symfony/Component/HttpKernel" />
+    </php>
+
     <filter>
         <whitelist>
             <directory>./</directory>

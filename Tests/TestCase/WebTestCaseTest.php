@@ -9,11 +9,24 @@ class WebTestCaseTest extends WebTestCase
 {
 
     /**
+     * @return void
+     */
+    public static function setUpBeforeClass()
+    {
+        parent::setUpBeforeClass();
+
+    }
+
+    /**
      * @see WebTestCase::getClient
      */
     public function testGetClient()
     {
+        die();
         $client = $this->getClient();
+
+
+
 
         $this->assertInstanceOf('Symfony\Bundle\FrameworkBundle\Client', $client, 'must return a client');
     }

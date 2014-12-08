@@ -64,12 +64,12 @@ abstract class WebTestCase extends WebTestCaseBase
         static::getEntityNameSpace();
     }
 
-    protected function setUp()
-    {
-        $fixtureManager     = static::getFixtureManager();
-        //print_r($this->objects);
-        $fixtureManager->persist($this->objects, true);
-    }
+//    protected function setUp()
+//    {
+//        $fixtureManager     = static::getFixtureManager();
+//        //print_r($this->objects);
+//        $fixtureManager->persist($this->objects, true);
+//    }
 
     /**
      * @return Client
