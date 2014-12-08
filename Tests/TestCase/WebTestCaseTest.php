@@ -5,29 +5,15 @@ use Cosma\Bundle\TestingBundle\Entity\Address;
 use Cosma\Bundle\TestingBundle\Entity\User;
 use Cosma\Bundle\TestingBundle\TestCase\WebTestCase;
 
+
 class WebTestCaseTest extends WebTestCase
 {
-
-    /**
-     * @return void
-     */
-    public static function setUpBeforeClass()
-    {
-        parent::setUpBeforeClass();
-
-    }
-
     /**
      * @see WebTestCase::getClient
      */
     public function testGetClient()
     {
-        die();
         $client = $this->getClient();
-
-
-
-
         $this->assertInstanceOf('Symfony\Bundle\FrameworkBundle\Client', $client, 'must return a client');
     }
 
@@ -197,4 +183,4 @@ class WebTestCaseTest extends WebTestCase
         $this->assertContains($addressOne,  $addresses, 'Address One should be pat of collection');
         $this->assertContains($addressTwo,  $addresses, 'Address Two should be part of collection');
     }
-} 
+}
