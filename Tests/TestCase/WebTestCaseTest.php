@@ -13,6 +13,20 @@ use Symfony\Component\HttpKernel\HttpKernel;
 class WebTestCaseTest extends \PHPUnit_Framework_TestCase
 {
 
+
+    public function testStaticAttributes()
+    {
+        $this->assertClassHasStaticAttribute('client', 'Cosma\Bundle\TestingBundle\TestCase\WebTestCase');
+        $this->assertClassHasStaticAttribute('fixturePath', 'Cosma\Bundle\TestingBundle\TestCase\WebTestCase');
+        $this->assertClassHasStaticAttribute('entityNameSpace', 'Cosma\Bundle\TestingBundle\TestCase\WebTestCase');
+        $this->assertClassHasStaticAttribute('currentBundle', 'Cosma\Bundle\TestingBundle\TestCase\WebTestCase');
+        $this->assertClassHasStaticAttribute('container', 'Cosma\Bundle\TestingBundle\TestCase\WebTestCase');
+    }
+
+
+
+
+
 //    /**
 //     * @see WebTestCase::getClient
 //     */
@@ -192,7 +206,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
     /**
      * @see WebTestCase::getClient
      */
-    public function testSetUpBeforeClass()
+    public function tttestSetUpBeforeClass()
     {
         $config = array(
         );
@@ -214,15 +228,8 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
 
 
 
-
-
-
-
-
-        $webTestCaseMocked = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\WebTestCase')
-            ->disableOriginalConstructor()
-        ->setMethods(array('createClient', 'getFixtureManager', 'getFixturePath', 'getEntityNameSpace'))
-            ->getMockForAbstractClass();
+        $webTestCaseMocked = $this->getMockForAbstractClass('Cosma\Bundle\TestingBundle\TestCase\WebTestCase',
+            array('getFixtureManager', 'getFixturePath', 'getEntityNameSpace'));
 
         $webTestCaseMocked::staticExpects($this->any())
             ->method('createClient')
@@ -230,7 +237,20 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
 
 
 
-        $this->assertNull($webTestCaseMocked->setUpBeforeClass());
+
+
+//        $webTestCaseMocked = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\WebTestCase')
+//            ->disableOriginalConstructor()
+//        ->setMethods(array('createClient', 'getFixtureManager', 'getFixturePath', 'getEntityNameSpace'))
+//            ->getMockForAbstractClass();
+//
+//        $webTestCaseMocked::staticExpects($this->any())
+//            ->method('createClient')
+//            ->will($this->returnValue(123));;
+//
+//
+//
+//        $this->assertNull($webTestCaseMocked->setUpBeforeClass());
 
 
 

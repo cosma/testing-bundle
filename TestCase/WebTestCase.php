@@ -158,6 +158,7 @@ abstract class WebTestCase extends WebTestCaseBase
      * @param bool  $dropDatabaseBefore
      *
      * @return array
+     * @throws \InvalidArgumentException
      */
     protected function loadTableFixtures(array $fixtures, $dropDatabaseBefore = true)
     {
@@ -175,6 +176,7 @@ abstract class WebTestCase extends WebTestCaseBase
      * @param bool  $dropDatabaseBefore
      *
      * @return array
+     * @throws \InvalidArgumentException
      */
     protected function loadCustomFixtures(array $fixtures, $dropDatabaseBefore = true)
     {
