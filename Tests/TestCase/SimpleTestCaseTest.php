@@ -46,10 +46,8 @@ class SimpleTestCaseTest extends SimpleTestCase
     }
 }
 
-
-
-class ExampleEntity {
-
+class ExampleEntity
+{
     private $id;
 
     private $name;

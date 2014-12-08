@@ -9,6 +9,7 @@ abstract class SimpleTestCase extends \PHPUnit_Framework_TestCase
     /**
      * @param $entityNamespaceClass
      * @param $id
+     *
      * @return \PHPUnit_Framework_MockObject_MockObject
      * @throws EntityNotFoundException
      */
@@ -30,6 +31,7 @@ abstract class SimpleTestCase extends \PHPUnit_Framework_TestCase
     /**
      * @param $entityNamespaceClass
      * @param $id
+     *
      * @return mixed
      * @throws EntityNotFoundException
      */
@@ -39,7 +41,7 @@ abstract class SimpleTestCase extends \PHPUnit_Framework_TestCase
             throw new EntityNotFoundException();
         }
 
-        $entityObject    = new $entityNamespaceClass;
+        $entityObject = new $entityNamespaceClass;
 
         $reflectionObject   = new \ReflectionObject($entityObject);
         $reflectionProperty = $reflectionObject->getProperty('id');
