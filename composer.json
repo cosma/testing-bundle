@@ -26,9 +26,6 @@
         "phpunit/phpunit": "~4.3"
     },
     "suggest": {
-        "phpunit/phpunit": "PHPUnit",
-        "doctrine/doctrine-fixtures-bundle": "Doctrine fixture",
-        "liip/functional-test-bundle": "Functional test"
     },
     "autoload": {
         "psr-4": { "Cosma\\Bundle\\TestingBundle\\": "" }

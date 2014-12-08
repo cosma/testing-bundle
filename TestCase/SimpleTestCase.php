@@ -4,7 +4,7 @@ namespace Cosma\Bundle\TestingBundle\TestCase;
 
 use Doctrine\ORM\EntityNotFoundException;
 
-class SimpleTestCase extends \PHPUnit_Framework_TestCase
+abstract class SimpleTestCase extends \PHPUnit_Framework_TestCase
 {
     /**
      * @param $entityNamespaceClass
