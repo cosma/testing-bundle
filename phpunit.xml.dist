@@ -11,20 +11,20 @@
          syntaxCheck="false"
          bootstrap="Tests/bootstrap.php"
         >
-<testsuites>
-    <testsuite name="Testing Bundle Test Suite">
-        <directory suffix="Test.php">./Tests/</directory>
-    </testsuite>
-</testsuites>
+    <testsuites>
+        <testsuite name="Testing Bundle Test Suite">
+            <directory suffix="Test.php">./Tests/</directory>
+        </testsuite>
+    </testsuites>
 
-<filter>
-    <whitelist>
-        <directory>./</directory>
-        <exclude>
-            <directory>./vendor</directory>
-            <directory>./Resources</directory>
-            <directory>./Tests/bootstrap.php</directory>
-        </exclude>
-    </whitelist>
-</filter>
+    <filter>
+        <whitelist>
+            <directory>./</directory>
+            <exclude>
+                <directory>./vendor</directory>
+                <directory>./Resources</directory>
+                <directory>./Tests/bootstrap.php</directory>
+            </exclude>
+        </whitelist>
+    </filter>
 </phpunit>

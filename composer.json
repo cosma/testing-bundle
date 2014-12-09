@@ -29,7 +29,9 @@
     "suggest": {
     },
     "autoload": {
-        "psr-4": { "Cosma\\Bundle\\TestingBundle\\": "" }
+        "psr-4": {
+            "Cosma\\Bundle\\TestingBundle\\": ""
+        }
     },
     "target-dir": "Cosma/Bundle/TestingBundle",
     "minimum-stability": "stable",

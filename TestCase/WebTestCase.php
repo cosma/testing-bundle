@@ -194,10 +194,10 @@ abstract class WebTestCase extends WebTestCaseBase
     /**
      * @return string
      */
-    private static function getEntityNameSpace()
+    private function getEntityNameSpace()
     {
         if (null === self::$entityNameSpace) {
-            $currentBundle = static::getCurrentBundle();
+            $currentBundle = $this->getCurrentBundle();
 
             self::$entityNameSpace = $currentBundle->getNamespace();
 
@@ -214,10 +214,10 @@ abstract class WebTestCase extends WebTestCaseBase
     /**
      * @return string
      */
-    private static function getFixturePath()
+    private function getFixturePath()
     {
         if (null === self::$fixturePath) {
-            $currentBundle = static::getCurrentBundle();
+            $currentBundle = $this->getCurrentBundle();
 
             self::$fixturePath = $currentBundle->getPath();
 
@@ -234,7 +234,7 @@ abstract class WebTestCase extends WebTestCaseBase
     /**
      * @return BundleInterface
      */
-    private static function getCurrentBundle()
+    private function getCurrentBundle()
     {
         if (null === self::$currentBundle) {
             $bundles          = self::$client->getKernel()->getBundles();
@@ -259,7 +259,7 @@ abstract class WebTestCase extends WebTestCaseBase
     {
         $fixturePaths = array();
         foreach ($fixtures as $tableFixture) {
-            $fixturePaths[] = static::getFixturePath() . '/Table/' . $tableFixture . '.yml';
+            $fixturePaths[] = $this->getFixturePath() . '/Table/' . $tableFixture . '.yml';
         }
 
         return $fixturePaths;
@@ -275,7 +275,7 @@ abstract class WebTestCase extends WebTestCaseBase
     {
         $fixturePaths = array();
         foreach ($fixtures as $customFixture) {
-            $fixturePaths[] = static::getFixturePath() . "/Custom/{$testClassPath}/{$customFixture}.yml";
+            $fixturePaths[] = $this->getFixturePath() . "/Custom/{$testClassPath}/{$customFixture}.yml";
         }
 
         return $fixturePaths;
