@@ -4,9 +4,11 @@ namespace Cosma\Bundle\TestingBundle\Tests\TestCase;
 use Cosma\Bundle\TestingBundle\DependencyInjection\TestingExtension;
 use Cosma\Bundle\TestingBundle\TestCase\WebTestCase;
 
-use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Proxy\Exception\InvalidArgumentException;
+use h4cc\AliceFixturesBundle\Fixtures\FixtureManager as AliceFixtureManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
@@ -171,7 +173,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @see WebTestCase::getEntityWithId
+     * @see Cosma\Bundle\TestingBundle\TestCase\WebTestCase::getEntityWithId
      * @expectedException \Doctrine\ORM\EntityNotFoundException
      */
     public function testGetEntityWithId_Exception()
@@ -189,63 +191,41 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @see WebTestCase::getEntityWithId
-     * @expectedException \Doctrine\ORM\EntityNotFoundException
+     * @see Cosma\Bundle\TestingBundle\TestCase\WebTestCase::loadTableFixtures
+     * @expectedException InvalidArgumentException
      */
-    public function testLoadTableFixtures()
+    public function testLoadTableFixtures_Exception()
     {
-        $entityOne = new ExampleEntity();
-        $entityOne->setName('One');
+        $webTestCase = $this->getMockedWebTestCaseWithFixture();
 
-        $entityTwo = new ExampleEntity();
-        $entityTwo->setName('Two');
-
-        $objects = new ArrayCollection();
-
-        $objects->add($entityOne);
-        $objects->add($entityTwo);
-
-        $webTestCaseMocked = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\WebTestCase')
-            ->disableOriginalConstructor()
-            ->setMethods(array('appendTableFixturesPath', 'loadFixture'))
-            ->getMockForAbstractClass();
-
-        $webTestCaseMocked->expects($this->once())
-            ->method('appendTableFixturesPath')
-            ->with(array('User', 'Group'))
-            ->will($this->returnValue(array('src/Cosma/Fixture/Table/User.yml', 'src/Cosma/Fixture/Table/Group.yml')));
-
-        $webTestCaseMocked->expects($this->once())
-            ->method('loadFixture')
-            ->with(array('src/Cosma/Fixture/Table/User.yml', 'src/Cosma/Fixture/Table/Group.yml'))
-            ->will($this->returnValue($objects));
-
-        $methodAppendTableFixturesPath = new \ReflectionMethod(
-            'Cosma\Bundle\TestingBundle\TestCase\WebTestCase',
-            'appendTableFixturesPath'
-        );
-        $methodAppendTableFixturesPath->setAccessible(true);
-
-        $this->assertEquals(12345, $methodAppendTableFixturesPath->invoke($webTestCaseMocked, array('User', 'Group')));
-
-        $methodLoadFixture = new \ReflectionMethod(
-            'Cosma\Bundle\TestingBundle\TestCase\WebTestCase',
-            'loadFixture'
-        );
-        $methodLoadFixture->setAccessible(true);
-
-        $methodLoadTableFixtures = new \ReflectionMethod(
+        $method = new \ReflectionMethod(
             'Cosma\Bundle\TestingBundle\TestCase\WebTestCase',
             'loadTableFixtures'
         );
-        $methodLoadTableFixtures->setAccessible(true);
+        $method->setAccessible(true);
+        $method->returnsReference();
 
-        /** @var ArrayCollection $objects */
-        $objects = $methodLoadTableFixtures->invoke($webTestCaseMocked, array('User', 'Group'), true);
+        $method->invoke($webTestCase, array());
+    }
 
-        $this->assertCount(2, $objects, 'Has to return an collection of two entities');
-        $this->assertInstanceOf('Cosma\Bundle\TestingBundle\Tests\TestCase\ExampleEntity', $objects->first(), 'This object should be an entity ExampleEntity');
-        $this->assertInstanceOf('Cosma\Bundle\TestingBundle\Tests\TestCase\ExampleEntity', $objects->last(), 'This object should be an entity ExampleEntity');
+    /**
+     * @see Cosma\Bundle\TestingBundle\TestCase\WebTestCase::loadTableFixtures
+     *
+     */
+    public function testLoadTableFixtures()
+    {
+        $webTestCase = $this->getMockedWebTestCaseWithFixture();
+
+        $method = new \ReflectionMethod(
+            'Cosma\Bundle\TestingBundle\TestCase\WebTestCase',
+            'loadTableFixtures'
+        );
+        $method->setAccessible(true);
+        $method->returnsReference();
+
+        $entities = $method->invoke($webTestCase, array('ExampleEntity', 'AnotherExampleEntity'));
+
+        $this->assertEquals($this->getEntities(), $entities, 'Entities are wrong');
     }
 
     /**
@@ -253,19 +233,32 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
      */
     private function getMockedWebTestCase()
     {
-        $currentBundle = $this->getCurrentBundle();
-
         $entityRepository = $this->getMockBuilder('Doctrine\ORM\EntityRepository')
             ->disableAutoload()
             ->getMock();
 
         $entityManager = $this->getEntityManager($entityRepository);
 
-        $container = $this->getContainer($entityManager);
+        $container = $this->getContainerWithEntityManager($entityManager);
 
         $client = $this->getClient($container);
 
-        return $this->getDefaultMockedWebTestCase($client, $currentBundle);
+        return $this->getDefaultMockedWebTestCase($client);
+    }
+
+    /**
+     * @return WebTestCase
+     */
+    private function getMockedWebTestCaseWithFixture()
+    {
+
+        $aliceFixtureManager = $this->getAliceFixtureManager();
+
+        $container = $this->getContainerWithFixtureManager($aliceFixtureManager);
+
+        $client = $this->getClient($container);
+
+        return $this->getDefaultMockedWebTestCase($client);
     }
 
     /**
@@ -309,11 +302,37 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @return \PHPUnit_Framework_MockObject_MockObject
+     */
+    private function getAliceFixtureManager()
+    {
+        $entities = $this->getEntities();
+
+        $aliceFixtureManager = $this->getMockBuilder('h4cc\AliceFixturesBundle\Fixtures\FixtureManager')
+            ->disableAutoload()
+            ->setMethods(array('persist', 'loadFiles'))
+            ->getMock();
+        $aliceFixtureManager->expects($this->any())
+            ->method('persist')
+            ->with()
+            ->will($this->returnValue(true));
+        $aliceFixtureManager->expects($this->any())
+            ->method('loadFiles')
+            ->with(array(
+                'Cosma/TestingBundle/TestCase/WebTestCase/Table/ExampleEntity.yml',
+                'Cosma/TestingBundle/TestCase/WebTestCase/Table/AnotherExampleEntity.yml'
+                ))
+            ->will($this->returnValue($entities));
+
+        return $aliceFixtureManager;
+    }
+
+    /**
      * @param EntityManager $entityManager
      *
      * @return \PHPUnit_Framework_MockObject_MockObject
      */
-    private function getContainer(EntityManager $entityManager)
+    private function getContainerWithEntityManager(EntityManager $entityManager)
     {
         $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerInterface')
             ->disableAutoload()
@@ -323,6 +342,25 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
             ->method('get')
             ->with('doctrine.orm.entity_manager')
             ->will($this->returnValue($entityManager));
+
+        return $container;
+    }
+
+    /**
+     * @param AliceFixtureManager $aliceFixtureManager
+     *
+     * @return \PHPUnit_Framework_MockObject_MockObject
+     */
+    private function getContainerWithFixtureManager(AliceFixtureManager $aliceFixtureManager)
+    {
+        $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerInterface')
+            ->disableAutoload()
+            ->setMethods(array('get'))
+            ->getMock();
+        $container->expects($this->any())
+            ->method('get')
+            ->with('h4cc_alice_fixtures.manager')
+            ->will($this->returnValue($aliceFixtureManager));
 
         return $container;
     }
@@ -347,12 +385,11 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param Client          $client
-     * @param BundleInterface $currentBundle
+     * @param Client $client
      *
      * @return \PHPUnit_Framework_MockObject_MockObject
      */
-    private function getDefaultMockedWebTestCase(Client $client, BundleInterface $currentBundle)
+    private function getDefaultMockedWebTestCase(Client $client)
     {
         $webTestCaseMocked = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\WebTestCase')
             ->disableAutoload()
@@ -366,47 +403,45 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
         $clientProperty->setAccessible(true);
         $clientProperty->setValue($webTestCaseMocked, $client);
 
+
+        $currentBundle = $this->getCurrentBundle();
         $currentBundleProperty = $reflectionClass->getProperty('currentBundle');
         $currentBundleProperty->setAccessible(true);
         $currentBundleProperty->setValue($webTestCaseMocked, $currentBundle);
 
         $fixturePathProperty = $reflectionClass->getProperty('fixturePath');
         $fixturePathProperty->setAccessible(true);
-        $fixturePathProperty->setValue($webTestCaseMocked, 'src/Cosma/TestingBundle/TestCase/WebTestCase');
+        $fixturePathProperty->setValue($webTestCaseMocked, 'Cosma/TestingBundle/TestCase/WebTestCase');
 
-        $entityNameSpaceProperty = $reflectionClass->getProperty('fixturePath');
+        $entityNameSpaceProperty = $reflectionClass->getProperty('entityNameSpace');
         $entityNameSpaceProperty->setAccessible(true);
         $entityNameSpaceProperty->setValue($webTestCaseMocked, 'Cosma\Bundle\TestingBundle\TestCase');
 
         return $webTestCaseMocked;
     }
 
-    private function createCompiledContainerForConfig($config, $debug = false)
+    /**
+     * @return array
+     */
+    private function getEntities()
     {
-        $container = $this->createContainer($debug);
-        $container->registerExtension(new TestingExtension());
-        $container->loadFromExtension('cosma_testing', $config);
-        $this->compileContainer($container);
+        $objects = array();
+        $entityOne = new ExampleEntity();
+        $entityOne->setName('Example Entity One');
+        array_push($objects, $entityOne);
 
-        return $container;
-    }
+        $entityTwo = new ExampleEntity();
+        $entityTwo->setName('Example Entity Two');
+        array_push($objects, $entityTwo);
 
-    private function createContainer($debug = false)
-    {
-        $container = new ContainerBuilder(new ParameterBag(array(
-            'kernel.cache_dir' => __DIR__,
-            'kernel.charset'   => 'UTF-8',
-            'kernel.debug'     => $debug,
-        )));
+        $entityThree = new AnotherExampleEntity();
+        $entityThree->setFirstName('Example Entity Three');
+        array_push($objects, $entityThree);
 
-        return $container;
-    }
-
-    private function compileContainer(ContainerBuilder $container)
-    {
-        $container->getCompilerPassConfig()->setOptimizationPasses(array());
-        $container->getCompilerPassConfig()->setRemovingPasses(array());
-        $container->compile();
+        $entityFour = new AnotherExampleEntity();
+        $entityFour->setFirstName('Example Entity Four');
+        array_push($objects, $entityFour);
+        return $objects;
     }
 }
 
@@ -470,7 +505,7 @@ class AnotherExampleEntity
     /**
      * @param string $name
      */
-    public function setFirestName($firstName)
+    public function setFirstName($firstName)
     {
         $this->firstName = $firstName;
     }

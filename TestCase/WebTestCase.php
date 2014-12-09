@@ -166,7 +166,7 @@ abstract class WebTestCase extends WebTestCaseBase
      * @return array
      * @throws \InvalidArgumentException
      */
-    protected function loadCustomFixtures(array $fixtures, $dropDatabaseBefore = true)
+    protected function loadTestFixtures(array $fixtures, $dropDatabaseBefore = true)
     {
         if (0 == count($fixtures)) {
             throw new \InvalidArgumentException('Array is empty.');
@@ -174,7 +174,7 @@ abstract class WebTestCase extends WebTestCaseBase
 
         $debugTrace    = debug_backtrace();
         $testClassPath = $this->getTestClassPath($debugTrace);
-        $fixtures      = $this->appendCustomFixturesPath($fixtures, $testClassPath);
+        $fixtures      = $this->appendTestFixturesPath($fixtures, $testClassPath);
 
         return $this->loadFixture($fixtures, $dropDatabaseBefore);
     }
@@ -259,11 +259,11 @@ abstract class WebTestCase extends WebTestCaseBase
      *
      * @return array
      */
-    private function appendCustomFixturesPath(array $fixtures, $testClassPath)
+    private function appendTestFixturesPath(array $fixtures, $testClassPath)
     {
         $fixturePaths = array();
         foreach ($fixtures as $customFixture) {
-            $fixturePaths[] = $this->getFixturePath() . "/Custom/{$testClassPath}/{$customFixture}.yml";
+            $fixturePaths[] = $this->getFixturePath() . "/Test/{$testClassPath}/{$customFixture}.yml";
         }
 
         return $fixturePaths;
