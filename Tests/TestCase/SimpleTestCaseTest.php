@@ -11,9 +11,9 @@ class SimpleTestCaseTest extends SimpleTestCase
      */
     public function testGetMockedEntityWithId()
     {
-        /** @var User $mockedUser */
-        $mockedUser = $this->getMockedEntityWithId('Cosma\Bundle\TestingBundle\Tests\TestCase\ExampleEntity', 12345);
-        $this->assertEquals(12345, $mockedUser->getId());
+        /** @var ExampleEntity $mockedEntity */
+        $mockedEntity = $this->getMockedEntityWithId('Cosma\Bundle\TestingBundle\Tests\TestCase\ExampleEntity', 12345);
+        $this->assertEquals(12345, $mockedEntity->getId());
     }
 
     /**
@@ -30,10 +30,10 @@ class SimpleTestCaseTest extends SimpleTestCase
      */
     public function testGetEntityWithId()
     {
-        /** @var User $user */
-        $user = $this->getEntityWithId('Cosma\Bundle\TestingBundle\Tests\TestCase\ExampleEntity', 12345);
-        $this->assertInstanceOf('Cosma\Bundle\TestingBundle\Tests\TestCase\ExampleEntity', $user);
-        $this->assertEquals(12345, $user->getId());
+        /** @var ExampleEntity $entity */
+        $entity = $this->getEntityWithId('Cosma\Bundle\TestingBundle\Tests\TestCase\ExampleEntity', 12345);
+        $this->assertInstanceOf('Cosma\Bundle\TestingBundle\Tests\TestCase\ExampleEntity', $entity);
+        $this->assertEquals(12345, $entity->getId());
     }
 
     /**

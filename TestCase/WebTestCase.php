@@ -49,19 +49,19 @@ abstract class WebTestCase extends WebTestCaseBase
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
-//        self::$client = self::createClient();
-//        self::$client->followRedirects();
-//
-//        self::$container = self::$client->getContainer();
-//
-//        /** @var FixtureManager $fixtureManager */
-//        $fixtureManager = static::getFixtureManager();
-//
-//        $fixtureManager->getSchemaTool()->dropSchema();
-//        $fixtureManager->getSchemaTool()->createSchema();
-//
-//        static::getFixturePath();
-//        static::getEntityNameSpace();
+        self::$client = self::createClient();
+        self::$client->followRedirects();
+
+        self::$container = self::$client->getContainer();
+
+        /** @var FixtureManager $fixtureManager */
+        $fixtureManager = static::getFixtureManager();
+
+        $fixtureManager->getSchemaTool()->dropSchema();
+        $fixtureManager->getSchemaTool()->createSchema();
+
+        static::getFixturePath();
+        static::getEntityNameSpace();
     }
 
     /**
@@ -255,7 +255,7 @@ abstract class WebTestCase extends WebTestCaseBase
      *
      * @return array
      */
-    private function appendTableFixturesPath(array $fixtures)
+    public function appendTableFixturesPath(array $fixtures)
     {
         $fixturePaths = array();
         foreach ($fixtures as $tableFixture) {
@@ -295,7 +295,7 @@ abstract class WebTestCase extends WebTestCaseBase
      *
      * @return array
      */
-    private function loadFixture(array $fixtures, $dropDatabaseBefore)
+    public function loadFixture(array $fixtures, $dropDatabaseBefore)
     {
         $fixtureManager = static::getFixtureManager();
         if ($dropDatabaseBefore) {
