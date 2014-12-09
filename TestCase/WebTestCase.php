@@ -95,9 +95,9 @@ abstract class WebTestCase extends WebTestCaseBase
      */
     protected function getEntityRepository($entity)
     {
-        $repositoryName = self::getCurrentBundle()->getName() . ':' . $entity;
+        $repositoryName = $this->getCurrentBundle()->getName() . ':' . $entity;
 
-        return static::getEntityManager()->getRepository($repositoryName);
+        return $this->getEntityManager()->getRepository($repositoryName);
     }
 
     /**
