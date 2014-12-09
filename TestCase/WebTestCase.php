@@ -255,7 +255,7 @@ abstract class WebTestCase extends WebTestCaseBase
      *
      * @return array
      */
-    public function appendTableFixturesPath(array $fixtures)
+    private function appendTableFixturesPath(array $fixtures)
     {
         $fixturePaths = array();
         foreach ($fixtures as $tableFixture) {
@@ -295,7 +295,7 @@ abstract class WebTestCase extends WebTestCaseBase
      *
      * @return array
      */
-    public function loadFixture(array $fixtures, $dropDatabaseBefore)
+    private function loadFixture(array $fixtures, $dropDatabaseBefore)
     {
         $fixtureManager = static::getFixtureManager();
         if ($dropDatabaseBefore) {
