@@ -16,7 +16,7 @@ abstract class WebTestCase extends WebTestCaseBase
     /**
      * @var Client
      */
-    protected static $client;
+    private static $client;
 
     /**
      * @var string
@@ -34,16 +34,6 @@ abstract class WebTestCase extends WebTestCaseBase
     private static $currentBundle;
 
     /**
-     * @var ContainerInterface
-     */
-    private static $container;
-
-    /**
-     * @var array
-     */
-    private $objects = array();
-
-    /**
      * @return void
      */
     public static function setUpBeforeClass()
@@ -51,8 +41,6 @@ abstract class WebTestCase extends WebTestCaseBase
         parent::setUpBeforeClass();
         self::$client = self::createClient();
         self::$client->followRedirects();
-
-        self::$container = self::$client->getContainer();
 
         /** @var FixtureManager $fixtureManager */
         $fixtureManager = static::getFixtureManager();
@@ -77,7 +65,7 @@ abstract class WebTestCase extends WebTestCaseBase
      */
     protected function getContainer()
     {
-        return self::$container;
+        return self::$client->getContainer();
     }
 
     /**
@@ -85,7 +73,7 @@ abstract class WebTestCase extends WebTestCaseBase
      */
     protected function getEntityManager()
     {
-        return self::$container->get('doctrine.orm.entity_manager');
+        return $this->getContainer()->get('doctrine.orm.entity_manager');
     }
 
     /**
@@ -286,7 +274,7 @@ abstract class WebTestCase extends WebTestCaseBase
      */
     private static function getFixtureManager()
     {
-        return self::$container->get('h4cc_alice_fixtures.manager');
+        return self::$client->getContainer()->get('h4cc_alice_fixtures.manager');
     }
 
     /**
