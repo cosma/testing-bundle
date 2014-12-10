@@ -209,8 +209,8 @@ abstract class WebTestCase extends WebTestCaseBase
 
             self::$fixturePath = $currentBundle->getPath();
 
-            if (self::$client->getContainer()->hasParameter("fixture_path")) {
-                self::$fixturePath .= '/' . self::$client->getContainer()->getParameter("fixture_path");
+            if (self::$client->getContainer()->hasParameter('fixture_path')) {
+                self::$fixturePath .= '/' . self::$client->getContainer()->getParameter('fixture_path');
             } else {
                 self::$fixturePath .= '/Fixture';
             }
@@ -301,13 +301,13 @@ abstract class WebTestCase extends WebTestCaseBase
      *
      * @return mixed
      */
-    private function getTestClassPath(array $debugTrace)
+    protected function getTestClassPath(array $debugTrace)
     {
-        if(isset($debugTrace[0]['file'])){
+        if (isset($debugTrace[0]['file'])) {
             $testPath      = strpos($debugTrace[0]['file'], "Tests/", 1);
             $filePath      = substr($debugTrace[0]['file'], $testPath + 6);
             $testClassPath = str_replace('.php', '', $filePath);
-        }else{
+        } else {
             $testClassPath = '';
         }
 
