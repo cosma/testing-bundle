@@ -70,8 +70,8 @@ cosma_testing:
 Is an extension of PHPUnit_Framework_TestCase,   the simplest test case in PHPUnit
 This test case has two methods to load a real or a mocked Doctrine Entity with a set Id:
 
-** getMockedEntityWithId ** ($entityNamespaceClass, $id)
-** getEntityWithId ** ($entityNamespaceClass, $id)
+** getMockedEntityWithId ($entityNamespaceClass, $id) ** 
+** getEntityWithId ($entityNamespaceClass, $id) ** 
 
 
 ```php
