@@ -1,6 +1,10 @@
-# Testing Bundle #
+Testing Bundle
+================
 
-This README would normally document whatever steps are necessary to get your application up and running.
+An extension of [h4cc/AliceFixturesBundle](https://github.com/h4cc/AliceFixturesBundle) , a Symfony2 bundle for flexible usage of [nelmio/alice](https://github.com/nelmio/alice) and [fzaninotto/Faker](https://github.com/fzaninotto/Faker) in Symfony2.
+
+[![Build Status](https://drone.io/bitbucket.org/cosma/testing-bundle/status.png)](https://drone.io/bitbucket.org/cosma/testing-bundle/latest)
+
 
 ### What is this repository for? ###
 
