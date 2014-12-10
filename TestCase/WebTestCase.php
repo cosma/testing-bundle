@@ -180,6 +180,22 @@ abstract class WebTestCase extends WebTestCaseBase
     }
 
     /**
+     * @param array $fixtures
+     * @param bool  $dropDatabaseBefore
+     *
+     * @return array
+     * @throws \InvalidArgumentException
+     */
+    protected function loadCustomFixtures(array $fixtures, $dropDatabaseBefore = true)
+    {
+        if (0 == count($fixtures)) {
+            throw new \InvalidArgumentException('Array is empty.');
+        }
+
+        return $this->loadFixture($fixtures, $dropDatabaseBefore);
+    }
+
+    /**
      * @return string
      */
     private function getEntityNameSpace()

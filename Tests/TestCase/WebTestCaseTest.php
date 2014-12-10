@@ -257,6 +257,47 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @see Cosma\Bundle\TestingBundle\TestCase\WebTestCase::loadCustomFixtures
+     *
+     * @expectedException InvalidArgumentException
+     */
+    public function testLoadCustomFixtures_Exception()
+    {
+        $webTestCase = $this->getMockedWebTestCaseWithCustomFixture();
+
+        $method = new \ReflectionMethod(
+            'Cosma\Bundle\TestingBundle\TestCase\WebTestCase',
+            'loadCustomFixtures'
+        );
+        $method->setAccessible(true);
+
+        $method->invoke($webTestCase, array());
+    }
+
+    /**
+     * @see Cosma\Bundle\TestingBundle\TestCase\WebTestCase::loadCustomFixtures
+     */
+    public function testLoadCustomFixtures()
+    {
+        $webTestCase = $this->getMockedWebTestCaseWithCustomFixture();
+
+        $reflectionClass = new \ReflectionClass($webTestCase);
+
+        $loadTestFixturesMethod = $reflectionClass->getMethod('loadCustomFixtures');
+        $loadTestFixturesMethod->setAccessible(true);
+
+        $entities = $loadTestFixturesMethod->invoke(
+            $webTestCase,
+            array(
+                'Some/Custom/Path/Directory/SomeEntity.yml',
+                'Some/Custom/Path/Directory/AnotherExampleEntity.yml'
+            )
+        );
+
+        $this->assertEquals($this->getEntities(), $entities, 'Entities are wrong');
+    }
+
+    /**
      * @return WebTestCase
      */
     private function getMockedWebTestCase()
@@ -296,6 +337,21 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
     {
 
         $aliceFixtureManager = $this->getAliceFixtureManagerForTest();
+
+        $container = $this->getContainerWithFixtureManager($aliceFixtureManager);
+
+        $client = $this->getClient($container);
+
+        return $this->getDefaultMockedWebTestCase($client);
+    }
+
+    /**
+     * @return WebTestCase
+     */
+    private function getMockedWebTestCaseWithCustomFixture()
+    {
+
+        $aliceFixtureManager = $this->getAliceFixtureManagerForCustom();
 
         $container = $this->getContainerWithFixtureManager($aliceFixtureManager);
 
@@ -394,6 +450,32 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
             ->with(array(
                 'Cosma/Bundle/TestingBundle/FixtureDirectory/Test/TestCase/WebTestCase/SomeTestEntity.yml',
                 'Cosma/Bundle/TestingBundle/FixtureDirectory/Test/TestCase/WebTestCase/AnotherTestEntity.yml'
+            ))
+            ->will($this->returnValue($entities));
+
+        return $aliceFixtureManager;
+    }
+
+    /**
+     * @return \PHPUnit_Framework_MockObject_MockObject
+     */
+    private function getAliceFixtureManagerForCustom()
+    {
+        $entities = $this->getEntities();
+
+        $aliceFixtureManager = $this->getMockBuilder('h4cc\AliceFixturesBundle\Fixtures\FixtureManager')
+            ->disableAutoload()
+            ->setMethods(array('persist', 'loadFiles'))
+            ->getMock();
+        $aliceFixtureManager->expects($this->any())
+            ->method('persist')
+            ->with()
+            ->will($this->returnValue(true));
+        $aliceFixtureManager->expects($this->any())
+            ->method('loadFiles')
+            ->with(array(
+                'Some/Custom/Path/Directory/SomeEntity.yml',
+                'Some/Custom/Path/Directory/AnotherExampleEntity.yml'
             ))
             ->will($this->returnValue($entities));
 
