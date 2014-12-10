@@ -185,13 +185,13 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
             'getEntityWithId'
         );
         $method->setAccessible(true);
-        $method->returnsReference();
 
         $method->invoke($webTestCase, 'XX\XXXXX', 12345);
     }
 
     /**
      * @see Cosma\Bundle\TestingBundle\TestCase\WebTestCase::loadTableFixtures
+     *
      * @expectedException InvalidArgumentException
      */
     public function testLoadTableFixtures_Exception()
@@ -203,14 +203,12 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
             'loadTableFixtures'
         );
         $method->setAccessible(true);
-        $method->returnsReference();
 
         $method->invoke($webTestCase, array());
     }
 
     /**
      * @see Cosma\Bundle\TestingBundle\TestCase\WebTestCase::loadTableFixtures
-     *
      */
     public function testLoadTableFixtures()
     {
@@ -221,9 +219,56 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
             'loadTableFixtures'
         );
         $method->setAccessible(true);
-        $method->returnsReference();
 
         $entities = $method->invoke($webTestCase, array('ExampleEntity', 'AnotherExampleEntity'));
+
+        $this->assertEquals($this->getEntities(), $entities, 'Entities are wrong');
+    }
+
+    /**
+     * @see Cosma\Bundle\TestingBundle\TestCase\WebTestCase::loadTestFixtures
+     *
+     * @expectedException InvalidArgumentException
+     */
+    public function testLoadTestFixtures_Exception()
+    {
+        $webTestCase = $this->getMockedWebTestCaseWithFixture();
+
+        $method = new \ReflectionMethod(
+            'Cosma\Bundle\TestingBundle\TestCase\WebTestCase',
+            'loadTestFixtures'
+        );
+        $method->setAccessible(true);
+
+        $method->invoke($webTestCase, array());
+    }
+
+    /**
+     * @see Cosma\Bundle\TestingBundle\TestCase\WebTestCase::loadTestFixtures
+     */
+    public function testLoadTestFixtures()
+    {
+        $webTestCase = $this->getMockedWebTestCaseWithFixture();
+
+        $reflectionClass = new \ReflectionClass($webTestCase);
+        //$reflectionClassP = $reflectionClass->getParentClass()->getParentClass();
+
+        $getTestClassPathMethod = $reflectionClass->getMethod('getTestClassPath');
+        $getTestClassPathMethod->setAccessible(true);
+
+        $method = new \ReflectionMethod(
+            'Cosma\Bundle\TestingBundle\TestCase\WebTestCase',
+            'loadTestFixtures'
+        );
+        $method->setAccessible(true);
+
+        $methodTwo = new \ReflectionMethod(
+            'Cosma\Bundle\TestingBundle\TestCase\WebTestCase',
+            'getTestClassPath'
+        );
+        $methodTwo->setAccessible(true);
+
+        $entities = $method->invoke($webTestCase, array('SomeTestEntity', 'AnotherTestEntity'));
 
         $this->assertEquals($this->getEntities(), $entities, 'Entities are wrong');
     }
@@ -319,8 +364,8 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
         $aliceFixtureManager->expects($this->any())
             ->method('loadFiles')
             ->with(array(
-                'Cosma/TestingBundle/TestCase/WebTestCase/Table/ExampleEntity.yml',
-                'Cosma/TestingBundle/TestCase/WebTestCase/Table/AnotherExampleEntity.yml'
+                'Cosma/Bundle/TestingBundle/Fixture/Table/ExampleEntity.yml',
+                'Cosma/Bundle/TestingBundle/Fixture/Table/AnotherExampleEntity.yml'
                 ))
             ->will($this->returnValue($entities));
 
@@ -393,11 +438,17 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
     {
         $webTestCaseMocked = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\WebTestCase')
             ->disableAutoload()
-            ->setMethods(array('setUpBeforeClass'))
+            ->setMethods(array('setUpBeforeClass', 'getTestClassPath'))
             ->getMockForAbstractClass();
+        $webTestCaseMocked->expects($this->any())
+            ->method('getTestClassPath')
+            ->with()
+            ->will($this->returnValue('TestCase/WebTestCase'));
 
         $reflectionClassMocked = new \ReflectionClass($webTestCaseMocked);
+        $reflectionClassMocked->getMethod('getTestClassPath')->setAccessible(true);
         $reflectionClass       = $reflectionClassMocked->getParentClass();
+        $reflectionClass->getMethod('getTestClassPath')->setAccessible(true);
 
         $clientProperty = $reflectionClass->getProperty('client');
         $clientProperty->setAccessible(true);
@@ -411,11 +462,11 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
 
         $fixturePathProperty = $reflectionClass->getProperty('fixturePath');
         $fixturePathProperty->setAccessible(true);
-        $fixturePathProperty->setValue($webTestCaseMocked, 'Cosma/TestingBundle/TestCase/WebTestCase');
+        $fixturePathProperty->setValue($webTestCaseMocked, 'Cosma/Bundle/TestingBundle/Fixture');
 
         $entityNameSpaceProperty = $reflectionClass->getProperty('entityNameSpace');
         $entityNameSpaceProperty->setAccessible(true);
-        $entityNameSpaceProperty->setValue($webTestCaseMocked, 'Cosma\Bundle\TestingBundle\TestCase');
+        $entityNameSpaceProperty->setValue($webTestCaseMocked, 'Cosma\Bundle\TestingBundle\Entity');
 
         return $webTestCaseMocked;
     }
