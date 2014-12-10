@@ -102,15 +102,15 @@ class SomeTestClass extends SimpleTestCase
 Is an extension of WebTestCase,  the functional test case in Symfony2 
 Has  available the following methods:
 
-* getMockedEntityWithId ($entityNamespaceClass, $id)
-* getEntityWithId ($entityNamespaceClass, $id)
-* loadTableFixtures (array $fixtures, $dropDatabaseBefore = true)
-* loadTestFixtures (array $fixtures, $dropDatabaseBefore = true)
-* loadCustomFixtures (array $fixtures, $dropDatabaseBefore = true)
-* getClient ()
-* getContainer ()
-* getEntityManager ()
-* getEntityRepository ()
+* _getMockedEntityWithId_ ($entityNamespaceClass, $id)
+* _getEntityWithId_ ($entityNamespaceClass, $id)
+* _loadTableFixtures_ (array $fixtures, $dropDatabaseBefore = true)
+* _loadTestFixtures_ (array $fixtures, $dropDatabaseBefore = true)
+* _loadCustomFixtures_ (array $fixtures, $dropDatabaseBefore = true)
+* _getClient_ ()
+* _getContainer_ ()
+* _getEntityManager_ ()
+* _getEntityRepository_ ()
 
 
 
