@@ -6,6 +6,8 @@ An extension of [h4cc/AliceFixturesBundle](https://github.com/h4cc/AliceFixtures
 [![Build Status](https://drone.io/bitbucket.org/cosma/testing-bundle/status.png)](https://drone.io/bitbucket.org/cosma/testing-bundle/latest)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/7697e84e-fd7f-47ae-97cf-66a266c9b4c0/mini.png)](https://insight.sensiolabs.com/projects/7697e84e-fd7f-47ae-97cf-66a266c9b4c0)
 
+
+
 ## Introduction
 
 This bundle works with data fixtures in .yml format, detached from the common Doctrine DataFixtures.
@@ -13,18 +15,8 @@ There are multiple ways of loading fixture files.
 This bundle offers loading Fixtures from .yml ,  dropping and recreating the ORM Schema.
 
 
-## TestCases  ###
-
-### Simple TestCase ###
-Is an extension of PHPUnit_Framework_TestCase,   the simplest test case in PHPUnit
-
-### Web Test Case ###
-Is an extension of WebTestCase,  the functional test case in Symfony2 
-
 
 ## Installation
-
-Installation with composer:
 
 ```bash
 $ php composer.phar require cosma/TestingBundle
@@ -51,6 +43,8 @@ public function registerBundles()
 }
 ```
 
+
+
 ## Configuration
 
 In case you want to change default paths of Fixture and Entities in your bundle:
@@ -62,6 +56,22 @@ cosma_testing:
     fixture_path: Fixture                               # default
     entity_namespace: Entity                            # default
 ```
+
+
+
+## Usage
+
+### Test Cases
+
+#### Simple TestCase
+Is an extension of PHPUnit_Framework_TestCase,   the simplest test case in PHPUnit
+
+#### Web Test Case
+Is an extension of WebTestCase,  the functional test case in Symfony2 
+
+
+
+
 
 
 
