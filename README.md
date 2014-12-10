@@ -67,8 +67,7 @@ cosma_testing:
 
 
 #### Simple TestCase
-Is an extension of PHPUnit_Framework_TestCase,   the simplest test case in PHPUnit
-This test case has two methods to load a real or a mocked Doctrine Entity with a set Id:
+This case is an extension of PHPUnit_Framework_TestCase, with two extra simple methods:
 
 * **getMockedEntityWithId** ($entityNamespaceClass, $id)
 * **getEntityWithId** ($entityNamespaceClass, $id)
@@ -99,8 +98,8 @@ class SomeTestClass extends SimpleTestCase
 
 
 #### Web Test Case
-Is an extension of WebTestCase,  the functional test case in Symfony2 
-Has  available the following methods:
+This case is an extension of WebTestCase, the functional test case in Symfony2 
+It has the following methods:
 
 * **getMockedEntityWithId** ($entityNamespaceClass, $id)
 * **getEntityWithId** ($entityNamespaceClass, $id)
@@ -149,9 +148,7 @@ class SomeTestClass extends SimpleTestCase
         $this->loadCustomFixtures(array('/var/www/Acme/BundleDemo/Fixture/Colleague'), false);
 
     }
-
-
-
+    
     public function testSomething()
     {
         $mockedUserAbsolute = $this->getMockedEntityWithId('Acme\DemoBundle\Entity\User', 12345);
@@ -161,6 +158,26 @@ class SomeTestClass extends SimpleTestCase
         $userAbsolute = $this->getEntityWithId('Acme\DemoBundle\Entity\User', 134);
         
         $userRelative = $this->getEntityWithId('User', 12);
+        
+        /**
+        *  Client for functional tests. Emulates a browser
+        */
+        $client = $this->getClient();
+        
+        /**
+        *  Service container
+        */
+        $container = $this->getContainer();
+        
+        /**
+        *  EntityManager - Doctrine
+        */
+        $container = $this->getEntityManger();
+        
+        /**
+        *  EntityRepository for User
+        */
+        $userRepository = $this->getEntityRepository('User');
     }
 }
 ```
