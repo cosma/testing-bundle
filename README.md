@@ -70,8 +70,8 @@ cosma_testing:
 Is an extension of PHPUnit_Framework_TestCase,   the simplest test case in PHPUnit
 This test case has two methods to load a real or a mocked Doctrine Entity with a set Id:
 
-* getMockedEntityWithId
-* getEntityWithId
+* getMockedEntityWithId ($entityNamespaceClass, $id)
+* getEntityWithId ($entityNamespaceClass, $id)
 
 
 ```php
@@ -102,8 +102,16 @@ class SomeTestClass extends SimpleTestCase
 Is an extension of WebTestCase,  the functional test case in Symfony2 
 Has  available the following methods:
 
-* getMockedEntityWithId($entityNamespaceClass, $id)
-* getEntityWithId($entityNamespaceClass, $id)
+* getMockedEntityWithId ($entityNamespaceClass, $id)
+* getEntityWithId ($entityNamespaceClass, $id)
+* loadTableFixtures (array $fixtures, $dropDatabaseBefore = true)
+* loadTestFixtures (array $fixtures, $dropDatabaseBefore = true)
+* loadCustomFixtures (array $fixtures, $dropDatabaseBefore = true)
+* getClient ()
+* getContainer ()
+* getEntityManager ()
+* getEntityRepository ()
+
 
 
 
