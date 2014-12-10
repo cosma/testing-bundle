@@ -78,9 +78,6 @@ This test case has two methods to load a real or a mocked Doctrine Entity with a
  
  class SomeTestClass extends SimpleTestCase
  {
-     /**
-      * @see SimpleTestCase::getMockedEntityWithId
-      */
      public function testSomething()
      {
          $mockedUserAbsolute = $this->getMockedEntityWithId('Acme\DemoBundle\Entity\User', 12345);
