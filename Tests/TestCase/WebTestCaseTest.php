@@ -546,37 +546,6 @@ class WebTestCaseExample extends WebTestCase
 {
 }
 
-class ExampleEntity
-{
-    private $id;
-
-    private $name;
-
-    /**
-     * @return mixed
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param string $name
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
-}
-
 class AnotherExampleEntity
 {
     private $id;
