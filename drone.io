@@ -8,4 +8,4 @@ composer install --prefer-source
 # Run tests
 ##
 
-phpunit -c phpunit.xml.dist Tests
+vendor/phpunit/phpunit/phpunit -c phpunit.xml.dist Tests
