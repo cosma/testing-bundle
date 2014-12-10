@@ -8,4 +8,4 @@ composer install --prefer-source
 # Run tests
 ##
 
-vendor/phpunit/phpunit/phpunit -c phpunit.xml.dist Tests
+phpunit --coverage-text --coverage-html=Tests/coverage Tests
