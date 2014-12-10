@@ -1,19 +1,15 @@
 <?php
 namespace Cosma\Bundle\TestingBundle\Tests\TestCase;
 
-use Cosma\Bundle\TestingBundle\DependencyInjection\TestingExtension;
-use Cosma\Bundle\TestingBundle\TestCase\WebTestCase;
-
 use Doctrine\Common\Proxy\Exception\InvalidArgumentException;
-use h4cc\AliceFixturesBundle\Fixtures\FixtureManager as AliceFixtureManager;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
-use Symfony\Component\DependencyInjection\ParameterBag\ParameterBag;
 use Symfony\Bundle\FrameworkBundle\Client;
-use Symfony\Component\HttpKernel\Bundle\BundleInterface;
+
+use Cosma\Bundle\TestingBundle\TestCase\WebTestCase;
+use h4cc\AliceFixturesBundle\Fixtures\FixtureManager as AliceFixtureManager;
 
 class WebTestCaseTest extends \PHPUnit_Framework_TestCase
 {
@@ -107,7 +103,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
         $reflectionMethod->setAccessible(true);
 
         /** @var EntityRepository $actual */
-        $entityRepository = $reflectionMethod->invoke($webTestCase, 'ExampleEntity');
+        $entityRepository = $reflectionMethod->invoke($webTestCase, 'SomeEntity');
 
         $this->assertInstanceOf(
             'Doctrine\ORM\EntityRepository',
@@ -129,8 +125,8 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
         );
         $method->setAccessible(true);
 
-        /** @var ExampleEntity $mockedEntity */
-        $mockedEntity = $method->invoke($webTestCase, 'Cosma\Bundle\TestingBundle\Tests\TestCase\ExampleEntity', 12345);
+        /** @var SomeEntity $mockedEntity */
+        $mockedEntity = $method->invoke($webTestCase, 'Cosma\Bundle\TestingBundle\Tests\TestCase\SomeEntity', 12345);
 
         $this->assertEquals(12345, $mockedEntity->getId());
     }
@@ -165,10 +161,10 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
         );
         $method->setAccessible(true);
 
-        /** @var ExampleEntity $entity */
-        $entity = $method->invoke($webTestCase, 'Cosma\Bundle\TestingBundle\Tests\TestCase\ExampleEntity', 12345);
+        /** @var SomeEntity $entity */
+        $entity = $method->invoke($webTestCase, 'Cosma\Bundle\TestingBundle\Tests\TestCase\SomeEntity', 12345);
 
-        $this->assertInstanceOf('Cosma\Bundle\TestingBundle\Tests\TestCase\ExampleEntity', $entity);
+        $this->assertInstanceOf('Cosma\Bundle\TestingBundle\Tests\TestCase\SomeEntity', $entity);
         $this->assertEquals(12345, $entity->getId());
     }
 
@@ -220,7 +216,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
         );
         $method->setAccessible(true);
 
-        $entities = $method->invoke($webTestCase, array('ExampleEntity', 'AnotherExampleEntity'));
+        $entities = $method->invoke($webTestCase, array('SomeEntity', 'AnotherExampleEntity'));
 
         $this->assertEquals($this->getEntities(), $entities, 'Entities are wrong');
     }
@@ -346,7 +342,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
             ->getMock();
         $entityManager->expects($this->any())
             ->method('getRepository')
-            ->with('BundleName:ExampleEntity')
+            ->with('BundleName:SomeEntity')
             ->will($this->returnValue($entityRepository));
 
         return $entityManager;
@@ -370,7 +366,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
         $aliceFixtureManager->expects($this->any())
             ->method('loadFiles')
             ->with(array(
-                'Cosma/Bundle/TestingBundle/FixtureDirectory/Table/ExampleEntity.yml',
+                'Cosma/Bundle/TestingBundle/FixtureDirectory/Table/SomeEntity.yml',
                 'Cosma/Bundle/TestingBundle/FixtureDirectory/Table/AnotherExampleEntity.yml'
             ))
             ->will($this->returnValue($entities));
@@ -522,12 +518,12 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
     private function getEntities()
     {
         $objects   = array();
-        $entityOne = new ExampleEntity();
-        $entityOne->setName('Example Entity One');
+        $entityOne = new SomeEntity();
+        $entityOne->setName('Some Entity One');
         array_push($objects, $entityOne);
 
-        $entityTwo = new ExampleEntity();
-        $entityTwo->setName('Example Entity Two');
+        $entityTwo = new SomeEntity();
+        $entityTwo->setName('Some Entity Two');
         array_push($objects, $entityTwo);
 
         $entityThree = new AnotherExampleEntity();
@@ -542,6 +538,72 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
     }
 }
 
+class WebTestCaseExample extends WebTestCase
+{
+}
+
+
+class SomeEntity
+{
+    private $id;
+
+    private $name;
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+}
+
+class AnotherExampleEntity
+{
+    private $id;
+
+    private $firstName;
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFirstName()
+    {
+        return $this->firstName;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setFirstName($firstName)
+    {
+        $this->firstName = $firstName;
+    }
+}
 
 
 

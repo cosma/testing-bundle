@@ -1,7 +1,6 @@
 <?php
 namespace Cosma\Bundle\TestingBundle\Tests\TestCase;
 
-use Cosma\Bundle\TestingBundle\Entity\User;
 use Cosma\Bundle\TestingBundle\TestCase\SimpleTestCase;
 
 class SimpleTestCaseTest extends SimpleTestCase
@@ -43,5 +42,36 @@ class SimpleTestCaseTest extends SimpleTestCase
     public function testGetEntityWithId_Exception()
     {
         $this->getEntityWithId('xxxxxxxx', 12345);
+    }
+}
+
+class ExampleEntity
+{
+    private $id;
+
+    private $name;
+
+    /**
+     * @return mixed
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
     }
 }

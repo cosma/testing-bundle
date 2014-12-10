@@ -27,3 +27,7 @@ This README would normally document whatever steps are necessary to get your app
 
 * Repo owner or admin
 * Other community or team contact
+
+### Run Tests ###
+
+vendor/phpunit/phpunit/phpunit -c phpunit.xml.dist --coverage-text  --coverage-html=Tests/coverage Tests
