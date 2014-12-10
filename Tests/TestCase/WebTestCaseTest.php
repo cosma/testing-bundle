@@ -542,42 +542,6 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
     }
 }
 
-class WebTestCaseExample extends WebTestCase
-{
-}
-
-class AnotherExampleEntity
-{
-    private $id;
-
-    private $firstName;
-
-    /**
-     * @return mixed
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFirstName()
-    {
-        return $this->firstName;
-    }
-
-    /**
-     * @param string $name
-     */
-    public function setFirstName($firstName)
-    {
-        $this->firstName = $firstName;
-    }
-}
-
-
 
 
 
