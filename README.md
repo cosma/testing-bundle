@@ -48,13 +48,15 @@ public function registerBundles()
 ## Configuration
 
 In case you want to change default paths of Fixture and Entities in your bundle:
+* fixture_path - relative path to the fixture directory in your bundle
+* entity_namespace - relative namespace to the entities directory in your bundle
 
 ```yaml
 # app/config/config_dev.yml
 
 cosma_testing:
-    fixture_path: Fixture                               # default
-    entity_namespace: Entity                            # default
+    fixture_path: Fixture             # default
+    entity_namespace: Entity          # default
 ```
 
 
@@ -63,13 +65,37 @@ cosma_testing:
 
 ### Test Cases
 
+
 #### Simple TestCase
 Is an extension of PHPUnit_Framework_TestCase,   the simplest test case in PHPUnit
+This test case has two methods to load a real or a mocked Doctrine Entity with a set Id.
+ 
+ 
+
 
 #### Web Test Case
 Is an extension of WebTestCase,  the functional test case in Symfony2 
 
+```php
+use Cosma\Bundle\TestingBundle\TestCase\SimpleTestCase;
 
+class SomeTestClass extends SimpleTestCase
+{
+    /**
+     * @see SimpleTestCase::getMockedEntityWithId
+     */
+    public function testSomething()
+    {
+        $mockedUserAbsolute = $this->getMockedEntityWithId('Acme\DemoBundle\Entity\User', 12345);
+         
+        $mockedUserRelative = $this->getMockedEntityWithId('User', 1200); // is using the value of configuration parameter entity_namespace
+        
+        $userAbsolute = $this->getEntityWithId('Acme\DemoBundle\Entity\User', 12345);
+                 
+        $userRelative = $this->getEntityWithId('User', 1200); // is using the value of configuration parameter entity_namespace
+    }
+}
+```
 
 
 
