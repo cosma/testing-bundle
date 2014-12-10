@@ -76,7 +76,7 @@ This case is an extension of PHPUnit_Framework_TestCase, with two extra simple m
 ```php
 use Cosma\Bundle\TestingBundle\TestCase\SimpleTestCase;
  
-class SomeTestClass extends SimpleTestCase
+class UnitTest extends SimpleTestCase
 {
     public function testSomething()
     {
@@ -112,20 +112,10 @@ It has the following methods:
 * **getEntityRepository** ()
 
 
-
-
-
-
-
-
-
-
-
-
 ```php
-use Cosma\Bundle\TestingBundle\TestCase\SimpleTestCase;
+use Cosma\Bundle\TestingBundle\TestCase\WebTestCase;
 
-class SomeTestClass extends SimpleTestCase
+class FunctionalTest extends WebTestCase
 {
     public function setUp()
     {
@@ -184,34 +174,50 @@ class SomeTestClass extends SimpleTestCase
 
 
 
+### Adding own Providers for Faker
+
+A provider for Faker can be any class, that has public methods.
+These methods can be used in the fixture files for own testdata or even calculations.
+To register a provider, create a service and tag it.
+
+Example:
+
+```yaml
+services:
+    your.faker.provider:
+        class: YourProviderClass
+        tags:
+            -  { name: h4cc_alice_fixtures.provider }
+```
+
+
+### Adding own Processors for Alice
+
+A alice processor can be used to manipulate a object _before_ and _after_ persisting.
+To register a own processor, create a service and tag it.
+
+Example:
+
+```yaml
+services:
+    your.alice.processor:
+        class: YourProcessorClass
+        tags:
+            -  { name: h4cc_alice_fixtures.processor }
+```
 
 
 
-
-
-### How do I get set up? ###
-
-* Summary of set up
-* Configuration
-* Dependencies
-* Database configuration
-* How to run tests
-* Deployment instructions
-
-### Contribution guidelines ###
-
-* Writing tests
-* Code review
-* Other guidelines
-
-### Who do I talk to? ###
-
-* Repo owner or admin
-* Other community or team contact
 
 ### Run Tests ###
 
-vendor/phpunit/phpunit/phpunit -c phpunit.xml.dist --coverage-text  --coverage-html=Tests/coverage Tests
+vendor/phpunit/phpunit/phpunit -c phpunit.xml.dist --coverage-text --coverage-html=Tests/coverage Tests
 
 
-* [Learn Markdown](https://bitbucket.org/tutorials/markdowndemo)
+
+
+## License
+
+The bundle is licensed under MIT.
+
+
