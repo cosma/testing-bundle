@@ -68,34 +68,80 @@ cosma_testing:
 
 #### Simple TestCase
 Is an extension of PHPUnit_Framework_TestCase,   the simplest test case in PHPUnit
-This test case has two methods to load a real or a mocked Doctrine Entity with a set Id.
+This test case has two methods to load a real or a mocked Doctrine Entity with a set Id:
+* getMockedEntityWithId
+* getEntityWithId
+
+
+ ```php
+ use Cosma\Bundle\TestingBundle\TestCase\SimpleTestCase;
  
+ class SomeTestClass extends SimpleTestCase
+ {
+     /**
+      * @see SimpleTestCase::getMockedEntityWithId
+      */
+     public function testSomething()
+     {
+         $mockedUserAbsolute = $this->getMockedEntityWithId('Acme\DemoBundle\Entity\User', 12345);
+          
+         $mockedUserRelative = $this->getMockedEntityWithId('User', 1200); // is using the value of configuration parameter entity_namespace
+         
+         $userAbsolute = $this->getEntityWithId('Acme\DemoBundle\Entity\User', 12345);
+                  
+         $userRelative = $this->getEntityWithId('User', 1200); // is using the value of configuration parameter entity_namespace
+     }
+ }
+ ```
  
 
 
 #### Web Test Case
 Is an extension of WebTestCase,  the functional test case in Symfony2 
+Has  available the following methods: 
+* getMockedEntityWithId
+* getEntityWithId
+
+
+
+
+
+
+
+
+
+
 
 ```php
-use Cosma\Bundle\TestingBundle\TestCase\SimpleTestCase;
-
-class SomeTestClass extends SimpleTestCase
-{
-    /**
-     * @see SimpleTestCase::getMockedEntityWithId
-     */
-    public function testSomething()
+ use Cosma\Bundle\TestingBundle\TestCase\SimpleTestCase;
+ 
+ class SomeTestClass extends SimpleTestCase
+ {
+    public function setUp()
     {
-        $mockedUserAbsolute = $this->getMockedEntityWithId('Acme\DemoBundle\Entity\User', 12345);
-         
-        $mockedUserRelative = $this->getMockedEntityWithId('User', 1200); // is using the value of configuration parameter entity_namespace
-        
-        $userAbsolute = $this->getEntityWithId('Acme\DemoBundle\Entity\User', 12345);
-                 
-        $userRelative = $this->getEntityWithId('User', 1200); // is using the value of configuration parameter entity_namespace
+        $this->loadTableFixtures(array('User', 'Group')); // fixture from the table directory where resides data for DB tables.
+        $this->loadTestFixtures(array('Car', 'Series'), false ); // fixture from test specific directory path and is not droping the database
+        $this->loadCustomFixtures(array('/var/www/Acme/BundleDemo/Fixture/Colleague')); //custom path fixture
+    
     }
-}
-```
+    
+    
+     /**
+      * @see SimpleTestCase::getMockedEntityWithId
+      */
+     public function testSomething()
+     {
+         $mockedUserAbsolute = $this->getMockedEntityWithId('Acme\DemoBundle\Entity\User', 12345);
+          
+         $mockedUserRelative = $this->getMockedEntityWithId('User', 1200); // is using the value of configuration parameter entity_namespace
+         
+         $userAbsolute = $this->getEntityWithId('Acme\DemoBundle\Entity\User', 12345);
+                  
+         $userRelative = $this->getEntityWithId('User', 1200); // is using the value of configuration parameter entity_namespace
+     }
+ }
+ ```
+
 
 
 
