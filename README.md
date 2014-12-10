@@ -73,7 +73,7 @@ This test case has two methods to load a real or a mocked Doctrine Entity with a
 * getEntityWithId
 
 
- ```php
+```php
  use Cosma\Bundle\TestingBundle\TestCase\SimpleTestCase;
  
  class SomeTestClass extends SimpleTestCase
@@ -81,15 +81,12 @@ This test case has two methods to load a real or a mocked Doctrine Entity with a
      public function testSomething()
      {
          $mockedUserAbsolute = $this->getMockedEntityWithId('Acme\DemoBundle\Entity\User', 12345);
-          
-         $mockedUserRelative = $this->getMockedEntityWithId('User', 1200); // is using the value of configuration parameter entity_namespace
-         
+         $mockedUserRelative = $this->getMockedEntityWithId('User', 1200); # is using the value of configuration parameter entity_namespace
          $userAbsolute = $this->getEntityWithId('Acme\DemoBundle\Entity\User', 12345);
-                  
-         $userRelative = $this->getEntityWithId('User', 1200); // is using the value of configuration parameter entity_namespace
+         $userRelative = $this->getEntityWithId('User', 1200); # is using the value of configuration parameter entity_namespace
      }
  }
- ```
+```
  
 
 
