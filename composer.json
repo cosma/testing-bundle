@@ -28,7 +28,7 @@
     "suggest": {
     },
     "autoload": {
-        "psr-4": {
+        "psr-0": {
             "Cosma\\Bundle\\TestingBundle\\": ""
         }
     },
