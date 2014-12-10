@@ -66,7 +66,7 @@ cosma_testing:
 ### Test Cases
 
 
-#### Simple TestCase
+#### Simple Test Case
 This case is an extension of PHPUnit_Framework_TestCase, with two extra simple methods:
 
 * **getMockedEntityWithId** ($entityNamespaceClass, $id)
