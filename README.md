@@ -38,7 +38,7 @@ public function registerBundles()
 
     if (in_array($this->getEnvironment(), array('dev', 'test'))) {
         // ...
-        $bundles[] = new Cosma\Bundle\TestingBundle();
+        $bundles[] = new Cosma\Bundle\TestingBundle\TestingBundle();
     }
 }
 ```
