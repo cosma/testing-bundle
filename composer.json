@@ -21,10 +21,6 @@
     },
     "require-dev": {
     },
-    "provide": {
-    },
-    "suggest": {
-    },
     "autoload": {
         "psr-0": { "Cosma\\Bundle\\TestingBundle\\": "" }
     },
