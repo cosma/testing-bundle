@@ -96,7 +96,7 @@ abstract class WebTestCase extends WebTestCaseBase
      */
     protected function getEntityRepository($entity)
     {
-        $repositoryName = $this->getCurrentBundle()->getName() . ':' . $entity;
+        $repositoryName = self::getCurrentBundle()->getName() . ':' . $entity;
 
         return $this->getEntityManager()->getRepository($repositoryName);
     }
@@ -214,7 +214,7 @@ abstract class WebTestCase extends WebTestCaseBase
     private function getEntityNameSpace()
     {
         if (null === self::$entityNameSpace) {
-            $currentBundle = $this->getCurrentBundle();
+            $currentBundle = self::getCurrentBundle();
 
             self::$entityNameSpace = $currentBundle->getNamespace();
 
@@ -231,10 +231,10 @@ abstract class WebTestCase extends WebTestCaseBase
     /**
      * @return string
      */
-    private function getFixturePath()
+    private static function getFixturePath()
     {
         if (null === self::$fixturePath) {
-            $currentBundle = $this->getCurrentBundle();
+            $currentBundle = self::getCurrentBundle();
 
             self::$fixturePath = $currentBundle->getPath();
 
@@ -251,7 +251,7 @@ abstract class WebTestCase extends WebTestCaseBase
     /**
      * @return BundleInterface
      */
-    private function getCurrentBundle()
+    private static function getCurrentBundle()
     {
         if (null === self::$currentBundle) {
             $bundles          = self::$client->getKernel()->getBundles();
@@ -276,7 +276,7 @@ abstract class WebTestCase extends WebTestCaseBase
     {
         $fixturePaths = array();
         foreach ($fixtures as $tableFixture) {
-            $fixturePaths[] = $this->getFixturePath() . '/Table/' . $tableFixture . '.yml';
+            $fixturePaths[] = self::getFixturePath() . '/Table/' . $tableFixture . '.yml';
         }
 
         return $fixturePaths;
@@ -292,7 +292,7 @@ abstract class WebTestCase extends WebTestCaseBase
     {
         $fixturePaths = array();
         foreach ($fixtures as $customFixture) {
-            $fixturePaths[] = $this->getFixturePath() . "/Test/{$testClassPath}/{$customFixture}.yml";
+            $fixturePaths[] = self::getFixturePath() . "/Test/{$testClassPath}/{$customFixture}.yml";
         }
 
         return $fixturePaths;
