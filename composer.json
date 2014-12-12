@@ -14,7 +14,7 @@
     ],
     "require": {
         "php": ">=5.3.3",
-        "h4cc/alice-fixtures-bundle": "0.5.*",
+        "h4cc/alice-fixtures-bundle": "0.3.1",
         "phpunit/phpunit": "~4.3",
         "doctrine/orm": "~2.2,>=2.2.3",
         "symfony/framework-bundle": "2.6.*"
