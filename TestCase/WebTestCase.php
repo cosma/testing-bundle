@@ -211,7 +211,7 @@ abstract class WebTestCase extends WebTestCaseBase
     /**
      * @return string
      */
-    private function getEntityNameSpace()
+    private static function getEntityNameSpace()
     {
         if (null === self::$entityNameSpace) {
             $currentBundle = self::getCurrentBundle();
