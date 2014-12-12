@@ -16,7 +16,6 @@
         "php": ">=5.3.3",
         "h4cc/alice-fixtures-bundle": "0.5.*",
         "phpunit/phpunit": "~4.3"
-
     },
     "require-dev": {
         "symfony/framework-bundle": "2.6.*",

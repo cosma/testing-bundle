@@ -30,7 +30,7 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $rootNode    = $treeBuilder->root('cosma_testing');
+        $rootNode    = $treeBuilder->root('testing');
 
         $rootNode
             ->children()
