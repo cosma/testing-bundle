@@ -23,14 +23,11 @@
         "doctrine/orm": "~2.2,>=2.2.3"
     },
     "provide": {
-        "phpunit/phpunit": "~4.3"
     },
     "suggest": {
     },
     "autoload": {
-        "psr-0": {
-            "Cosma\\Bundle\\TestingBundle": ""
-        }
+        "psr-0": { "Cosma\\Bundle\\TestingBundle\\": "" }
     },
     "target-dir": "Cosma/Bundle/TestingBundle",
     "minimum-stability": "stable",
