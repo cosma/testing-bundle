@@ -54,7 +54,7 @@ In case you want to change default paths of Fixture and Entities in your bundle:
 ```yaml
 # app/config/config_dev.yml
 
-cosma_testing:
+testing:
     fixture_path: Fixture             # default
     entity_namespace: Entity          # default
 ```
