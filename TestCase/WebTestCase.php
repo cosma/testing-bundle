@@ -15,6 +15,7 @@
 
 namespace Cosma\Bundle\TestingBundle\TestCase;
 
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\ORM\EntityNotFoundException;
 use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase as WebTestCaseBase;
@@ -47,27 +48,26 @@ abstract class WebTestCase extends WebTestCaseBase
     private static $currentBundle;
 
     /**
-     * @var FixtureManager
-     */
-    private static $fixtureManager;
-
-    /**
      * @return void
      */
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
-        self::$client = self::createClient();
-        self::$client->followRedirects();
+        static::createClient();
 
-        /** @var FixtureManager $fixtureManager */
-        $fixtureManager = static::getFixtureManager();
-
-        $fixtureManager->getSchemaTool()->dropSchema();
-        $fixtureManager->getSchemaTool()->createSchema();
+        static::getFixtureManager()->getSchemaTool()->dropSchema();
+        static::getFixtureManager()->getSchemaTool()->createSchema();
 
         static::getFixturePath();
         static::getEntityNameSpace();
+    }
+
+    protected static function createClient(array $options = array(), array $server = array())
+    {
+        self::$client = parent::createClient($options, $server);
+        self::$client->followRedirects();
+
+        return self::$client;
     }
 
     /**
@@ -79,19 +79,11 @@ abstract class WebTestCase extends WebTestCaseBase
     }
 
     /**
-     * @return ContainerInterface
-     */
-    protected function getContainer()
-    {
-        return self::$client->getContainer();
-    }
-
-    /**
      * @return EntityManager
      */
     protected function getEntityManager()
     {
-        return $this->getContainer()->get('doctrine.orm.entity_manager');
+        return static::getContainer()->get('doctrine.orm.entity_manager');
     }
 
     /**
@@ -101,7 +93,7 @@ abstract class WebTestCase extends WebTestCaseBase
      */
     protected function getEntityRepository($entity)
     {
-        $repositoryName = self::getCurrentBundle()->getName() . ':' . $entity;
+        $repositoryName = static::getCurrentBundle()->getName() . ':' . $entity;
 
         return $this->getEntityManager()->getRepository($repositoryName);
     }
@@ -219,18 +211,23 @@ abstract class WebTestCase extends WebTestCaseBase
     private static function getEntityNameSpace()
     {
         if (null === self::$entityNameSpace) {
-            $currentBundle = self::getCurrentBundle();
+            $entityManager = self::getContainer()->get('doctrine')->getManager();
 
-            self::$entityNameSpace = $currentBundle->getNamespace();
+            self::$entityNameSpace = static::getEntityNamespaceForBundle($entityManager, static::getCurrentBundle());
+        }
+        return self::$entityNameSpace;
+    }
 
-            if (self::$client->getContainer()->hasParameter("entity_namespace")) {
-                self::$entityNameSpace .= '\\' . self::$client->getContainer()->getParameter("entity_namespace");
-            } else {
-                self::$entityNameSpace .= '\Entity';
+    private static function getEntityNamespaceForBundle(EntityManager $entityManager, BundleInterface $bundle)
+    {
+        $metadataCollection = $entityManager->getMetadataFactory()->getAllMetadata();
+        /** @var ClassMetadata $m */
+        foreach ($metadataCollection as $metadata) {
+            if(strpos($metadata->namespace, $bundle->getNamespace())){
+                return $metadata->namespace;
             }
         }
 
-        return self::$entityNameSpace;
     }
 
     /**
@@ -239,18 +236,25 @@ abstract class WebTestCase extends WebTestCaseBase
     private static function getFixturePath()
     {
         if (null === self::$fixturePath) {
-            $currentBundle = self::getCurrentBundle();
 
-            self::$fixturePath = $currentBundle->getPath();
+            self::$fixturePath = static::getCurrentBundle()->getPath();
 
-            if (self::$client->getContainer()->hasParameter('fixture_path')) {
-                self::$fixturePath .= '/' . self::$client->getContainer()->getParameter('fixture_path');
+            if (self::getContainer()->hasParameter('fixture_path')) {
+                self::$fixturePath .= '/' . static::getContainer()->getParameter('fixture_path');
             } else {
-                self::$fixturePath .= '/Fixture';
+                self::$fixturePath .= '/'.static::getContainer()->getParameter('testing.fixture_path');
             }
         }
 
         return self::$fixturePath;
+    }
+
+    /**
+     * @return ContainerInterface
+     */
+    private static function getContainer()
+    {
+        return self::$client->getContainer();
     }
 
     /**
@@ -281,7 +285,7 @@ abstract class WebTestCase extends WebTestCaseBase
     {
         $fixturePaths = array();
         foreach ($fixtures as $tableFixture) {
-            $fixturePaths[] = self::getFixturePath() . '/Table/' . $tableFixture . '.yml';
+            $fixturePaths[] = static::getFixturePath() . '/Table/' . $tableFixture . '.yml';
         }
 
         return $fixturePaths;
@@ -308,10 +312,10 @@ abstract class WebTestCase extends WebTestCaseBase
      */
     private static function getFixtureManager()
     {
-        if (null === self::$fixtureManager) {
-            self::$fixtureManager = self::$client->getContainer()->get('h4cc_alice_fixtures.manager');
+        if (null === self::$client) {
+            self::$client = static::createClient();
         }
-        return self::$fixtureManager;
+        return self::$client->getContainer()->get('h4cc_alice_fixtures.manager');
     }
 
     /**

@@ -57,7 +57,6 @@ In case you want to change default paths of Fixture and Entities in your bundle:
 
 testing:
     fixture_path: Fixture             # default
-    entity_namespace: Entity          # default
 ```
 
 
@@ -142,7 +141,7 @@ class FunctionalTest extends WebTestCase
     
     public function testSomething()
     {
-        $mockedUserAbsolute = $this->getMockedEntityWithId('Acme\DemoBundle\Entity\User', 12345);
+        $mockedUserAbsolute = $this->getMockedEntityWithId('Acme\DemoBundle\Entity\User', 11);
         
         $mockedUserRelative = $this->getMockedEntityWithId('User', 1200);
         
@@ -156,14 +155,9 @@ class FunctionalTest extends WebTestCase
         $client = $this->getClient();
         
         /**
-        *  Service container
-        */
-        $container = $this->getContainer();
-        
-        /**
         *  EntityManager - Doctrine
         */
-        $container = $this->getEntityManger();
+        $entityManager = $this->getEntityManger();
         
         /**
         *  EntityRepository for User
