@@ -26,6 +26,7 @@ use h4cc\AliceFixturesBundle\Fixtures\FixtureManager as AliceFixtureManager;
 
 class WebTestCaseTest extends \PHPUnit_Framework_TestCase
 {
+
     /**
      * @see Cosma\Bundle\TestingBundle\TestCase\WebTestCase
      */
@@ -340,7 +341,16 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
 
         $client = $this->getClient($container);
 
-        return $this->getDefaultMockedWebTestCase($client);
+        $webTestCaseMocked = $this->getDefaultMockedWebTestCase($client);
+
+        $reflectionClassMocked = new \ReflectionClass($webTestCaseMocked);
+        $reflectionClass       = $reflectionClassMocked->getParentClass();
+
+        $entityNameSpaceProperty = $reflectionClass->getProperty('fixtureManager');
+        $entityNameSpaceProperty->setAccessible(true);
+        $entityNameSpaceProperty->setValue($webTestCaseMocked, $aliceFixtureManager);
+
+        return $webTestCaseMocked;
     }
 
     /**
@@ -355,7 +365,16 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
 
         $client = $this->getClient($container);
 
-        return $this->getDefaultMockedWebTestCase($client);
+        $webTestCaseMocked = $this->getDefaultMockedWebTestCase($client);
+
+        $reflectionClassMocked = new \ReflectionClass($webTestCaseMocked);
+        $reflectionClass       = $reflectionClassMocked->getParentClass();
+
+        $entityNameSpaceProperty = $reflectionClass->getProperty('fixtureManager');
+        $entityNameSpaceProperty->setAccessible(true);
+        $entityNameSpaceProperty->setValue($webTestCaseMocked, $aliceFixtureManager);
+
+        return $webTestCaseMocked;
     }
 
     /**
@@ -370,7 +389,16 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
 
         $client = $this->getClient($container);
 
-        return $this->getDefaultMockedWebTestCase($client);
+        $webTestCaseMocked = $this->getDefaultMockedWebTestCase($client);
+
+        $reflectionClassMocked = new \ReflectionClass($webTestCaseMocked);
+        $reflectionClass       = $reflectionClassMocked->getParentClass();
+
+        $entityNameSpaceProperty = $reflectionClass->getProperty('fixtureManager');
+        $entityNameSpaceProperty->setAccessible(true);
+        $entityNameSpaceProperty->setValue($webTestCaseMocked, $aliceFixtureManager);
+
+        return $webTestCaseMocked;
     }
 
     /**
@@ -587,9 +615,6 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
 
         $reflectionClassMocked = new \ReflectionClass($webTestCaseMocked);
         $reflectionClass       = $reflectionClassMocked->getParentClass();
-
-        //$reflectionClassMocked->getMethod('getTestClassPath')->setAccessible(true);
-        //$reflectionClass->getMethod('getTestClassPath')->setAccessible(true);
 
         $clientProperty = $reflectionClass->getProperty('client');
         $clientProperty->setAccessible(true);
