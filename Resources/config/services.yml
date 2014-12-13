@@ -1,3 +1,5 @@
 parameters:
+    testing.fixture_path = Fixture
+    testing.entity_namespace = Entity
 
 services:

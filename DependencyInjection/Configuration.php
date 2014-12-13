@@ -34,8 +34,8 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-            ->scalarNode('fixture_path')->defaultValue('Fixture')->end()
-            ->scalarNode('entity_namespace')->defaultValue('Entity')->end()
+            ->scalarNode('fixture_path')->end()
+            ->scalarNode('entity_namespace')->end()
             ->end();
 
         return $treeBuilder;
