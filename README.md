@@ -174,6 +174,23 @@ class FunctionalTest extends WebTestCase
 
 
 
+### Fixtures
+
+[Alice](https://github.com/nelmio/alice) fixtures are integrated with [Faker](https://github.com/fzaninotto/Faker)
+
+```yaml
+Nelmio\Entity\User:
+    user{1..10}:
+        username: <username()>
+        fullname: <firstName()> <lastName()>
+        birthDate: <date()>
+        email: <email()>
+        favoriteNumber: <numberBetween(1, 200)>
+```
+
+
+
+
 ### Adding own Providers for Faker
 
 A provider for Faker can be any class, that has public methods.
