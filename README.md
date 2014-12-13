@@ -24,7 +24,7 @@ $ php composer.phar require cosma/TestingBundle
 Follow the 'dev-master' branch for latest dev version. But i recommend to use more stable version tags if available.
 
 
-After that, add the Bundle to your Kernel, most likely in the "dev" or "test" environment.
+After that, add the h4ccAliceFixturesBundle and TestingBundle to your Kernel, most likely in the "dev" or "test" environment.
 
 ```php
 <?php
@@ -38,6 +38,7 @@ public function registerBundles()
 
     if (in_array($this->getEnvironment(), array('dev', 'test'))) {
         // ...
+        $bundles[] = new h4cc\AliceFixturesBundle\h4ccAliceFixturesBundle();
         $bundles[] = new Cosma\Bundle\TestingBundle\TestingBundle();
     }
 }
