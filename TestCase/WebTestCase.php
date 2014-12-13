@@ -47,6 +47,11 @@ abstract class WebTestCase extends WebTestCaseBase
     private static $currentBundle;
 
     /**
+     * @var FixtureManager
+     */
+    private static $fixtureManager;
+
+    /**
      * @return void
      */
     public static function setUpBeforeClass()
@@ -303,7 +308,10 @@ abstract class WebTestCase extends WebTestCaseBase
      */
     private static function getFixtureManager()
     {
-        return self::$client->getContainer()->get('h4cc_alice_fixtures.manager');
+        if (null === self::$fixtureManager) {
+            self::$fixtureManager = self::$client->getContainer()->get('h4cc_alice_fixtures.manager');
+        }
+        return self::$fixtureManager;
     }
 
     /**
