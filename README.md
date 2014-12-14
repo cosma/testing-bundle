@@ -53,10 +53,14 @@ In case you want to change default paths of Fixture and Entities in your bundle:
 * entity_namespace - relative namespace to the entities directory in your bundle
 
 ```yaml
-# app/config/config_dev.yml
+# Resources/config/services.yml
 
-testing:
-    fixture_path: Fixture             # default
+parameters:
+    ...
+    testing.fixture_path: Fixture
+
+services:
+    ...
 ```
 
 
