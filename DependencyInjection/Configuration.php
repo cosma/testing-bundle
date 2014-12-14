@@ -32,12 +32,6 @@ class Configuration implements ConfigurationInterface
         $treeBuilder = new TreeBuilder();
         $rootNode    = $treeBuilder->root('testing');
 
-        $rootNode
-            ->children()
-            ->scalarNode('fixture_path')->end()
-            ->scalarNode('entity_namespace')->end()
-            ->end();
-
         return $treeBuilder;
     }
 }

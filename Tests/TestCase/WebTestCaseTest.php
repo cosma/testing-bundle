@@ -493,8 +493,8 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
         $aliceFixtureManager->expects($this->any())
             ->method('loadFiles')
             ->with(array(
-                'Some/Custom/Path/Directory/SomeEntity.yml',
-                'Some/Custom/Path/Directory/AnotherExampleEntity.yml'
+                'Cosma/Bundle/TestingBundle/Some/Custom/Path/Directory/SomeEntity.yml',
+                'Cosma/Bundle/TestingBundle/Some/Custom/Path/Directory/AnotherExampleEntity.yml'
             ))
             ->will($this->returnValue($entities));
 
