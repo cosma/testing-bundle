@@ -223,7 +223,7 @@ abstract class WebTestCase extends WebTestCaseBase
         $metadataCollection = $entityManager->getMetadataFactory()->getAllMetadata();
         /** @var ClassMetadata $m */
         foreach ($metadataCollection as $metadata) {
-            if(strpos($metadata->namespace, $bundle->getNamespace())){
+            if(false !== strpos($metadata->namespace, $bundle->getNamespace())){
                 return $metadata->namespace;
             }
         }
