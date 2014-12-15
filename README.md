@@ -56,7 +56,7 @@ In case you want to change default paths of Fixture in your bundle overwrite the
 
 parameters:
     ...
-    testing.fixture_path:   Fixture
+    testing.fixture_path: Fixture
 
 services:
     ...

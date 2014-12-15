@@ -27,6 +27,12 @@ use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 
 abstract class WebTestCase extends WebTestCaseBase
 {
+
+    /**
+     * fixture directory
+     */
+    const FIXTURE_DIRECTORY = 'Fixture';
+
     /**
      * @var Client
      */
@@ -241,10 +247,10 @@ abstract class WebTestCase extends WebTestCaseBase
 
             self::$fixturePath = static::getCurrentBundle()->getPath();
 
-            if (self::getContainer()->hasParameter('fixture_path')) {
-                self::$fixturePath .= '/' . static::getContainer()->getParameter('fixture_path');
+            if (self::getContainer()->hasParameter('testing.fixture_path')) {
+                self::$fixturePath .= '/' . static::getContainer()->getParameter('testing.fixture_path');
             } else {
-                self::$fixturePath .= '/'.static::getContainer()->getParameter('testing.fixture_path');
+                self::$fixturePath .= '/'.static::FIXTURE_DIRECTORY;
             }
         }
 

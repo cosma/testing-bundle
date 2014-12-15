@@ -514,11 +514,11 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
             ->getMock();
         $container->expects($this->any())
             ->method('hasParameter')
-            ->with('fixture_path')
+            ->with('testing.fixture_path')
             ->will($this->returnValue(true));
         $container->expects($this->any())
             ->method('getParameter')
-            ->with('fixture_path')
+            ->with('testing.fixture_path')
             ->will($this->returnValue('FixtureDirectory'));
         $container->expects($this->any())
             ->method('get')
@@ -542,11 +542,11 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
             ->getMock();
         $container->expects($this->any())
             ->method('hasParameter')
-            ->with('fixture_path')
+            ->with('testing.fixture_path')
             ->will($this->returnValue(true));
         $container->expects($this->any())
             ->method('getParameter')
-            ->with('fixture_path')
+            ->with('testing.fixture_path')
             ->will($this->returnValue('FixtureDirectory'));
         $container->expects($this->any())
             ->method('get')
