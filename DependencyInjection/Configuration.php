@@ -30,11 +30,13 @@ class Configuration implements ConfigurationInterface
     public function getConfigTreeBuilder()
     {
         $treeBuilder = new TreeBuilder();
-        $rootNode    = $treeBuilder->root('testing');
+        $rootNode    = $treeBuilder->root('testing_cosma');
 
         $rootNode
             ->children()
                 ->scalarNode('fixture_path')->defaultValue('Fixture')->end()
+                ->scalarNode('fixture_table_directory')->defaultValue('Table')->end()
+                ->scalarNode('fixture_test_directory')->defaultValue('Test')->end()
                 ->arrayNode('solarium')
                     ->canBeUnset()
                     ->children()

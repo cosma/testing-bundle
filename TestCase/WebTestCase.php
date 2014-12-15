@@ -48,6 +48,11 @@ abstract class WebTestCase extends WebTestCaseBase
     private static $currentBundle;
 
     /**
+     * @var FixtureManager
+     */
+    private static $fixtureManager;
+
+    /**
      * @return void
      */
     public static function setUpBeforeClass()
@@ -238,9 +243,8 @@ abstract class WebTestCase extends WebTestCaseBase
     private static function getFixturePath()
     {
         if (null === self::$fixturePath) {
-
-            self::$fixturePath = static::getCurrentBundle()->getPath();
-            self::$fixturePath .= '/' . static::getContainer()->getParameter('testing.fixture_path');
+            self::$fixturePath = static::getCurrentBundle()->getPath().'/';
+            self::$fixturePath .= static::getContainer()->getParameter('testing_cosma.fixture_path');
         }
 
         return self::$fixturePath;
@@ -280,9 +284,12 @@ abstract class WebTestCase extends WebTestCaseBase
      */
     private function appendTableFixturesPath(array $fixtures)
     {
+        $fixturePath = static::getFixturePath().'/';
+        $fixturePath .= static::getContainer()->getParameter('testing_cosma.fixture_table_directory');
+
         $fixturePaths = array();
-        foreach ($fixtures as $tableFixture) {
-            $fixturePaths[] = static::getFixturePath() . '/Table/' . $tableFixture . '.yml';
+        foreach ($fixtures as $fixture) {
+            $fixturePaths[] =  "{$fixturePath}/{$fixture}.yml";
         }
 
         return $fixturePaths;
@@ -296,9 +303,13 @@ abstract class WebTestCase extends WebTestCaseBase
      */
     private function appendTestFixturesPath(array $fixtures, $testClassPath)
     {
+        $fixturePath = static::getFixturePath().'/';
+        $fixturePath .= static::getContainer()->getParameter('testing_cosma.fixture_test_directory').'/';
+        $fixturePath .= $testClassPath;
+
         $fixturePaths = array();
-        foreach ($fixtures as $customFixture) {
-            $fixturePaths[] = self::getFixturePath() . "/Test/{$testClassPath}/{$customFixture}.yml";
+        foreach ($fixtures as $fixture) {
+            $fixturePaths[] = "{$fixturePath}/{$fixture}.yml";
         }
 
         return $fixturePaths;
@@ -325,9 +336,10 @@ abstract class WebTestCase extends WebTestCaseBase
      */
     private static function getFixtureManager()
     {
-        if (null === self::$client) {
-            self::$client = static::createClient();
+        if (null === self::$fixtureManager) {
+            self::$fixtureManager = static::getContainer()->get('h4cc_alice_fixtures.manager');
         }
+
         return self::$client->getContainer()->get('h4cc_alice_fixtures.manager');
     }
 
