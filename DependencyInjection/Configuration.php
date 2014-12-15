@@ -34,6 +34,7 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
+                ->scalarNode('fixture_path')->defaultValue('Fixture')->end()
                 ->arrayNode('solarium')
                     ->canBeUnset()
                     ->children()
