@@ -1,4 +1,3 @@
 parameters:
-    testing.fixture_path: Fixture
 
 services:
