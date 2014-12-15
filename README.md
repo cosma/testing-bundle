@@ -174,8 +174,10 @@ class FunctionalTest extends WebTestCase
 
 ### Fixtures
 
-[Alice](https://github.com/nelmio/alice) fixtures are integrated with [Faker](https://github.com/fzaninotto/Faker)
+[Alice](https://github.com/nelmio/alice) fixtures are integrated with [Faker](https://github.com/fzaninotto/Faker).
+
 The most basic functionality of [Alice](https://github.com/nelmio/alice) is to turn flat yaml files into objects. 
+
 You can define many objects of different classes in one file as such:
 
 ```yaml
