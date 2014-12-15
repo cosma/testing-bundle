@@ -34,7 +34,14 @@ class TestingExtension extends Extension
         $configuration = new Configuration();
         $config        = $this->processConfiguration($configuration, $configs);
 
-        print_r($config);
+        if(isset($config['fixture_path'])){
+            $container->setParameter('testing.fixture_path', $config['fixture_path']);
+        }
+
+        if(isset($config['solarium'])){
+            $container->setParameter('testing.solarium', $config['solarium']);
+        }
+
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yml');
