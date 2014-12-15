@@ -3,6 +3,7 @@ Testing Bundle
 
 An extension of [h4cc/AliceFixturesBundle](https://github.com/h4cc/AliceFixturesBundle) , a Symfony2 bundle for flexible usage of [nelmio/alice](https://github.com/nelmio/alice) and [fzaninotto/Faker](https://github.com/fzaninotto/Faker) in Symfony2.
 
+
 [![Build Status](https://drone.io/bitbucket.org/cosma/testing-bundle/status.png)](https://drone.io/bitbucket.org/cosma/testing-bundle/latest)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/7697e84e-fd7f-47ae-97cf-66a266c9b4c0/mini.png)](https://insight.sensiolabs.com/projects/7697e84e-fd7f-47ae-97cf-66a266c9b4c0)
 
@@ -48,16 +49,14 @@ public function registerBundles()
 
 ## Configuration
 
-In case you want to change default paths of Fixture and Entities in your bundle:
-* fixture_path - relative path to the fixture directory in your bundle
-* entity_namespace - relative namespace to the entities directory in your bundle
+In case you want to change default paths of Fixture in your bundle overwrite the parameter testing.fixture_path which sets the relative path to the fixture directory in your bundle
 
 ```yaml
 # Resources/config/services.yml
 
 parameters:
     ...
-    testing.fixture_path: Fixture
+    testing.fixture_path:   Fixture
 
 services:
     ...
@@ -176,6 +175,8 @@ class FunctionalTest extends WebTestCase
 ### Fixtures
 
 [Alice](https://github.com/nelmio/alice) fixtures are integrated with [Faker](https://github.com/fzaninotto/Faker)
+The most basic functionality of [Alice](https://github.com/nelmio/alice) is to turn flat yaml files into objects. 
+You can define many objects of different classes in one file as such:
 
 ```yaml
 Nelmio\Entity\User:
@@ -185,6 +186,10 @@ Nelmio\Entity\User:
         birthDate: <date()>
         email: <email()>
         favoriteNumber: <numberBetween(1, 200)>
+
+Nelmio\Entity\Group:
+    group1:
+        name: Admins        
 ```
 
 
