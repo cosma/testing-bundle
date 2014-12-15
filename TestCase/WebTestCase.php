@@ -36,7 +36,7 @@ abstract class WebTestCase extends WebTestCaseBase
     /**
      * @var Client
      */
-    private static $client;
+    protected static $client;
 
     /**
      * @var string
@@ -260,7 +260,7 @@ abstract class WebTestCase extends WebTestCaseBase
     /**
      * @return ContainerInterface
      */
-    private static function getContainer()
+    protected static function getContainer()
     {
         return self::$client->getContainer();
     }
