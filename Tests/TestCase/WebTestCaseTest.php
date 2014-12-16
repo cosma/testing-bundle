@@ -18,6 +18,7 @@ use Doctrine\Common\Proxy\Exception\InvalidArgumentException;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 
+use h4cc\AliceFixturesBundle\Fixtures\FixtureManager;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Bundle\FrameworkBundle\Client;
 
@@ -225,7 +226,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
         $webTestCase = $this->getMockedWebTestCaseWithTableFixture();
 
         $reflectionClass = new \ReflectionClass($webTestCase);
-        $method = $reflectionClass->getParentClass()->getMethod('loadTableFixtures');
+        $method          = $reflectionClass->getParentClass()->getMethod('loadTableFixtures');
         $method->setAccessible(true);
 
         $entities = $method->invoke($webTestCase, array('SomeEntity', 'AnotherExampleEntity'));
@@ -259,10 +260,10 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
         $webTestCase = $this->getMockedWebTestCaseWithTestFixture();
 
         $reflectionClass = new \ReflectionClass($webTestCase);
-        $method = $reflectionClass->getParentClass()->getMethod('loadTestFixtures');
+        $method          = $reflectionClass->getParentClass()->getMethod('loadTestFixtures');
         $method->setAccessible(true);
 
-        $entities = $method->invoke($webTestCase, array('SomeEntity', 'AnotherExampleEntity'));
+        $entities = $method->invoke($webTestCase, array('SomeTestEntity', 'AnotherTestEntity'));
 
         $this->assertEquals($this->getEntities(), $entities, 'Entities are wrong');
     }
@@ -293,7 +294,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
         $webTestCase = $this->getMockedWebTestCaseWithCustomFixture();
 
         $reflectionClass = new \ReflectionClass($webTestCase);
-        $method = $reflectionClass->getParentClass()->getMethod('loadCustomFixtures');
+        $method          = $reflectionClass->getParentClass()->getMethod('loadCustomFixtures');
         $method->setAccessible(true);
 
         $entities = $method->invoke(
@@ -336,7 +337,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
 
         $client = $this->getClient($container);
 
-        $webTestCaseMocked = $this->getDefaultMockedWebTestCase($client);
+        $webTestCaseMocked = $this->getDefaultMockedWebTestCase($client, $aliceFixtureManager);
 
         return $webTestCaseMocked;
     }
@@ -352,7 +353,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
 
         $client = $this->getClient($container);
 
-        $webTestCaseMocked = $this->getDefaultMockedWebTestCase($client);
+        $webTestCaseMocked = $this->getDefaultMockedWebTestCase($client, $aliceFixtureManager);
 
         return $webTestCaseMocked;
     }
@@ -369,7 +370,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
 
         $client = $this->getClient($container);
 
-        $webTestCaseMocked = $this->getDefaultMockedWebTestCase($client);
+        $webTestCaseMocked = $this->getDefaultMockedWebTestCase($client, $aliceFixtureManager);
 
         return $webTestCaseMocked;
     }
@@ -514,7 +515,6 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
             ->with('doctrine.orm.entity_manager')
             ->will($this->returnValue($entityManager));
 
-
         return $container;
     }
 
@@ -570,7 +570,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
      *
      * @return \PHPUnit_Framework_MockObject_MockObject
      */
-    private function getDefaultMockedWebTestCase(Client $client)
+    private function getDefaultMockedWebTestCase(Client $client, FixtureManager $aliceFixtureManager = null)
     {
         $webTestCaseMocked = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\WebTestCase')
             ->disableAutoload()
@@ -596,6 +596,12 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
         $entityNameSpaceProperty = $reflectionClass->getProperty('entityNameSpace');
         $entityNameSpaceProperty->setAccessible(true);
         $entityNameSpaceProperty->setValue($webTestCaseMocked, 'Cosma\Bundle\TestingBundle\Entity');
+
+        if ($aliceFixtureManager) {
+            $fixtureManagerProperty = $reflectionClass->getProperty('fixtureManager');
+            $fixtureManagerProperty->setAccessible(true);
+            $fixtureManagerProperty->setValue($webTestCaseMocked, $aliceFixtureManager);
+        }
 
         return $webTestCaseMocked;
     }

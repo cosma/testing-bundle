@@ -12,7 +12,6 @@
  * Time: 23:33
  */
 
-
 namespace Cosma\Bundle\TestingBundle\TestCase;
 
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
@@ -222,6 +221,7 @@ abstract class WebTestCase extends WebTestCaseBase
 
             self::$entityNameSpace = static::getEntityNamespaceForBundle($entityManager, static::getCurrentBundle());
         }
+
         return self::$entityNameSpace;
     }
 
@@ -230,11 +230,10 @@ abstract class WebTestCase extends WebTestCaseBase
         $metadataCollection = $entityManager->getMetadataFactory()->getAllMetadata();
         /** @var ClassMetadata $m */
         foreach ($metadataCollection as $metadata) {
-            if(false !== strpos($metadata->namespace, $bundle->getNamespace())){
+            if (false !== strpos($metadata->namespace, $bundle->getNamespace())) {
                 return $metadata->namespace;
             }
         }
-
     }
 
     /**
@@ -243,7 +242,7 @@ abstract class WebTestCase extends WebTestCaseBase
     private static function getFixturePath()
     {
         if (null === self::$fixturePath) {
-            self::$fixturePath = static::getCurrentBundle()->getPath().'/';
+            self::$fixturePath = static::getCurrentBundle()->getPath() . '/';
             self::$fixturePath .= static::getContainer()->getParameter('testing_cosma.fixture_path');
         }
 
@@ -284,12 +283,12 @@ abstract class WebTestCase extends WebTestCaseBase
      */
     private function appendTableFixturesPath(array $fixtures)
     {
-        $fixturePath = static::getFixturePath().'/';
+        $fixturePath = static::getFixturePath() . '/';
         $fixturePath .= static::getContainer()->getParameter('testing_cosma.fixture_table_directory');
 
         $fixturePaths = array();
         foreach ($fixtures as $fixture) {
-            $fixturePaths[] =  "{$fixturePath}/{$fixture}.yml";
+            $fixturePaths[] = "{$fixturePath}/{$fixture}.yml";
         }
 
         return $fixturePaths;
@@ -303,8 +302,8 @@ abstract class WebTestCase extends WebTestCaseBase
      */
     private function appendTestFixturesPath(array $fixtures, $testClassPath)
     {
-        $fixturePath = static::getFixturePath().'/';
-        $fixturePath .= static::getContainer()->getParameter('testing_cosma.fixture_test_directory').'/';
+        $fixturePath = static::getFixturePath() . '/';
+        $fixturePath .= static::getContainer()->getParameter('testing_cosma.fixture_test_directory') . '/';
         $fixturePath .= $testClassPath;
 
         $fixturePaths = array();
@@ -340,7 +339,7 @@ abstract class WebTestCase extends WebTestCaseBase
             self::$fixtureManager = static::getContainer()->get('h4cc_alice_fixtures.manager');
         }
 
-        return self::$client->getContainer()->get('h4cc_alice_fixtures.manager');
+        return self::$fixtureManager;
     }
 
     /**
