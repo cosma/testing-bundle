@@ -34,35 +34,34 @@ abstract class WebTestCase extends WebTestCaseBase
     /**
      * @var FixtureManager
      */
-    protected static $fixtureManager;
+    private static $fixtureManager;
 
     /**
      * @var string
      */
-    protected static $fixturePath;
+    private static $fixturePath;
 
     /**
      * @var string
      */
-    protected static $entityNameSpace;
+    private static $entityNameSpace;
 
     /**
      * @return void
      */
     public static function setUpBeforeClass()
     {
-        parent::setUpBeforeClass();
-
         static::bootKernel();
 
         static::getCurrentBundle();
         static::getFixtureManager();
         static::getFixturePath();
         static::getEntityNameSpace();
+    }
 
-
-        static::getFixtureManager()->getSchemaTool()->dropSchema();
-        static::getFixtureManager()->getSchemaTool()->createSchema();
+    protected function setUp()
+    {
+        static::bootKernel();
     }
 
     /**
@@ -70,74 +69,27 @@ abstract class WebTestCase extends WebTestCaseBase
      */
     public static function tearDownAfterClass()
     {
-        parent::tearDownAfterClass();
-
-        static::$fixturePath = null;
-        static::$fixtureManager = null;
-        static::$entityNameSpace = null;
-        static::$currentBundle = null;
+        self::$fixturePath = null;
+        self::$fixtureManager = null;
+        self::$entityNameSpace = null;
+        self::$currentBundle = null;
 
         static::ensureKernelShutdown();
     }
 
     /**
-     * @return BundleInterface
+     * @param array $server
+     *
+     * @return Client
      */
-    private static function getCurrentBundle()
+    protected function getClient(array $server = array())
     {
-        if (null === static::$currentBundle) {
-            $bundles          = static::$kernel->getBundles();
-            $currentTestClass = get_called_class();
+        /** @var Client $client */
+        $client = static::$kernel->getContainer()->get('test.client');
 
-            foreach ($bundles as $bundle) {
-                if (0 === strpos($currentTestClass, $bundle->getNamespace())) {
-                    static::$currentBundle = $bundle;
-                }
-            }
-        }
+        $client->setServerParameters($server);
 
-        return static::$currentBundle;
-    }
-
-    /**
-     * @return FixtureManager
-     */
-    protected static function getFixtureManager()
-    {
-        if (null === static::$fixtureManager) {
-            static::$fixtureManager = static::$kernel->getContainer()->get('h4cc_alice_fixtures.manager');
-        }
-
-        return static::$fixtureManager;
-    }
-
-    /**
-     * @return string
-     */
-    protected static function getFixturePath()
-    {
-        if (null === static::$fixturePath) {
-            $fixturePath = static::getCurrentBundle()->getPath() . '/'.
-                static::$kernel->getContainer()->getParameter('testing_cosma.fixture_path');
-
-            static::$fixturePath = $fixturePath;
-        }
-
-        return static::$fixturePath;
-    }
-
-    /**
-     * @return string
-     */
-    protected static function getEntityNameSpace()
-    {
-        if (null === static::$entityNameSpace) {
-            $entityManager = static::$kernel->getContainer()->get('doctrine')->getManager();
-
-            static::$entityNameSpace = static::getEntityNamespaceForBundle($entityManager, static::getCurrentBundle());
-        }
-
-        return static::$entityNameSpace;
+        return $client;
     }
 
     /**
@@ -285,6 +237,66 @@ abstract class WebTestCase extends WebTestCaseBase
         }
 
         return $testClassPath;
+    }
+
+    /**
+     * @return BundleInterface
+     */
+    private static function getCurrentBundle()
+    {
+        if (null === self::$currentBundle) {
+            $bundles          = static::$kernel->getBundles();
+            $currentTestClass = get_called_class();
+
+            foreach ($bundles as $bundle) {
+                if (0 === strpos($currentTestClass, $bundle->getNamespace())) {
+                    self::$currentBundle = $bundle;
+                }
+            }
+        }
+
+        return self::$currentBundle;
+    }
+
+    /**
+     * @return FixtureManager
+     */
+    private static function getFixtureManager()
+    {
+        if (null === self::$fixtureManager) {
+            self::$fixtureManager = static::$kernel->getContainer()->get('h4cc_alice_fixtures.manager');
+        }
+
+        return self::$fixtureManager;
+    }
+
+    /**
+     * @return string
+     */
+    private static function getFixturePath()
+    {
+        if (null === self::$fixturePath) {
+            $fixturePath = static::getCurrentBundle()->getPath() . '/'.
+                static::$kernel->getContainer()->getParameter('testing_cosma.fixture_path');
+
+            self::$fixturePath = $fixturePath;
+        }
+
+        return self::$fixturePath;
+    }
+
+    /**
+     * @return string
+     */
+    private static function getEntityNameSpace()
+    {
+        if (null === self::$entityNameSpace) {
+            $entityManager = static::$kernel->getContainer()->get('doctrine')->getManager();
+
+            self::$entityNameSpace = static::getEntityNamespaceForBundle($entityManager, static::getCurrentBundle());
+        }
+
+        return self::$entityNameSpace;
     }
 
     /**
