@@ -21,6 +21,7 @@
         "solarium/solarium": "3.*"
     },
     "require-dev": {
+        "symfony/browser-kit": "2.6.*"
     },
     "autoload": {
         "psr-0": { "Cosma\\Bundle\\TestingBundle\\": "" }

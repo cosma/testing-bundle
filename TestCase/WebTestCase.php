@@ -69,10 +69,11 @@ abstract class WebTestCase extends WebTestCaseBase
      */
     public static function tearDownAfterClass()
     {
-        self::$fixturePath = null;
-        self::$fixtureManager = null;
-        self::$entityNameSpace = null;
+
         self::$currentBundle = null;
+        self::$fixtureManager = null;
+        self::$fixturePath = null;
+        self::$entityNameSpace = null;
 
         static::ensureKernelShutdown();
     }
