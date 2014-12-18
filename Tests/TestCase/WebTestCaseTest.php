@@ -15,6 +15,7 @@
 namespace Cosma\Bundle\TestingBundle\Tests\TestCase;
 
 use Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityRepository;
 use Symfony\Bundle\FrameworkBundle\Client;
 
 use Cosma\Bundle\TestingBundle\TestCase\WebTestCase;
@@ -186,7 +187,89 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @see Cosma\Bundle\TestingBundle\TestCase\WebTestCase::getEntityRepository
+     */
+    public function testGetEntityRepository()
+    {
+        $entityRepository = $this->getMockBuilder('Doctrine\ORM\EntityRepository')
+            ->disableOriginalConstructor()
+            ->getMock();
 
+        $entityManager = $this->getMockBuilder('Doctrine\ORM\EntityManager')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getRepository'))
+            ->getMock();
+        $entityManager->expects($this->once())
+            ->method('getRepository')
+            ->with('BundleExample:User')
+            ->will($this->returnValue($entityRepository));
+
+
+        $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getManager'))
+            ->getMock();
+        $doctrine->expects($this->once())
+            ->method('getManager')
+            ->will($this->returnValue($entityManager));
+
+        $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerInterface')
+            ->disableOriginalConstructor()
+            ->setMethods(array('get'))
+            ->getMockForAbstractClass();
+        $container->expects($this->once())
+            ->method('get')
+            ->with('doctrine')
+            ->will($this->returnValue($doctrine));
+
+        $currentBundle = $this->getMockBuilder('Symfony\Component\HttpKernel\Bundle\BundleInterface')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getNamespace', 'getName'))
+            ->getMockForAbstractClass();
+        $currentBundle->expects($this->once())
+            ->method('getNamespace')
+            ->will($this->returnValue('Mock_WebTestCase'));
+        $currentBundle->expects($this->once())
+            ->method('getName')
+            ->will($this->returnValue('BundleExample'));
+
+        $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\KernelInterface')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getContainer', 'getBundles'))
+            ->getMockForAbstractClass();
+        $kernel->expects($this->once())
+            ->method('getContainer')
+            ->will($this->returnValue($container));
+        $kernel->expects($this->once())
+            ->method('getBundles')
+            ->will($this->returnValue(array($currentBundle)));
+
+
+
+        $webTestCase = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\WebTestCase')
+            ->disableOriginalConstructor()
+            ->getMockForAbstractClass();
+
+
+        $reflectionClass = new \ReflectionClass($webTestCase);
+
+        $kernelProperty = $reflectionClass->getProperty('kernel');
+        $kernelProperty->setAccessible(true);
+        $kernelProperty->setValue($kernel);
+
+        $reflectionMethod = $reflectionClass->getMethod('getEntityRepository');
+        $reflectionMethod->setAccessible(true);
+
+        /** @var EntityRepository $entityRepository */
+        $entityRepository = $reflectionMethod->invoke($webTestCase, 'User');
+
+        $this->assertInstanceOf(
+            'Doctrine\ORM\EntityRepository',
+            $entityRepository,
+            'must return a EntityRepository object'
+        );
+    }
 }
 
 
