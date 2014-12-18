@@ -427,11 +427,10 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->setMethods(array('persist', 'loadFiles'))
             ->getMockForAbstractClass();
-        $fixtureManager->expects($this->any())
+        $fixtureManager->expects($this->atLeast(2))
             ->method('persist')
-            ->with()
             ->will($this->returnValue(true));
-        $fixtureManager->expects($this->any())
+        $fixtureManager->expects($this->once())
             ->method('loadFiles')
             ->with(array(
                 'Cosma/Bundle/TestingBundle/FixtureDirectory/Table/SomeEntity.yml',
@@ -447,7 +446,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->setMethods(array('get', 'getParameter'))
             ->getMockForAbstractClass();
-        $container->expects($this->any())
+        $container->expects($this->atLeast(2))
             ->method('getParameter')
             ->will($this->returnValueMap($valueMap));
         $container->expects($this->once())
@@ -495,6 +494,8 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
 
 
 
+
+
     /**
      * @see Cosma\Bundle\TestingBundle\TestCase\WebTestCase::loadTestFixtures
      *
@@ -512,6 +513,91 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
 
         $method->invoke($webTestCase, array());
     }
+
+    /**
+     * @see Cosma\Bundle\TestingBundle\TestCase\WebTestCase::loadTestFixtures
+     */
+    public function testLoadTestFixtures()
+    {
+        $fixtureManager = $this->getMockBuilder('h4cc\AliceFixturesBundle\Fixtures\FixtureManagerInterface')
+            ->disableOriginalConstructor()
+            ->setMethods(array('persist', 'loadFiles'))
+            ->getMockForAbstractClass();
+        $fixtureManager->expects($this->once())
+            ->method('loadFiles')
+            ->with(array(
+                'Cosma/Bundle/TestingBundle/FixtureDirectory/Test/TestCase/WebTestCase/SomeEntity.yml',
+                'Cosma/Bundle/TestingBundle/FixtureDirectory/Test/TestCase/WebTestCase/AnotherExampleEntity.yml'
+            ))
+            ->will($this->returnValue($this->getEntities()));
+        $fixtureManager->expects($this->atLeast(2))
+            ->method('persist')
+            ->with($this->getEntities())
+            ->will($this->returnValue(true));
+
+        $valueMap = array(
+            array('testing_cosma.fixture_path', 'FixtureDirectory'),
+            array('testing_cosma.fixture_test_directory', 'Test')
+        );
+        $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerInterface')
+            ->disableOriginalConstructor()
+            ->setMethods(array('get', 'getParameter'))
+            ->getMockForAbstractClass();
+        $container->expects($this->atLeast(2))
+            ->method('getParameter')
+            ->will($this->returnValueMap($valueMap));
+        $container->expects($this->once())
+            ->method('get')
+            ->with('h4cc_alice_fixtures.manager')
+            ->will($this->returnValue($fixtureManager));
+
+
+
+        $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\KernelInterface')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getContainer', 'getBundles'))
+            ->getMockForAbstractClass();
+        $kernel->expects($this->atLeast(3))
+            ->method('getContainer')
+            ->will($this->returnValue($container));
+
+        $webTestCase = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\WebTestCase')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getTestClassPath'))
+            ->getMockForAbstractClass();
+        $webTestCase->expects($this->once())
+            ->method('getTestClassPath')
+            ->will($this->returnValue('TestCase/WebTestCase'));
+
+
+        $reflectionClass = new \ReflectionClass($webTestCase);
+
+        $kernelProperty = $reflectionClass->getProperty('kernel');
+        $kernelProperty->setAccessible(true);
+        $kernelProperty->setValue($kernel);
+
+        $currentBundle = $this->getMockBuilder('Symfony\Component\HttpKernel\Bundle\BundleInterface')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getPath'))
+            ->getMockForAbstractClass();
+        $currentBundle->expects($this->once())
+            ->method('getPath')
+            ->will($this->returnValue('Cosma/Bundle/TestingBundle'));
+
+        $currentBundleProperty = $reflectionClass->getParentClass()->getProperty('currentBundle');
+        $currentBundleProperty->setAccessible(true);
+        $currentBundleProperty->setValue($currentBundle);
+
+        $loadTestFixturesMethod          = $reflectionClass->getParentClass()->getMethod('loadTestFixtures');
+        $loadTestFixturesMethod->setAccessible(true);
+
+        $entities = $loadTestFixturesMethod->invoke($webTestCase, array('SomeEntity', 'AnotherExampleEntity'));
+
+        $this->assertEquals($this->getEntities(), $entities, 'Entities are wrong');
+    }
+
+
+
 
 
 
@@ -541,6 +627,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
     private function getEntities()
     {
         $objects   = array();
+
         $entityOne = new SomeEntity();
         $entityOne->setName('Some Entity One');
         array_push($objects, $entityOne);
@@ -559,8 +646,6 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
 
         return $objects;
     }
-
-
 }
 
 

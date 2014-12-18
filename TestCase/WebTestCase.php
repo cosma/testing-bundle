@@ -385,6 +385,7 @@ abstract class WebTestCase extends WebTestCaseBase
         }
 
         $objects = $fixtureManager->loadFiles($fixtures);
+
         $fixtureManager->persist($objects);
 
         return $objects;
