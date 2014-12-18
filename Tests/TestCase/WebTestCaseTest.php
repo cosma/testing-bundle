@@ -270,6 +270,80 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
             'must return a EntityRepository object'
         );
     }
+
+
+
+    /**
+     * @see Cosma\Bundle\TestingBundle\TestCase\WebTestCase::getMockedEntityWithId
+     * @expectedException \Doctrine\ORM\EntityNotFoundException
+     */
+    public function testGetMockedEntityWithId_Exception()
+    {
+        $webTestCase = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\WebTestCase')
+            ->disableOriginalConstructor()
+            ->getMockForAbstractClass();
+
+
+        $reflectionClass = new \ReflectionClass($webTestCase);
+        $reflectionMethod = $reflectionClass->getMethod('getMockedEntityWithId');
+        $reflectionMethod->setAccessible(true);
+
+        /** @var ExampleEntity $mockedEntity */
+        $mockedEntity = $reflectionMethod->invoke($webTestCase, 'Cosma\Bundle\TestingBundle\xxx', 12345);
+    }
+
+    /**
+     * @see Cosma\Bundle\TestingBundle\TestCase\WebTestCase::getMockedEntityWithId
+     */
+    public function testGetMockedEntityWithId_FullNamespace()
+    {
+        $webTestCase = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\WebTestCase')
+            ->disableOriginalConstructor()
+            ->getMockForAbstractClass();
+
+
+        $reflectionClass = new \ReflectionClass($webTestCase);
+        $reflectionMethod = $reflectionClass->getMethod('getMockedEntityWithId');
+        $reflectionMethod->setAccessible(true);
+
+        /** @var ExampleEntity $mockedEntity */
+        $mockedEntity = $reflectionMethod->invoke($webTestCase, 'Cosma\Bundle\TestingBundle\Tests\TestCase\SomeEntity', 12345);
+
+        $this->assertInstanceOf('Cosma\Bundle\TestingBundle\Tests\TestCase\SomeEntity', $mockedEntity);
+
+        $this->assertEquals(12345, $mockedEntity->getId());
+    }
+
+    /**
+     * @see Cosma\Bundle\TestingBundle\TestCase\WebTestCase::getMockedEntityWithId
+     */
+    public function testGetMockedEntityWithId_NoNamespace()
+    {
+        $webTestCase = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\WebTestCase')
+            ->disableOriginalConstructor()
+            ->getMockForAbstractClass();
+
+        $reflectionClassMocked = new \ReflectionClass($webTestCase);
+        $reflectionClass       = $reflectionClassMocked->getParentClass();
+
+        $entityNameSpaceProperty = $reflectionClass->getProperty('entityNameSpace');
+        $entityNameSpaceProperty->setAccessible(true);
+        $entityNameSpaceProperty->setValue('Cosma\Bundle\TestingBundle\Tests\TestCase');
+
+        $reflectionMethod = $reflectionClass->getMethod('getMockedEntityWithId');
+        $reflectionMethod->setAccessible(true);
+
+
+
+        /** @var AnotherExampleEntity $mockedEntity */
+        $mockedEntity = $reflectionMethod->invoke($webTestCase, 'AnotherExampleEntity', 12345);
+
+        $this->assertEquals(12345, $mockedEntity->getId());
+        $this->assertInstanceOf('Cosma\Bundle\TestingBundle\Tests\TestCase\AnotherExampleEntity', $mockedEntity);
+    }
+
+
+
 }
 
 
