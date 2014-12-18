@@ -532,7 +532,6 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($this->getEntities()));
         $fixtureManager->expects($this->atLeast(2))
             ->method('persist')
-            ->with($this->getEntities())
             ->will($this->returnValue(true));
 
         $valueMap = array(
