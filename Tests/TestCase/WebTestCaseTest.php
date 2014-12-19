@@ -54,7 +54,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
         $currentBundleProperty->setAccessible(true);
         $currentBundleProperty->setValue($currentBundle);
 
-        $fixtureManager = $this->getMockBuilder('h4cc\AliceFixturesBundle\Fixtures\FixtureManagerInterface')
+        $fixtureManager = $this->getMockBuilder('h4cc\AliceFixturesBundle\Fixtures\FixtureManager')
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
 
