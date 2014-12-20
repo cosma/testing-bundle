@@ -52,13 +52,7 @@ abstract class SolrTestCase extends WebTestCase
 
             $config = array(
                 'endpoint' => array(
-                    'localhostTesting' => array(
-                        'host' => static::getContainer()->getParameter('testing.solarium.host'),
-                        'port' => 8983,
-                        'path' => '/solr/',
-                        'core' => 'testing',
-                        'timeout' => 5
-                    )
+                    'localhostTesting' => static::$kernel->getContainer()->getParameter('testing.solarium')
                 )
             );
             self::$solariumClient = new SolariumClient($config);

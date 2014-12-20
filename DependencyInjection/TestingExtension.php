@@ -46,10 +46,9 @@ class TestingExtension extends Extension
             $container->setParameter('testing_cosma.fixture_test_directory', $config['fixture_test_directory']);
         }
 
-        if(isset($config['solarium'])){
+        if(isset($config['solarium']['host'])){
             $container->setParameter('testing_cosma.solarium', $config['solarium']);
         }
-
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yml');
