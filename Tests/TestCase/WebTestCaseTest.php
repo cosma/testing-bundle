@@ -718,14 +718,9 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
 
 class AppKernel extends HttpKernel
 {
-    public function __construct()
-    {}
-
-    public function boot()
-    {}
-
-    public function shutdown()
-    {}
+    public function __construct(){}
+    public function boot(){}
+    public function shutdown(){}
 }
 
 class WebTestCaseExample extends WebTestCase
