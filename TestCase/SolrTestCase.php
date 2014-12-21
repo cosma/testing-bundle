@@ -24,13 +24,34 @@ abstract class SolrTestCase extends WebTestCase
      */
     private static $solariumClient;
 
+    /**
+     * @return void
+     */
+    public static function setUpBeforeClass()
+    {
+        parent::setUpBeforeClass();
+    }
 
+    /**
+     * @return void
+     */
     protected function setUp()
     {
         parent::setUp();
-        //$this->resetSolrCore();
+        $this->resetSolrCore();
     }
 
+    /**
+     * Clean up Kernel usage in this test.
+     */
+    public static function tearDownAfterClass()
+    {
+        parent::tearDownAfterClass();
+    }
+
+    /**
+     * @return \Solarium\QueryType\Update\Result
+     */
     private function resetSolrCore()
     {
         /**  @var SolariumClient $solariumClient */
@@ -57,11 +78,7 @@ abstract class SolrTestCase extends WebTestCase
             );
             self::$solariumClient = new SolariumClient($config);
         }
-
-
         return self::$solariumClient;
 
     }
-
-
 }

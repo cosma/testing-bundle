@@ -20,6 +20,7 @@ use Doctrine\ORM\EntityRepository;
 use Symfony\Bundle\FrameworkBundle\Client;
 
 use Cosma\Bundle\TestingBundle\TestCase\WebTestCase;
+use Symfony\Component\HttpKernel\HttpKernel;
 
 class WebTestCaseTest extends \PHPUnit_Framework_TestCase
 {
@@ -715,7 +716,17 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
     }
 }
 
+class AppKernel extends HttpKernel
+{
+    public function __construct()
+    {}
 
+    public function boot()
+    {}
+
+    public function shutdown()
+    {}
+}
 
 class WebTestCaseExample extends WebTestCase
 {

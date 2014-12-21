@@ -58,9 +58,13 @@ abstract class WebTestCase extends WebTestCaseBase
         static::getEntityNameSpace();
     }
 
+    /**
+     * @return void
+     */
     protected function setUp()
     {
         static::bootKernel();
+
     }
 
     /**
