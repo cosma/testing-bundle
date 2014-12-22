@@ -36,6 +36,36 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @see SolrTestCase::setUp
+     */
+    public function testSetUp()
+    {
+        $webTestCase = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\WebTestCase')
+            ->disableOriginalConstructor()
+            ->getMockForAbstractClass();
+
+        $reflectionClassMocked = new \ReflectionClass($webTestCase);
+        $reflectionClass       = $reflectionClassMocked->getParentClass();
+
+        $classProperty = $reflectionClass->getProperty('class');
+        $classProperty->setAccessible(true);
+        $classProperty->setValue($webTestCase, 'Cosma\Bundle\TestingBundle\Tests\TestCase\AppKernel');
+
+        $setUpMethod = $reflectionClass->getMethod('setUp');
+        $setUpMethod->setAccessible(true);
+        $setUpMethod->invoke($webTestCase);
+
+        $kernelProperty = $reflectionClass->getProperty('kernel');
+        $kernelProperty->setAccessible(true);
+        $kernel = $kernelProperty->getValue();
+
+        $this->assertInstanceOf('Cosma\Bundle\TestingBundle\Tests\TestCase\AppKernel', $kernel, 'set up is wrong');
+
+        $reflectionMethod = $reflectionClass->getMethod('tearDownAfterClass');
+        $reflectionMethod->invoke($webTestCase);
+    }
+
+    /**
      * @see Cosma\Bundle\TestingBundle\TestCase\WebTestCase::tearDownAfterClass
      */
     public function testTearDownAfterClass()
