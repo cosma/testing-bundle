@@ -24,7 +24,7 @@ use Symfony\Component\DependencyInjection\Loader;
  *
  * To learn more see {@link http://symfony.com/doc/current/cookbook/bundles/extension.html}
  */
-class TestingCosmaExtension extends Extension
+class CosmaTestingExtension extends Extension
 {
     /**
      * {@inheritdoc}
@@ -35,19 +35,19 @@ class TestingCosmaExtension extends Extension
         $config        = $this->processConfiguration($configuration, $configs);
 
         if(isset($config['fixture_path'])){
-            $container->setParameter('testing_cosma.fixture_path', $config['fixture_path']);
+            $container->setParameter('cosma_testing.fixture_path', $config['fixture_path']);
         }
 
         if(isset($config['fixture_table_directory'])){
-            $container->setParameter('testing_cosma.fixture_table_directory', $config['fixture_table_directory']);
+            $container->setParameter('cosma_testing.fixture_table_directory', $config['fixture_table_directory']);
         }
 
         if(isset($config['fixture_test_directory'])){
-            $container->setParameter('testing_cosma.fixture_test_directory', $config['fixture_test_directory']);
+            $container->setParameter('cosma_testing.fixture_test_directory', $config['fixture_test_directory']);
         }
 
         if(isset($config['solarium']['host'])){
-            $container->setParameter('testing_cosma.solarium', $config['solarium']);
+            $container->setParameter('cosma_testing.solarium', $config['solarium']);
         }
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));

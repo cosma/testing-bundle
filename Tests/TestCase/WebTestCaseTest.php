@@ -468,8 +468,8 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($this->getEntities()));
 
         $valueMap = array(
-            array('testing_cosma.fixture_path', 'FixtureDirectory'),
-            array('testing_cosma.fixture_table_directory', 'Table')
+            array('cosma_testing.fixture_path', 'FixtureDirectory'),
+            array('cosma_testing.fixture_table_directory', 'Table')
         );
         $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerInterface')
             ->disableOriginalConstructor()
@@ -563,8 +563,8 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(true));
 
         $valueMap = array(
-            array('testing_cosma.fixture_path', 'FixtureDirectory'),
-            array('testing_cosma.fixture_test_directory', 'Test')
+            array('cosma_testing.fixture_path', 'FixtureDirectory'),
+            array('cosma_testing.fixture_test_directory', 'Test')
         );
         $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerInterface')
             ->disableOriginalConstructor()

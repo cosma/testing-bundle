@@ -73,7 +73,7 @@ abstract class SolrTestCase extends WebTestCase
 
             $config = array(
                 'endpoint' => array(
-                    'localhostTesting' => static::$kernel->getContainer()->getParameter('testing.solarium')
+                    'localhostTesting' => static::$kernel->getContainer()->getParameter('cosma_testing.solarium')
                 )
             );
             self::$solariumClient = new SolariumClient($config);

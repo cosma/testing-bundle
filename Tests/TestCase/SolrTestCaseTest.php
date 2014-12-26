@@ -38,7 +38,7 @@ class SolrTestCaseTest extends \PHPUnit_Framework_TestCase
             ->getMockForAbstractClass();
         $container->expects($this->once())
             ->method('getParameter')
-            ->with('testing.solarium')
+            ->with('cosma_testing.solarium')
             ->will($this->returnValue(array(
                 'host' => '127.0.0.1',
                 'port' => 8080,

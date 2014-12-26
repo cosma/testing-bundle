@@ -281,7 +281,7 @@ abstract class WebTestCase extends WebTestCaseBase
     {
         if (null === self::$fixturePath) {
             $fixturePath = static::getCurrentBundle()->getPath() . '/'.
-                static::$kernel->getContainer()->getParameter('testing_cosma.fixture_path');
+                static::$kernel->getContainer()->getParameter('cosma_testing.fixture_path');
 
             self::$fixturePath = $fixturePath;
         }
@@ -328,7 +328,7 @@ abstract class WebTestCase extends WebTestCaseBase
     private function appendTableFixturesPath(array $fixtures)
     {
         $fixturePath = static::getFixturePath() . '/';
-        $fixturePath .= static::$kernel->getContainer()->getParameter('testing_cosma.fixture_table_directory');
+        $fixturePath .= static::$kernel->getContainer()->getParameter('cosma_testing.fixture_table_directory');
 
         $fixturePaths = array();
         foreach ($fixtures as $fixture) {
@@ -347,7 +347,7 @@ abstract class WebTestCase extends WebTestCaseBase
     private function appendTestFixturesPath(array $fixtures, $testClassPath)
     {
         $fixturePath = static::getFixturePath() . '/';
-        $fixturePath .= static::$kernel->getContainer()->getParameter('testing_cosma.fixture_test_directory') . '/';
+        $fixturePath .= static::$kernel->getContainer()->getParameter('cosma_testing.fixture_test_directory') . '/';
         $fixturePath .= $testClassPath;
 
         $fixturePaths = array();
