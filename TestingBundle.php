@@ -16,6 +16,6 @@ namespace Cosma\Bundle\TestingBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class CosmaTestingBundle extends Bundle
+class TestingBundle extends Bundle
 {
 }

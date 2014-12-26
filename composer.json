@@ -1,7 +1,7 @@
 {
     "name": "cosma/testing-bundle",
     "type": "symfony-bundle",
-    "description": "Cosma Testing Bundle",
+    "description": "Testing Bundle",
     "keywords": ["test", "unit test", "acceptance test", "functional test", "phpunit"],
     "homepage": "https://bitbucket.org/cosma/testing-bundle",
     "license": "MIT",
@@ -24,9 +24,9 @@
         "symfony/browser-kit": "2.6.*"
     },
     "autoload": {
-        "psr-0": { "Cosma\\Bundle\\CosmaTestingBundle\\": "" }
+        "psr-0": { "Cosma\\Bundle\\TestingBundle\\": "" }
     },
-    "target-dir": "Cosma/Bundle/CosmaTestingBundle",
+    "target-dir": "Cosma/Bundle/TestingBundle",
     "minimum-stability": "stable",
     "extra": {
         "branch-alias": {
