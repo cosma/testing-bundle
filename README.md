@@ -191,7 +191,8 @@ Nelmio\Entity\User:
 
 Nelmio\Entity\Group:
     group1:
-        name: Admins        
+        name: Admins  
+        users: [@user1, @user4, @user7]      
 ```
 
 
