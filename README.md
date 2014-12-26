@@ -40,7 +40,7 @@ public function registerBundles()
     if (in_array($this->getEnvironment(), array('dev', 'test'))) {
         // ...
         $bundles[] = new h4cc\AliceFixturesBundle\h4ccAliceFixturesBundle();
-        $bundles[] = new Cosma\Bundle\TestingBundle\TestingBundle();
+        $bundles[] = new Cosma\Bundle\TestingBundle\CosmaTestingBundle();
     }
 }
 ```
@@ -49,17 +49,16 @@ public function registerBundles()
 
 ## Configuration
 
-In case you want to change default paths of Fixture in your bundle overwrite the parameter testing.fixture_path which sets the relative path to the fixture directory in your bundle
+In case you want to change default paths of Fixture in your bundle configure the testing bundle's fixture_path, 
+which sets the relative path to the fixture directory in your bundle
 
 ```yaml
-# Resources/config/services.yml
+# app/config/config_test.yml
 
-parameters:
-    ...
-    testing.fixture_path: Fixture
-
-services:
-    ...
+cosma_testing:
+    fixture_path: FixturePath
+    
+    
 ```
 
 
