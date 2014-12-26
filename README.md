@@ -40,7 +40,7 @@ public function registerBundles()
     if (in_array($this->getEnvironment(), array('dev', 'test'))) {
         // ...
         $bundles[] = new h4cc\AliceFixturesBundle\h4ccAliceFixturesBundle();
-        $bundles[] = new Cosma\Bundle\TestingBundle\CosmaTestingBundle();
+        $bundles[] = new Cosma\Bundle\TestingBundle\TestingBundle();
     }
 }
 ```
