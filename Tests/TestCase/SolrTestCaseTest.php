@@ -32,26 +32,30 @@ class SolrTestCaseTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetSolariumClient()
     {
+
+        $valueMap = array(
+            array('cosma_testing.solarium.host', '127.0.0.1'),
+            array('cosma_testing.solarium.port', '8983'),
+            array('cosma_testing.solarium.path', '/solr'),
+            array('cosma_testing.solarium.core', 'test_core'),
+            array('cosma_testing.solarium.timeout', '5')
+        );
+
+
+
         $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerInterface')
             ->disableOriginalConstructor()
             ->setMethods(array('getParameter'))
             ->getMockForAbstractClass();
-        $container->expects($this->once())
+        $container->expects($this->exactly(5))
             ->method('getParameter')
-            ->with('cosma_testing.solarium')
-            ->will($this->returnValue(array(
-                'host' => '127.0.0.1',
-                'port' => 8080,
-                'path' => '/solr/',
-                'core' => 'testing',
-                'timeout' => 5
-            )));
+            ->will($this->returnValueMap($valueMap));
 
         $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\KernelInterface')
             ->disableOriginalConstructor()
             ->setMethods(array('getContainer'))
             ->getMockForAbstractClass();
-        $kernel->expects($this->once())
+        $kernel->expects($this->exactly(5))
             ->method('getContainer')
             ->will($this->returnValue($container));
 

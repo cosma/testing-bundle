@@ -47,7 +47,23 @@ class CosmaTestingExtension extends Extension
         }
 
         if(isset($config['solarium']['host'])){
-            $container->setParameter('cosma_testing.solarium', $config['solarium']);
+            $container->setParameter('cosma_testing.solarium.host', $config['solarium']['host']);
+        }
+
+        if(isset($config['solarium']['port'])){
+            $container->setParameter('cosma_testing.solarium.port', $config['solarium']['port']);
+        }
+
+        if(isset($config['solarium']['path'])){
+            $container->setParameter('cosma_testing.solarium.path', $config['solarium']['path']);
+        }
+
+        if(isset($config['solarium']['core'])){
+            $container->setParameter('cosma_testing.solarium.core', $config['solarium']['core']);
+        }
+
+        if(isset($config['solarium']['timeout'])){
+            $container->setParameter('cosma_testing.solarium.timeout', $config['solarium']['timeout']);
         }
 
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
