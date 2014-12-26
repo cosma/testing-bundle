@@ -65,9 +65,6 @@ class CosmaTestingExtension extends Extension
         if(isset($config['solarium']['timeout'])){
             $container->setParameter('cosma_testing.solarium.timeout', $config['solarium']['timeout']);
         }
-
-        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
-        $loader->load('services.yml');
     }
 
     public function getAlias()
