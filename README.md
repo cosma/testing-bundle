@@ -92,7 +92,8 @@ class UnitTest extends SimpleTestCase
         $userAbsolute = $this->getEntityWithId('Acme\DemoBundle\Entity\User', 134);
         
         // relative namespace entity using the value of configuration parameter entity_namespace
-        $userRelative = $this->getEntityWithId('User', 12); // is using the value of configuration parameter entity_namespace
+        // is using the value of configuration parameter entity_namespace
+        $userRelative = $this->getEntityWithId('User', 12); 
     }
 }
 ```
