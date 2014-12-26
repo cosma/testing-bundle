@@ -14,8 +14,13 @@
 
 namespace Cosma\Bundle\TestingBundle;
 
+use Cosma\Bundle\TestingBundle\DependencyInjection\CosmaTestingExtension;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class TestingBundle extends Bundle
 {
+    public function getContainerExtension()
+    {
+        return new CosmaTestingExtension();
+    }
 }
