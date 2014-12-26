@@ -49,8 +49,8 @@ public function registerBundles()
 
 ## Configuration
 
-In case you want to change default paths of Fixture in your bundle configure the testing bundle's fixture_path, 
-which sets the relative path to the fixture directory in your bundle
+In case you want to change default paths of fixture directory you can configure the testing bundle's fixture_path. 
+This sets a new relative path to the fixture directory in your bundle.
 
 ```yaml
 # app/config/config_test.yml
