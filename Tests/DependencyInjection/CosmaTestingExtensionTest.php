@@ -28,9 +28,9 @@ class CosmaTestingExtensionTest extends \PHPUnit_Framework_TestCase
             'fixture_path' => 'Some/Fixture/Directory',
             'solarium' => array(
                 'host' => '127.0.0.1',
-                'port' => 8983,
+                'port' => 8080,
                 'path' => '/solr',
-                'core' => 'core_name',
+                'core' => 'tests',
                 'timeout' => 45
 
             )

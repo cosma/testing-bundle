@@ -35,9 +35,9 @@ class SolrTestCaseTest extends \PHPUnit_Framework_TestCase
 
         $valueMap = array(
             array('cosma_testing.solarium.host', '127.0.0.1'),
-            array('cosma_testing.solarium.port', '8983'),
+            array('cosma_testing.solarium.port', '8080'),
             array('cosma_testing.solarium.path', '/solr'),
-            array('cosma_testing.solarium.core', 'test_core'),
+            array('cosma_testing.solarium.core', 'test'),
             array('cosma_testing.solarium.timeout', '5')
         );
 

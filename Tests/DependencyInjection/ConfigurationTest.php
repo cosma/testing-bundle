@@ -41,9 +41,9 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         $solariumOptions = $options['solarium']->getChildren();
         $this->assertCount(5, $solariumOptions);
         $this->assertEquals('127.0.0.1', $solariumOptions['host']->getDefaultValue());
-        $this->assertEquals('8983', $solariumOptions['port']->getDefaultValue());
+        $this->assertEquals('8080', $solariumOptions['port']->getDefaultValue());
         $this->assertEquals('/solr', $solariumOptions['path']->getDefaultValue());
-        $this->assertEquals('test_core', $solariumOptions['core']->getDefaultValue());
+        $this->assertEquals('test', $solariumOptions['core']->getDefaultValue());
         $this->assertEquals('5', $solariumOptions['timeout']->getDefaultValue());
     }
 }

@@ -56,9 +56,14 @@ This sets a new relative path to the fixture directory in your bundle.
 # app/config/config_test.yml
 
 cosma_testing:
-    fixture_path: FixturePath
-    
-    
+    fixture_path: Fixture
+    solarium:
+        host: 127.0.0.1
+        port: 8080
+        path: /solr
+        core: test
+        timeout: 10
+      
 ```
 
 
