@@ -47,6 +47,17 @@ class Configuration implements ConfigurationInterface
                         ->scalarNode('timeout')->defaultValue(5)->end()
                     ->end()
                 ->end()
+                ->arrayNode('elastica')
+                    ->canBeUnset()
+                    ->children()
+                    ->scalarNode('host')->defaultValue('127.0.0.1')->end()
+                    ->scalarNode('port')->defaultValue(9200)->end()
+                    ->scalarNode('path')->defaultValue('/')->end()
+                    ->scalarNode('timeout')->defaultValue(5)->end()
+                    ->scalarNode('index')->defaultValue('test')->end()
+                    ->scalarNode('type')->defaultValue('test')->end()
+                    ->end()
+                ->end()
             ->end();
 
         return $treeBuilder;

@@ -65,6 +65,30 @@ class CosmaTestingExtension extends Extension
         if(isset($config['solarium']['timeout'])){
             $container->setParameter('cosma_testing.solarium.timeout', $config['solarium']['timeout']);
         }
+
+        if(isset($config['elastica']['host'])){
+            $container->setParameter('cosma_testing.elastica.host', $config['elastica']['host']);
+        }
+
+        if(isset($config['elastica']['port'])){
+            $container->setParameter('cosma_testing.elastica.port', $config['elastica']['port']);
+        }
+
+        if(isset($config['elastica']['path'])){
+            $container->setParameter('cosma_testing.elastica.path', $config['elastica']['path']);
+        }
+
+        if(isset($config['elastica']['timeout'])){
+            $container->setParameter('cosma_testing.elastica.timeout', $config['elastica']['timeout']);
+        }
+
+        if(isset($config['elastica']['index'])){
+            $container->setParameter('cosma_testing.elastica.index', $config['elastica']['index']);
+        }
+
+        if(isset($config['elastica']['type'])) {
+            $container->setParameter('cosma_testing.elastica.type', $config['elastica']['type']);
+        }
     }
 
     public function getAlias()
