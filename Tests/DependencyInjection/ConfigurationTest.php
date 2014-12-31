@@ -33,7 +33,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
 
         /** @var \Symfony\Component\Config\Definition\ScalarNode[] $options */
         $options = $node->getChildren();
-        $this->assertCount(4, $options);
+        $this->assertCount(5, $options);
         $this->assertEquals('Fixture', $options['fixture_path']->getDefaultValue());
         $this->assertEquals('Table', $options['fixture_table_directory']->getDefaultValue());
         $this->assertEquals('Test', $options['fixture_test_directory']->getDefaultValue());
@@ -45,5 +45,15 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('/solr', $solariumOptions['path']->getDefaultValue());
         $this->assertEquals('test', $solariumOptions['core']->getDefaultValue());
         $this->assertEquals('5', $solariumOptions['timeout']->getDefaultValue());
+
+        $elasticaOptions = $options['elastica']->getChildren();
+        $this->assertCount(6, $elasticaOptions);
+        $this->assertEquals('127.0.0.1', $elasticaOptions['host']->getDefaultValue());
+        $this->assertEquals('9200', $elasticaOptions['port']->getDefaultValue());
+        $this->assertEquals('/', $elasticaOptions['path']->getDefaultValue());
+        $this->assertEquals('5', $elasticaOptions['timeout']->getDefaultValue());
+        $this->assertEquals('test', $elasticaOptions['index']->getDefaultValue());
+        $this->assertEquals('test', $elasticaOptions['type']->getDefaultValue());
+
     }
 }

@@ -20,8 +20,6 @@ use Symfony\Component\DependencyInjection\Loader;
 
 class CosmaTestingExtensionTest extends \PHPUnit_Framework_TestCase
 {
-
-
     public function testConfigParameters()
     {
         $config = array(
@@ -32,7 +30,14 @@ class CosmaTestingExtensionTest extends \PHPUnit_Framework_TestCase
                 'path' => '/solr',
                 'core' => 'tests',
                 'timeout' => 45
-
+            ),
+            'elastica' => array(
+                'host' => '127.0.0.1',
+                'port' => 9200,
+                'path' => '/',
+                'timeout' => 15,
+                'index' => 'tests',
+                'type' => 'tests'
             )
         );
 
@@ -46,7 +51,13 @@ class CosmaTestingExtensionTest extends \PHPUnit_Framework_TestCase
             'cosma_testing.solarium.port',
             'cosma_testing.solarium.path',
             'cosma_testing.solarium.core',
-            'cosma_testing.solarium.timeout'
+            'cosma_testing.solarium.timeout',
+            'cosma_testing.elastica.host',
+            'cosma_testing.elastica.port',
+            'cosma_testing.elastica.path',
+            'cosma_testing.elastica.timeout',
+            'cosma_testing.elastica.index',
+            'cosma_testing.elastica.type'
         );
 
         foreach ($parameters as $parameter) {
@@ -63,6 +74,4 @@ class CosmaTestingExtensionTest extends \PHPUnit_Framework_TestCase
 
         return $container;
     }
-
-
 }
