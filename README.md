@@ -115,9 +115,6 @@ class SomeUnitTest extends SimpleTestCase
 This case is an extension of Symfony WebTestCase, the functional test case in Symfony2 
 It has the following methods:
 
-* **getMockedEntityWithId** ($entityNamespaceClass, $id)
-* **getEntityWithId** ($entityNamespaceClass, $id)
-
 * **loadTableFixtures** (array $fixtures, $dropDatabaseBefore = true)
 * **loadTestFixtures** (array $fixtures, $dropDatabaseBefore = true)
 * **loadCustomFixtures** (array $fixtures, $dropDatabaseBefore = true)
@@ -125,6 +122,11 @@ It has the following methods:
 * **getContainer** ()
 * **getEntityManager** ()
 * **getEntityRepository** ()
+
+* **getMockedEntityWithId** ($entityNamespaceClass, $id)
+* **getEntityWithId** ($entityNamespaceClass, $id)
+
+
 
 
 ```php
@@ -190,8 +192,6 @@ It has the following methods:
 
 * **getSolariumClient** ()
 
-* **getMockedEntityWithId** ($entityNamespaceClass, $id)
-* **getEntityWithId** ($entityNamespaceClass, $id)
 * **loadTableFixtures** (array $fixtures, $dropDatabaseBefore = true)
 * **loadTestFixtures** (array $fixtures, $dropDatabaseBefore = true)
 * **loadCustomFixtures** (array $fixtures, $dropDatabaseBefore = true)
@@ -199,6 +199,9 @@ It has the following methods:
 * **getContainer** ()
 * **getEntityManager** ()
 * **getEntityRepository** ()
+
+* **getMockedEntityWithId** ($entityNamespaceClass, $id)
+* **getEntityWithId** ($entityNamespaceClass, $id)
 
 
 ```php
@@ -256,8 +259,6 @@ It has the following methods:
 * **getElasticIndex** ()
 * **getElasticClient** ()
 
-* **getMockedEntityWithId** ($entityNamespaceClass, $id)
-* **getEntityWithId** ($entityNamespaceClass, $id)
 * **loadTableFixtures** (array $fixtures, $dropDatabaseBefore = true)
 * **loadTestFixtures** (array $fixtures, $dropDatabaseBefore = true)
 * **loadCustomFixtures** (array $fixtures, $dropDatabaseBefore = true)
@@ -265,6 +266,9 @@ It has the following methods:
 * **getContainer** ()
 * **getEntityManager** ()
 * **getEntityRepository** ()
+
+* **getMockedEntityWithId** ($entityNamespaceClass, $id)
+* **getEntityWithId** ($entityNamespaceClass, $id)
 
 
 ```php
