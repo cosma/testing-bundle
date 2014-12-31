@@ -293,7 +293,7 @@ class SomeElasticTest extends ElasticTestCase
                 'name'      => 'mewantcookie',
                 'fullName'  => 'Cookie Monster'
             ),
-            'msg'     => 'Me wish there were expression for cookies like there is for apples. "A cookie a day make the doctor diagnose you with diabetes" not catchy.',
+            'msg'     => 'Me wish there were expression for cookies ',
             'tstamp'  => '1238081389',
             'location'=> '41.12,-71.34',
             '_boost'  => 1.0
@@ -309,13 +309,13 @@ class SomeElasticTest extends ElasticTestCase
         $dataTwo = array(
             'id'      => $idTwo,
             'user'    => array(
-                'name'      => 'mewantcookie',
-                'fullName'  => 'Cookie Monster'
+                'name'      => 'shewantcookie',
+                'fullName'  => 'Cookie Witch'
             ),
-            'msg'     => 'Me wish there were expression for cookies like there is for apples. "A cookie a day make the doctor diagnose you with diabetes" not catchy.',
-            'tstamp'  => '1238081389',
-            'location'=> '41.12,-71.34',
-            '_boost'  => 1.0
+            'msg'     => 'blah blah blah expresion.',
+            'tstamp'  => '143567',
+            'location'=> '43.12,-78.34',
+            '_boost'  => 3.0
         );
 
         $documentTwo = new \Elastica\Document($idTwo, $dataTwo);
