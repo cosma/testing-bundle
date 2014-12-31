@@ -8,11 +8,14 @@ An extension of [h4cc/AliceFixturesBundle](https://github.com/h4cc/AliceFixtures
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/7697e84e-fd7f-47ae-97cf-66a266c9b4c0/mini.png)](https://insight.sensiolabs.com/projects/7697e84e-fd7f-47ae-97cf-66a266c9b4c0)
 
 
+
 Supports following test cases:
-* SimpleTestCase
-* WebTestCase
-* SolrTestCase
-* ElasticTestCase
+
+*SimpleTestCase
+*WebTestCase
+*SolrTestCase
+*ElasticTestCase
+
 
 
 
