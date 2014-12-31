@@ -89,7 +89,7 @@ This case is an extension of PHPUnit_Framework_TestCase, with two extra simple m
 ```php
 use Cosma\Bundle\TestingBundle\TestCase\SimpleTestCase;
  
-class UnitTest extends SimpleTestCase
+class SomeUnitTest extends SimpleTestCase
 {
     public function testSomething()
     {
@@ -129,7 +129,7 @@ It has the following methods:
 ```php
 use Cosma\Bundle\TestingBundle\TestCase\WebTestCase;
 
-class FunctionalTest extends WebTestCase
+class SomeFunctionalTest extends WebTestCase
 {
     public function setUp()
     {
@@ -188,42 +188,60 @@ This case is an extension of WebTestCase, from current bundle, with extra Solr s
 It has the following methods:
 
 * **getSolariumClient** ()
+* **getMockedEntityWithId** ($entityNamespaceClass, $id)
+* **getEntityWithId** ($entityNamespaceClass, $id)
+* **loadTableFixtures** (array $fixtures, $dropDatabaseBefore = true)
+* **loadTestFixtures** (array $fixtures, $dropDatabaseBefore = true)
+* **loadCustomFixtures** (array $fixtures, $dropDatabaseBefore = true)
+* **getClient** ()
+* **getContainer** ()
+* **getEntityManager** ()
+* **getEntityRepository** ()
 
 
 ```php
 use Cosma\Bundle\TestingBundle\TestCase\SolrTestCase;
 
-class DefaultControllerTest extends SolrTestCase
+class SomeSolrTest extends SolrTestCase
 {
     public function setUp()
     {
         parent::setUp();
+        
         $solariumClient = $this->getSolariumClient();
 
-        // get an update query instance
+        /**
+         * get an update query instance
+         */
         $update = $solariumClient->createUpdate();
 
-        // first solr fixture
-        $doc1 = $update->createDocument();
-        $doc1->id = 123;
-        $doc1->name = 'testdoc-1';
-        $doc1->price = 364;
+        /**
+         * first fixture document
+         */
+        $documentOne = $update->createDocument();
+        $documentOne->id = 123;
+        $documentOne->name = 'testdoc-1';
+        $documentOne->price = 364;
 
-        // second solr fixture
-        $doc2 = $update->createDocument();
-        $doc2->id = 124;
-        $doc2->name = 'testdoc-2';
-        $doc2->price = 340;
+        /**
+         * second fixture document
+         */
+        $documentTwo = $update->createDocument();
+        $documentTwo->id = 124;
+        $documentTwo->name = 'testdoc-2';
+        $documentTwo->price = 340;
 
-        // add the documents and a commit command to the update query
-        $update->addDocuments(array($doc1, $doc2));
+        /**
+         * add the documents and a commit command to the update query
+         */
+        $update->addDocuments(array($documentOne, $documentTwo));
         $update->addCommit();
-
-        // this executes the query and returns the result
-       $solariumClient->update($update);
+        
+        /**
+         * execute query
+         */
+        $solariumClient->update($update);
     }
-   // ....
-}
 ```
 
 
