@@ -112,7 +112,7 @@ class UnitTest extends SimpleTestCase
 
 
 #### Web Test Case
-This case is an extension of WebTestCase, the functional test case in Symfony2 
+This case is an extension of Symfony WebTestCase, the functional test case in Symfony2 
 It has the following methods:
 
 * **getMockedEntityWithId** ($entityNamespaceClass, $id)
@@ -183,33 +183,11 @@ class FunctionalTest extends WebTestCase
 
 
 
-### Fixtures
+#### Solr Test Case
+This case is an extension of WebTestCase, from current bundle, with extra Solr support
+It has the following methods:
 
-[Alice](https://github.com/nelmio/alice) fixtures are integrated with [Faker](https://github.com/fzaninotto/Faker).
-
-The most basic functionality of [Alice](https://github.com/nelmio/alice) is to turn flat yaml files into objects. 
-
-You can define many objects of different classes in one file as such:
-
-```yaml
-Nelmio\Entity\User:
-    user{1..10}:
-        username: <username()>
-        fullname: <firstName()> <lastName()>
-        birthDate: <date()>
-        email: <email()>
-        favoriteNumber: <numberBetween(1, 200)>
-
-Nelmio\Entity\Group:
-    group1:
-        name: Admins  
-        users: [@user1, @user4, @user7]      
-```
-
-
-
-### Solr support
-
+* **getSolariumClient** ()
 
 
 ```php
@@ -245,8 +223,32 @@ class DefaultControllerTest extends SolrTestCase
        $solariumClient->update($update);
     }
    // ....
-}   
-   
+}
+```
+
+
+
+### Fixtures
+
+[Alice](https://github.com/nelmio/alice) fixtures are integrated with [Faker](https://github.com/fzaninotto/Faker).
+
+The most basic functionality of [Alice](https://github.com/nelmio/alice) is to turn flat yaml files into objects. 
+
+You can define many objects of different classes in one file as such:
+
+```yaml
+Nelmio\Entity\User:
+    user{1..10}:
+        username: <username()>
+        fullname: <firstName()> <lastName()>
+        birthDate: <date()>
+        email: <email()>
+        favoriteNumber: <numberBetween(1, 200)>
+
+Nelmio\Entity\Group:
+    group1:
+        name: Admins  
+        users: [@user1, @user4, @user7]      
 ```
 
 
