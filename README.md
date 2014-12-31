@@ -1,7 +1,7 @@
 Testing Bundle
 ================
 
-An extension of [h4cc/AliceFixturesBundle](https://github.com/h4cc/AliceFixturesBundle) , a Symfony2 bundle for flexible usage of [nelmio/alice](https://github.com/nelmio/alice) and [fzaninotto/Faker](https://github.com/fzaninotto/Faker) in Symfony2.
+An extension of [h4cc/AliceFixturesBundle](https://github.com/h4cc/AliceFixturesBundle) , a Symfony2 bundle for flexible usage of fixture definition with the help of  [nelmio/alice](https://github.com/nelmio/alice) and [fzaninotto/Faker](https://github.com/fzaninotto/Faker).
 
 
 [![Build Status](https://drone.io/bitbucket.org/cosma/testing-bundle/status.png)](https://drone.io/bitbucket.org/cosma/testing-bundle/latest)
@@ -403,5 +403,3 @@ vendor/phpunit/phpunit/phpunit -c phpunit.xml.dist --coverage-text --coverage-ht
 ## License
 
 The bundle is licensed under MIT.
-
-
