@@ -117,6 +117,7 @@ It has the following methods:
 
 * **getMockedEntityWithId** ($entityNamespaceClass, $id)
 * **getEntityWithId** ($entityNamespaceClass, $id)
+
 * **loadTableFixtures** (array $fixtures, $dropDatabaseBefore = true)
 * **loadTestFixtures** (array $fixtures, $dropDatabaseBefore = true)
 * **loadCustomFixtures** (array $fixtures, $dropDatabaseBefore = true)
@@ -188,6 +189,7 @@ This case is an extension of WebTestCase, from current bundle, with extra Solr s
 It has the following methods:
 
 * **getSolariumClient** ()
+
 * **getMockedEntityWithId** ($entityNamespaceClass, $id)
 * **getEntityWithId** ($entityNamespaceClass, $id)
 * **loadTableFixtures** (array $fixtures, $dropDatabaseBefore = true)
@@ -244,6 +246,88 @@ class SomeSolrTest extends SolrTestCase
     }
 ```
 
+
+
+#### ElasticSearch Test Case
+This case is an extension of WebTestCase, from current bundle, with extra ElasticSearch support
+It has the following methods:
+
+* **getElasticType** ()
+* **getElasticIndex** ()
+* **getElasticClient** ()
+
+* **getMockedEntityWithId** ($entityNamespaceClass, $id)
+* **getEntityWithId** ($entityNamespaceClass, $id)
+* **loadTableFixtures** (array $fixtures, $dropDatabaseBefore = true)
+* **loadTestFixtures** (array $fixtures, $dropDatabaseBefore = true)
+* **loadCustomFixtures** (array $fixtures, $dropDatabaseBefore = true)
+* **getClient** ()
+* **getContainer** ()
+* **getEntityManager** ()
+* **getEntityRepository** ()
+
+
+```php
+use Cosma\Bundle\TestingBundle\TestCase\ElasticTestCase;
+
+class SomeElasticTest extends ElasticTestCase
+{
+    public function setUp()
+    {
+        parent::setUp();
+
+        $elasticType = $this->getElasticType();
+
+
+        /**
+         * first fixture document
+         */
+        $idOne = 1;
+        $dataOne = array(
+            'id'      => $idOne,
+            'user'    => array(
+                'name'      => 'mewantcookie',
+                'fullName'  => 'Cookie Monster'
+            ),
+            'msg'     => 'Me wish there were expression for cookies like there is for apples. "A cookie a day make the doctor diagnose you with diabetes" not catchy.',
+            'tstamp'  => '1238081389',
+            'location'=> '41.12,-71.34',
+            '_boost'  => 1.0
+        );
+
+        $documentOne = new \Elastica\Document($idOne, $dataOne);
+
+
+        /**
+         * second fixture document
+         */
+        $idTwo = 2;
+        $dataTwo = array(
+            'id'      => $idTwo,
+            'user'    => array(
+                'name'      => 'mewantcookie',
+                'fullName'  => 'Cookie Monster'
+            ),
+            'msg'     => 'Me wish there were expression for cookies like there is for apples. "A cookie a day make the doctor diagnose you with diabetes" not catchy.',
+            'tstamp'  => '1238081389',
+            'location'=> '41.12,-71.34',
+            '_boost'  => 1.0
+        );
+
+        $documentTwo = new \Elastica\Document($idTwo, $dataTwo);
+
+        /**
+         * add documents to type
+         */
+        $elasticType->addDocument($documentOne);
+        $elasticType->addDocument($documentTwo);
+
+        /**
+         * refresh index
+         */
+        $elasticType->getIndex()->refresh();
+    }
+```
 
 
 ### Fixtures
