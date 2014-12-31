@@ -132,7 +132,7 @@ class SolrTestCaseTest extends \PHPUnit_Framework_TestCase
 
         $classProperty = $reflectionClass->getProperty('class');
         $classProperty->setAccessible(true);
-        $classProperty->setValue($solrTestCase, 'Cosma\Bundle\TestingBundle\Tests\TestCase\AppKernel');
+        $classProperty->setValue($solrTestCase, 'Cosma\Bundle\TestingBundle\Tests\AppKernel');
 
         $kernelProperty = $reflectionClass->getProperty('kernel');
         $kernelProperty->setAccessible(true);

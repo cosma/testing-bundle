@@ -20,7 +20,6 @@ use Doctrine\ORM\EntityRepository;
 use Symfony\Bundle\FrameworkBundle\Client;
 
 use Cosma\Bundle\TestingBundle\TestCase\WebTestCase;
-use Symfony\Component\HttpKernel\HttpKernel;
 
 class WebTestCaseTest extends \PHPUnit_Framework_TestCase
 {
@@ -49,7 +48,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
 
         $classProperty = $reflectionClass->getProperty('class');
         $classProperty->setAccessible(true);
-        $classProperty->setValue($webTestCase, 'Cosma\Bundle\TestingBundle\Tests\TestCase\AppKernel');
+        $classProperty->setValue($webTestCase, 'Cosma\Bundle\TestingBundle\Tests\AppKernel');
 
         $setUpMethod = $reflectionClass->getMethod('setUp');
         $setUpMethod->setAccessible(true);
@@ -59,7 +58,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
         $kernelProperty->setAccessible(true);
         $kernel = $kernelProperty->getValue();
 
-        $this->assertInstanceOf('Cosma\Bundle\TestingBundle\Tests\TestCase\AppKernel', $kernel, 'set up is wrong');
+        $this->assertInstanceOf('Cosma\Bundle\TestingBundle\Tests\AppKernel', $kernel, 'set up is wrong');
 
         $reflectionMethod = $reflectionClass->getMethod('tearDownAfterClass');
         $reflectionMethod->invoke($webTestCase);
@@ -744,13 +743,6 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
 
         return $objects;
     }
-}
-
-class AppKernel extends HttpKernel
-{
-    public function __construct(){}
-    public function boot(){}
-    public function shutdown(){}
 }
 
 class WebTestCaseExample extends WebTestCase
