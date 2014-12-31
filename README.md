@@ -11,10 +11,10 @@ An extension of [h4cc/AliceFixturesBundle](https://github.com/h4cc/AliceFixtures
 
 Supports following test cases:
 
-*SimpleTestCase
-*WebTestCase
-*SolrTestCase
-*ElasticTestCase
+* SimpleTestCase
+* WebTestCase
+* SolrTestCase
+* ElasticTestCase
 
 
 
