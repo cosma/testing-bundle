@@ -58,6 +58,13 @@ class Configuration implements ConfigurationInterface
                     ->scalarNode('type')->defaultValue('test')->end()
                     ->end()
                 ->end()
+                ->arrayNode('selenium')
+                    ->canBeUnset()
+                    ->children()
+                    ->scalarNode('server')->defaultValue('http://127.0.0.1:4444/wd/hub')->end()
+                    ->scalarNode('domain')->defaultValue('http://127.0.0.1')->end()
+                    ->end()
+                ->end()
             ->end();
 
         return $treeBuilder;

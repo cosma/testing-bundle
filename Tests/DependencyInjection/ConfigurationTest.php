@@ -33,11 +33,12 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
 
         /** @var \Symfony\Component\Config\Definition\ScalarNode[] $options */
         $options = $node->getChildren();
-        $this->assertCount(5, $options);
+        $this->assertCount(6, $options);
         $this->assertEquals('Fixture', $options['fixture_path']->getDefaultValue());
         $this->assertEquals('Table', $options['fixture_table_directory']->getDefaultValue());
         $this->assertEquals('Test', $options['fixture_test_directory']->getDefaultValue());
 
+        /** @var \Symfony\Component\Config\Definition\ScalarNode[] $solariumOptions */
         $solariumOptions = $options['solarium']->getChildren();
         $this->assertCount(5, $solariumOptions);
         $this->assertEquals('127.0.0.1', $solariumOptions['host']->getDefaultValue());
@@ -46,6 +47,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('test', $solariumOptions['core']->getDefaultValue());
         $this->assertEquals('5', $solariumOptions['timeout']->getDefaultValue());
 
+        /** @var \Symfony\Component\Config\Definition\ScalarNode[] $elasticaOptions */
         $elasticaOptions = $options['elastica']->getChildren();
         $this->assertCount(6, $elasticaOptions);
         $this->assertEquals('127.0.0.1', $elasticaOptions['host']->getDefaultValue());
@@ -55,5 +57,10 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('test', $elasticaOptions['index']->getDefaultValue());
         $this->assertEquals('test', $elasticaOptions['type']->getDefaultValue());
 
+        /** @var \Symfony\Component\Config\Definition\ScalarNode[] $seleniumOptions */
+        $seleniumOptions = $options['selenium']->getChildren();
+        $this->assertCount(2, $seleniumOptions);
+        $this->assertEquals('http://127.0.0.1:4444/wd/hub', $seleniumOptions['server']->getDefaultValue());
+        $this->assertEquals('http://127.0.0.1', $seleniumOptions['domain']->getDefaultValue());
     }
 }

@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of the "cosma/testing-bundle" project
  *
@@ -12,9 +11,7 @@
  * Time: 23:33
  */
 
-
 namespace Cosma\Bundle\TestingBundle\TestCase;
-
 
 use Elastica\Client;
 use Elastica\Index;
@@ -63,17 +60,6 @@ abstract class ElasticTestCase extends WebTestCase
     }
 
     /**
-     * void
-     */
-    private function recreateIndex()
-    {
-        if($this->getElasticIndex()->exists()){
-            $this->getElasticIndex()->delete();
-        }
-        $this->getElasticIndex()->create();
-    }
-
-    /**
      * @return Client
      */
     protected function getElasticClient()
@@ -113,5 +99,16 @@ abstract class ElasticTestCase extends WebTestCase
             self::$elasticType = $this->getElasticIndex()->getType($typeName);
         }
         return self::$elasticType;
+    }
+
+    /**
+     * void
+     */
+    private function recreateIndex()
+    {
+        if($this->getElasticIndex()->exists()){
+            $this->getElasticIndex()->delete();
+        }
+        $this->getElasticIndex()->create();
     }
 }

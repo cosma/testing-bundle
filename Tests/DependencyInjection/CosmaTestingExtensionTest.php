@@ -38,6 +38,9 @@ class CosmaTestingExtensionTest extends \PHPUnit_Framework_TestCase
                 'timeout' => 15,
                 'index' => 'tests',
                 'type' => 'tests'
+            ),
+            'selenium' => array(
+                'domain' => '127.0.0.1:4444'
             )
         );
 
@@ -57,7 +60,9 @@ class CosmaTestingExtensionTest extends \PHPUnit_Framework_TestCase
             'cosma_testing.elastica.path',
             'cosma_testing.elastica.timeout',
             'cosma_testing.elastica.index',
-            'cosma_testing.elastica.type'
+            'cosma_testing.elastica.type',
+            'cosma_testing.selenium.server',
+            'cosma_testing.selenium.domain'
         );
 
         foreach ($parameters as $parameter) {

@@ -89,6 +89,14 @@ class CosmaTestingExtension extends Extension
         if(isset($config['elastica']['type'])) {
             $container->setParameter('cosma_testing.elastica.type', $config['elastica']['type']);
         }
+
+        if(isset($config['selenium']['server'])) {
+            $container->setParameter('cosma_testing.selenium.server', $config['selenium']['server']);
+        }
+
+        if(isset($config['selenium']['domain'])) {
+            $container->setParameter('cosma_testing.selenium.domain', $config['selenium']['domain']);
+        }
     }
 
     public function getAlias()

@@ -18,7 +18,6 @@ use Cosma\Bundle\TestingBundle\TestCase\ElasticTestCase;
 use Elastica\Client;
 use Elastica\Index;
 use Elastica\Type;
-use Symfony\Component\HttpKernel\HttpKernel;
 
 class ElasticTestCaseTest extends \PHPUnit_Framework_TestCase
 {
@@ -30,6 +29,57 @@ class ElasticTestCaseTest extends \PHPUnit_Framework_TestCase
         $this->assertClassHasStaticAttribute('elasticClient', 'Cosma\Bundle\TestingBundle\TestCase\ElasticTestCase');
         $this->assertClassHasStaticAttribute('elasticIndex', 'Cosma\Bundle\TestingBundle\TestCase\ElasticTestCase');
         $this->assertClassHasStaticAttribute('elasticType', 'Cosma\Bundle\TestingBundle\TestCase\ElasticTestCase');
+    }
+
+    /**
+     * @see ElasticTestCase::setUp
+     */
+    public function testSetUp()
+    {
+        $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\KernelInterface')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getContainer'))
+            ->getMockForAbstractClass();
+
+        $elasticIndex = $this->getMockBuilder('Elastica\Index')
+            ->disableOriginalConstructor()
+            ->setMethods(array('exists', 'create', 'delete'))
+            ->getMock();
+        $elasticIndex->expects($this->once())
+            ->method('exists')
+            ->will($this->returnValue(true));
+        $elasticIndex->expects($this->once())
+            ->method('delete')
+            ->will($this->returnValue(true));
+        $elasticIndex->expects($this->once())
+            ->method('create')
+            ->will($this->returnValue(true));
+
+        $elasticTestCase = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\ElasticTestCase')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getElasticIndex'))
+            ->getMockForAbstractClass();
+        $elasticTestCase->expects($this->exactly(3))
+            ->method('getElasticIndex')
+            ->will($this->returnValue($elasticIndex));
+
+
+        $reflectionClassMocked = new \ReflectionClass($elasticTestCase);
+        $reflectionClass       = $reflectionClassMocked->getParentClass();
+
+        $classProperty = $reflectionClass->getProperty('class');
+        $classProperty->setAccessible(true);
+        $classProperty->setValue($elasticTestCase, 'Cosma\Bundle\TestingBundle\Tests\AppKernel');
+
+        $kernelProperty = $reflectionClass->getProperty('kernel');
+        $kernelProperty->setAccessible(true);
+        $kernelProperty->setValue($elasticTestCase, $kernel);
+        $setUpMethod = $reflectionClass->getMethod('setUp');
+        $setUpMethod->setAccessible(true);
+        $setUpMethod->invoke($elasticTestCase);
+
+        $reflectionMethod = $reflectionClass->getMethod('tearDownAfterClass');
+        $reflectionMethod->invoke($elasticTestCase);
     }
 
     /**
@@ -204,57 +254,6 @@ class ElasticTestCaseTest extends \PHPUnit_Framework_TestCase
         $reflectionMethod = $reflectionClass->getMethod('tearDownAfterClass');
         $reflectionMethod->invoke($elasticTestCase);
 
-    }
-
-    /**
-     * @see ElasticTestCase::setUp
-     */
-    public function testSetUp()
-    {
-        $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\KernelInterface')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getContainer'))
-            ->getMockForAbstractClass();
-
-        $elasticIndex = $this->getMockBuilder('Elastica\Index')
-            ->disableOriginalConstructor()
-            ->setMethods(array('exists', 'create', 'delete'))
-            ->getMock();
-        $elasticIndex->expects($this->once())
-            ->method('exists')
-            ->will($this->returnValue(true));
-        $elasticIndex->expects($this->once())
-            ->method('delete')
-            ->will($this->returnValue(true));
-        $elasticIndex->expects($this->once())
-            ->method('create')
-            ->will($this->returnValue(true));
-
-        $elasticTestCase = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\ElasticTestCase')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getElasticIndex'))
-            ->getMockForAbstractClass();
-        $elasticTestCase->expects($this->exactly(3))
-            ->method('getElasticIndex')
-            ->will($this->returnValue($elasticIndex));
-
-
-        $reflectionClassMocked = new \ReflectionClass($elasticTestCase);
-        $reflectionClass       = $reflectionClassMocked->getParentClass();
-
-        $classProperty = $reflectionClass->getProperty('class');
-        $classProperty->setAccessible(true);
-        $classProperty->setValue($elasticTestCase, 'Cosma\Bundle\TestingBundle\Tests\AppKernel');
-
-        $kernelProperty = $reflectionClass->getProperty('kernel');
-        $kernelProperty->setAccessible(true);
-        $kernelProperty->setValue($elasticTestCase, $kernel);
-        $setUpMethod = $reflectionClass->getMethod('setUp');
-        $setUpMethod->setAccessible(true);
-        $setUpMethod->invoke($elasticTestCase);
-
-        $reflectionMethod = $reflectionClass->getMethod('tearDownAfterClass');
-        $reflectionMethod->invoke($elasticTestCase);
     }
 }
 

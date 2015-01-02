@@ -1,5 +1,4 @@
 <?php
-
 /**
  * This file is part of the "cosma/testing-bundle" project
  *
@@ -11,7 +10,6 @@
  * Date: 11/07/14
  * Time: 23:33
  */
-
 
 namespace Cosma\Bundle\TestingBundle\TestCase;
 
