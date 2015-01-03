@@ -15,9 +15,18 @@
 namespace Cosma\Bundle\TestingBundle\Tests\TestCase;
 
 use Cosma\Bundle\TestingBundle\TestCase\SeleniumTestCase;
+use Elastica\Client;
 
 class SeleniumTestCaseTest extends \PHPUnit_Framework_TestCase
 {
+
+    /**
+     * @see SolrTestCase
+     */
+    public function testStaticAttributes()
+    {
+        $this->assertClassHasStaticAttribute('webDriver', 'Cosma\Bundle\TestingBundle\TestCase\SeleniumTestCase');
+    }
 
     /**
      * @see SeleniumTestCase::setUp
@@ -31,12 +40,11 @@ class SeleniumTestCaseTest extends \PHPUnit_Framework_TestCase
 
         $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\Container')
             ->disableOriginalConstructor()
-            ->disableAutoload()
             ->setMethods(array('getParameter'))
             ->getMock();
-        $container->expects($this->once())
-            ->method('getParameter')
-            ->will($this->returnValueMap($valueMap));
+//        $container->expects($this->once())
+//            ->method('getParameter')
+//            ->will($this->returnValueMap($valueMap));
 
         $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\KernelInterface')
             ->disableOriginalConstructor()
@@ -48,20 +56,29 @@ class SeleniumTestCaseTest extends \PHPUnit_Framework_TestCase
 
         $seleniumTestCase = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\SeleniumTestCase')
             ->disableOriginalConstructor()
-            ->disableAutoload()
+            ->getMockForAbstractClass();
+
+        $webDriver = $this->getMockBuilder('\RemoteWebDriver')
+            ->disableOriginalConstructor()
             ->getMockForAbstractClass();
 
 
         $reflectionClassMocked = new \ReflectionClass($seleniumTestCase);
         $reflectionClass       = $reflectionClassMocked->getParentClass();
 
-        $classProperty = $reflectionClass->getProperty('class');
-        $classProperty->setAccessible(true);
-        $classProperty->setValue($seleniumTestCase, 'Cosma\Bundle\TestingBundle\Tests\AppKernel');
 
         $kernelProperty = $reflectionClass->getProperty('kernel');
         $kernelProperty->setAccessible(true);
         $kernelProperty->setValue($seleniumTestCase, $kernel);
+
+//        $classProperty = $reflectionClass->getParentClass()->getProperty('class');
+//        $classProperty->setAccessible(true);
+//        $classProperty->setValue($seleniumTestCase, 'Cosma\Bundle\TestingBundle\Tests\AppKernel');
+
+
+        //$webDriverProperty = $reflectionClass->getParentClass()->getProperty('webDriver');
+        //$webDriverProperty->setAccessible(TRUE);
+        //$webDriverProperty->setValue($seleniumTestCase, $webDriver);
 
         $setUpMethod = $reflectionClass->getMethod('setUp');
         $setUpMethod->setAccessible(true);
@@ -132,8 +149,6 @@ class SeleniumTestCaseTest extends \PHPUnit_Framework_TestCase
 
 }
 
-class SeleniumTestCaseExample extends SeleniumTestCase
-{}
 
 
 

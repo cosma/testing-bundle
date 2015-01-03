@@ -18,29 +18,34 @@ abstract class SeleniumTestCase extends WebTestCase
     /**
      * @var \RemoteWebDriver
      */
-    private $webDriver;
+    private static $webDriver;
 
     protected function setUp()
     {
         parent::setUp();
-        $this->webDriver = \RemoteWebDriver::create(
-            static::$kernel->getContainer()->getParameter('cosma_testing.selenium.server'),
-            \DesiredCapabilities::firefox()
-        );
+        $this->getWebDriver();
     }
 
     protected function tearDown()
     {
         parent::tearDown();
-        $this->webDriver->close();
+        self::$webDriver->close();
+        self::$webDriver = NULL;
     }
 
     /**
      * @return \RemoteWebDriver
      */
-    public function getWebDriver()
+    protected function getWebDriver()
     {
-        return $this->webDriver;
+        if (NULL === self::$webDriver) {
+            self::$webDriver = \RemoteWebDriver::create(
+                static::$kernel->getContainer()->getParameter('cosma_testing.selenium.server'),
+                \DesiredCapabilities::firefox()
+            );
+        }
+
+        return self::$webDriver;
     }
 
     /**
@@ -50,7 +55,7 @@ abstract class SeleniumTestCase extends WebTestCase
      */
     public function open($url)
     {
-        $this->webDriver->get($this->getDomain() . $url);
+        $this->getWebDriver()->get($this->getDomain() . $url);
     }
 
     /**
