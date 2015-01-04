@@ -11,6 +11,11 @@
          syntaxCheck="false"
          bootstrap="Tests/bootstrap.php"
         >
+
+    <php>
+        <server name="KERNEL_DIR" value="Tests" />
+    </php>
+
     <testsuites>
         <testsuite name="Testing Bundle Test Suite">
             <directory suffix="Test.php">./Tests/</directory>

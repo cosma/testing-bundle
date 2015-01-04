@@ -19,7 +19,6 @@ use Elastica\Client;
 
 class SeleniumTestCaseTest extends \PHPUnit_Framework_TestCase
 {
-
     /**
      * @see SolrTestCase
      */
@@ -33,35 +32,30 @@ class SeleniumTestCaseTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetUp()
     {
-        $valueMap = array(
-            array('cosma_testing.selenium.server', 'http://127.0.0.1:4444/wd/hub'),
-            array('cosma_testing.selenium.domain', 'http://127.0.0.1')
-        );
+        $webDriver = $this->getMockBuilder('\RemoteWebDriver')
+            ->disableOriginalConstructor()
+            ->getMockForAbstractClass();
 
-        $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\Container')
+        $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerInterface')
             ->disableOriginalConstructor()
             ->setMethods(array('getParameter'))
-            ->getMock();
-//        $container->expects($this->once())
-//            ->method('getParameter')
-//            ->will($this->returnValueMap($valueMap));
+            ->getMockForAbstractClass();
 
         $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\KernelInterface')
             ->disableOriginalConstructor()
             ->setMethods(array('getContainer'))
             ->getMockForAbstractClass();
-        $kernel->expects($this->exactly(4))
+        $kernel->expects($this->exactly(5))
             ->method('getContainer')
             ->will($this->returnValue($container));
 
         $seleniumTestCase = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\SeleniumTestCase')
             ->disableOriginalConstructor()
+            ->setMethods(array('getWebDriver'))
             ->getMockForAbstractClass();
-
-        $webDriver = $this->getMockBuilder('\RemoteWebDriver')
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
-
+        $seleniumTestCase->expects($this->once())
+            ->method('getWebDriver')
+            ->will($this->returnValue($webDriver));
 
         $reflectionClassMocked = new \ReflectionClass($seleniumTestCase);
         $reflectionClass       = $reflectionClassMocked->getParentClass();
@@ -71,85 +65,62 @@ class SeleniumTestCaseTest extends \PHPUnit_Framework_TestCase
         $kernelProperty->setAccessible(true);
         $kernelProperty->setValue($seleniumTestCase, $kernel);
 
-//        $classProperty = $reflectionClass->getParentClass()->getProperty('class');
-//        $classProperty->setAccessible(true);
-//        $classProperty->setValue($seleniumTestCase, 'Cosma\Bundle\TestingBundle\Tests\AppKernel');
+        $classProperty = $reflectionClass->getParentClass()->getProperty('class');
+        $classProperty->setAccessible(true);
+        $classProperty->setValue($seleniumTestCase, 'Cosma\Bundle\TestingBundle\Tests\AppKernel');
 
 
-        //$webDriverProperty = $reflectionClass->getParentClass()->getProperty('webDriver');
-        //$webDriverProperty->setAccessible(TRUE);
-        //$webDriverProperty->setValue($seleniumTestCase, $webDriver);
+        $webDriverProperty = $reflectionClass->getProperty('webDriver');
+        $webDriverProperty->setAccessible(TRUE);
+        $webDriverProperty->setValue($seleniumTestCase, $webDriver);
 
         $setUpMethod = $reflectionClass->getMethod('setUp');
         $setUpMethod->setAccessible(true);
         $setUpMethod->invoke($seleniumTestCase);
 
-        $reflectionMethod = $reflectionClass->getMethod('tearDownAfterClass');
+        $reflectionMethod = $reflectionClass->getMethod('tearDown');
+        $reflectionMethod->setAccessible(true);
         $reflectionMethod->invoke($seleniumTestCase);
     }
 
     /**
      * @see SeleniumTestCase::getWebDriver
      */
-    public function etestGetWebDriver()
+    public function testGetWebDriver()
     {
-        $valueMap = array(
-            array('cosma_testing.elastica.host', '127.0.0.1'),
-            array('cosma_testing.elastica.port', '8080'),
-            array('cosma_testing.elastica.path', '/'),
-            array('cosma_testing.elastica.timeout', '5'),
-            array('cosma_testing.elastica.index', 'test'),
-            array('cosma_testing.elastica.type', 'test')
-        );
-
-        $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerInterface')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getParameter'))
-            ->getMockForAbstractClass();
-        $container->expects($this->exactly(4))
-            ->method('getParameter')
-            ->will($this->returnValueMap($valueMap));
-
         $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\KernelInterface')
             ->disableOriginalConstructor()
-            ->setMethods(array('getContainer'))
             ->getMockForAbstractClass();
-        $kernel->expects($this->exactly(4))
-            ->method('getContainer')
-            ->will($this->returnValue($container));
 
-        $elasticTestCase = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\ElasticTestCase')
+        $seleniumTestCase = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\SeleniumTestCase')
             ->disableAutoload()
             ->getMockForAbstractClass();
 
-        $reflectionClassMocked = new \ReflectionClass($elasticTestCase);
+        $reflectionClassMocked = new \ReflectionClass($seleniumTestCase);
         $reflectionClass       = $reflectionClassMocked->getParentClass();
 
         $clientProperty = $reflectionClass->getProperty('kernel');
         $clientProperty->setAccessible(true);
-        $clientProperty->setValue($elasticTestCase, $kernel);
+        $clientProperty->setValue($seleniumTestCase, $kernel);
 
-        $reflectionMethod = $reflectionClass->getMethod('getElasticClient');
+        $reflectionMethod = $reflectionClass->getMethod('getWebDriver');
         $reflectionMethod->setAccessible(true);
 
-        /** @var Client $actual */
-        $client = $reflectionMethod->invoke($elasticTestCase);
+        /** @var \WebDriver $webDriver */
+        $webDriver = $reflectionMethod->invoke($seleniumTestCase);
 
         $this->assertInstanceOf(
-            'Elastica\Client',
-            $client,
-            'must return a Client object'
+            '\WebDriver',
+            $webDriver,
+            'must return a \WebDriver object'
         );
 
-        $reflectionMethod = $reflectionClass->getMethod('tearDownAfterClass');
-        $reflectionMethod->invoke($elasticTestCase);
+        $reflectionMethod = $reflectionClass->getMethod('tearDown');
+        $reflectionMethod->setAccessible(true);
+        $reflectionMethod->invoke($seleniumTestCase);
 
     }
-
-
 }
 
-
-
-
-
+class SeleniumTestCaseExample extends SeleniumTestCase
+{}

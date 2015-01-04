@@ -132,7 +132,7 @@ class SolrTestCaseTest extends \PHPUnit_Framework_TestCase
         $reflectionMethod = $reflectionClass->getMethod('getSolariumClient');
         $reflectionMethod->setAccessible(TRUE);
 
-        /** @var Client $actual */
+        /** @var Client $client */
         $client = $reflectionMethod->invoke($solrTestCase);
 
         $this->assertInstanceOf(
