@@ -20,14 +20,6 @@ use Elastica\Client;
 class SeleniumTestCaseTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @see SolrTestCase
-     */
-    public function testStaticAttributes()
-    {
-        $this->assertClassHasAttribute('webDriver', 'Cosma\Bundle\TestingBundle\TestCase\SeleniumTestCase');
-    }
-
-    /**
      * @see SeleniumTestCase::setUp
      */
     public function testSetUp()
@@ -164,7 +156,14 @@ class SeleniumTestCaseTest extends \PHPUnit_Framework_TestCase
         $webDriverProperty->setAccessible(TRUE);
         $webDriverProperty->setValue($seleniumTestCase, $webDriver);
 
-        $seleniumTestCase->open('/site.html');
+
+        $webDriver = $seleniumTestCase->open('/site.html');
+
+        $this->assertInstanceOf(
+            '\RemoteWebDriver',
+            $webDriver,
+            'must return a RemoteWebDriver object'
+        );
     }
 
     /**
@@ -216,8 +215,4 @@ class SeleniumTestCaseTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals('http://wwww.google.ro', $domain, 'Domain is wong');
     }
-
 }
-
-class SeleniumTestCaseExample extends SeleniumTestCase
-{}

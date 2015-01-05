@@ -49,13 +49,13 @@ abstract class SeleniumTestCase extends WebTestCase
     }
 
     /**
-     * with / at the beginning
-     *
      * @param $url
+     *
+     * @return \RemoteWebDriver
      */
     public function open($url)
     {
-        $this->getWebDriver()->get($this->getDomain() . $url);
+        return $this->getWebDriver()->get($this->getDomain() . $url);
     }
 
     /**

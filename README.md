@@ -345,6 +345,89 @@ class SomeElasticTest extends ElasticTestCase
 ```
 
 
+
+#### Selenium Test Case
+This case is an extension of WebTestCase, from current bundle, with extra Selenium support
+It has the following methods:
+
+* **open** ($url)
+* **getDomain** ()
+
+* **loadTableFixtures** (array $fixtures, $dropDatabaseBefore = true)
+* **loadTestFixtures** (array $fixtures, $dropDatabaseBefore = true)
+* **loadCustomFixtures** (array $fixtures, $dropDatabaseBefore = true)
+* **getClient** ()
+* **getContainer** ()
+* **getEntityManager** ()
+* **getEntityRepository** ()
+
+* **getMockedEntityWithId** ($entityNamespaceClass, $id)
+* **getEntityWithId** ($entityNamespaceClass, $id)
+
+
+```php
+use Cosma\Bundle\TestingBundle\TestCase\SeleniumTestCase;
+
+class SomeSeleniumTest extends SeleniumTestCase
+{
+    public function setUp()
+    {
+        parent::setUp();
+
+        $elasticType = $this->getElasticType();
+
+
+        /**
+         * first fixture document
+         */
+        $idOne = 1;
+        $dataOne = array(
+            'id'      => $idOne,
+            'user'    => array(
+                'name'      => 'mewantcookie',
+                'fullName'  => 'Cookie Monster'
+            ),
+            'msg'     => 'Me wish there were expression for cookies ',
+            'tstamp'  => '1238081389',
+            'location'=> '41.12,-71.34',
+            '_boost'  => 1.0
+        );
+
+        $documentOne = new \Elastica\Document($idOne, $dataOne);
+
+
+        /**
+         * second fixture document
+         */
+        $idTwo = 2;
+        $dataTwo = array(
+            'id'      => $idTwo,
+            'user'    => array(
+                'name'      => 'shewantcookie',
+                'fullName'  => 'Cookie Witch'
+            ),
+            'msg'     => 'blah blah blah expresion.',
+            'tstamp'  => '143567',
+            'location'=> '43.12,-78.34',
+            '_boost'  => 3.0
+        );
+
+        $documentTwo = new \Elastica\Document($idTwo, $dataTwo);
+
+        /**
+         * add documents to type
+         */
+        $elasticType->addDocument($documentOne);
+        $elasticType->addDocument($documentTwo);
+
+        /**
+         * refresh index
+         */
+        $elasticType->getIndex()->refresh();
+    }
+```
+
+
 ### Fixtures
 
 [Alice](https://github.com/nelmio/alice) fixtures are integrated with [Faker](https://github.com/fzaninotto/Faker).
