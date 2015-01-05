@@ -370,61 +370,14 @@ use Cosma\Bundle\TestingBundle\TestCase\SeleniumTestCase;
 
 class SomeSeleniumTest extends SeleniumTestCase
 {
-    public function setUp()
-    {
-        parent::setUp();
-
-        $elasticType = $this->getElasticType();
-
-
         /**
-         * first fixture document
+         * read title from google site
          */
-        $idOne = 1;
-        $dataOne = array(
-            'id'      => $idOne,
-            'user'    => array(
-                'name'      => 'mewantcookie',
-                'fullName'  => 'Cookie Monster'
-            ),
-            'msg'     => 'Me wish there were expression for cookies ',
-            'tstamp'  => '1238081389',
-            'location'=> '41.12,-71.34',
-            '_boost'  => 1.0
-        );
-
-        $documentOne = new \Elastica\Document($idOne, $dataOne);
-
-
-        /**
-         * second fixture document
-         */
-        $idTwo = 2;
-        $dataTwo = array(
-            'id'      => $idTwo,
-            'user'    => array(
-                'name'      => 'shewantcookie',
-                'fullName'  => 'Cookie Witch'
-            ),
-            'msg'     => 'blah blah blah expresion.',
-            'tstamp'  => '143567',
-            'location'=> '43.12,-78.34',
-            '_boost'  => 3.0
-        );
-
-        $documentTwo = new \Elastica\Document($idTwo, $dataTwo);
-
-        /**
-         * add documents to type
-         */
-        $elasticType->addDocument($documentOne);
-        $elasticType->addDocument($documentTwo);
-
-        /**
-         * refresh index
-         */
-        $elasticType->getIndex()->refresh();
-    }
+        public function testGoogleTitle()
+        {
+            $webDriver = $this->open('http://google.de');
+            $this->assertContains('Google', $webDriver->getTitle());
+        }
 ```
 
 
