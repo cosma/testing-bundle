@@ -18,7 +18,7 @@ abstract class SeleniumTestCase extends WebTestCase
     /**
      * @var \RemoteWebDriver
      */
-    private static $webDriver;
+    private $webDriver;
 
     protected function setUp()
     {
@@ -29,8 +29,8 @@ abstract class SeleniumTestCase extends WebTestCase
     protected function tearDown()
     {
         parent::tearDown();
-        self::$webDriver->close();
-        self::$webDriver = NULL;
+        $this->webDriver->close();
+        $this->webDriver = NULL;
     }
 
     /**
@@ -38,14 +38,14 @@ abstract class SeleniumTestCase extends WebTestCase
      */
     protected function getWebDriver()
     {
-        if (NULL === self::$webDriver) {
-            self::$webDriver = \RemoteWebDriver::create(
+        if (NULL === $this->webDriver) {
+            $this->webDriver = \RemoteWebDriver::create(
                 static::$kernel->getContainer()->getParameter('cosma_testing.selenium.server'),
                 \DesiredCapabilities::firefox()
             );
         }
 
-        return self::$webDriver;
+        return $this->webDriver;
     }
 
     /**

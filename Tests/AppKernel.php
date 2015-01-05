@@ -22,5 +22,4 @@ class AppKernel extends HttpKernel
     public function __construct(){}
     public function boot(){}
     public function shutdown(){}
-    //public function getContainer(){}
 }

@@ -24,7 +24,7 @@ class SeleniumTestCaseTest extends \PHPUnit_Framework_TestCase
      */
     public function testStaticAttributes()
     {
-        $this->assertClassHasStaticAttribute('webDriver', 'Cosma\Bundle\TestingBundle\TestCase\SeleniumTestCase');
+        $this->assertClassHasAttribute('webDriver', 'Cosma\Bundle\TestingBundle\TestCase\SeleniumTestCase');
     }
 
     /**
@@ -34,20 +34,15 @@ class SeleniumTestCaseTest extends \PHPUnit_Framework_TestCase
     {
         $webDriver = $this->getMockBuilder('\RemoteWebDriver')
             ->disableOriginalConstructor()
+            ->setMethods(array('close', 'execute'))
             ->getMockForAbstractClass();
-
-        $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerInterface')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getParameter'))
-            ->getMockForAbstractClass();
+        $webDriver->expects($this->once())
+            ->method('close')
+            ->will($this->returnSelf());
 
         $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\KernelInterface')
             ->disableOriginalConstructor()
-            ->setMethods(array('getContainer'))
             ->getMockForAbstractClass();
-        $kernel->expects($this->exactly(5))
-            ->method('getContainer')
-            ->will($this->returnValue($container));
 
         $seleniumTestCase = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\SeleniumTestCase')
             ->disableOriginalConstructor()
@@ -85,12 +80,29 @@ class SeleniumTestCaseTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @see SeleniumTestCase::getWebDriver
+     *
+     * @expectedException WebDriverCurlException
      */
     public function testGetWebDriver()
     {
+        $valueMap = array(
+            array('cosma_testing.selenium.server', 'http://127.0.0.1:4444/wd/hub')
+        );
+
+        $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerInterface')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getParameter'))
+            ->getMockForAbstractClass();
+        $container->expects($this->once())
+            ->method('getParameter')
+            ->will($this->returnValueMap($valueMap));
+
         $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\KernelInterface')
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
+        $kernel->expects($this->once())
+            ->method('getContainer')
+            ->will($this->returnValue($container));
 
         $seleniumTestCase = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\SeleniumTestCase')
             ->disableAutoload()
@@ -106,14 +118,7 @@ class SeleniumTestCaseTest extends \PHPUnit_Framework_TestCase
         $reflectionMethod = $reflectionClass->getMethod('getWebDriver');
         $reflectionMethod->setAccessible(true);
 
-        /** @var \WebDriver $webDriver */
-        $webDriver = $reflectionMethod->invoke($seleniumTestCase);
-
-        $this->assertInstanceOf(
-            '\WebDriver',
-            $webDriver,
-            'must return a \WebDriver object'
-        );
+        $reflectionMethod->invoke($seleniumTestCase);
 
         $reflectionMethod = $reflectionClass->getMethod('tearDown');
         $reflectionMethod->setAccessible(true);
