@@ -15,6 +15,7 @@ Supports following test cases:
 * WebTestCase
 * SolrTestCase
 * ElasticTestCase
+* SeleniumTestCase
 
 
 
