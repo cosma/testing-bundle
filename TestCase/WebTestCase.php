@@ -40,11 +40,6 @@ abstract class WebTestCase extends WebTestCaseBase
     private static $fixturePath;
 
     /**
-     * @var string
-     */
-    private static $entityNameSpace;
-
-    /**
      * @return void
      */
     public static function setUpBeforeClass()
@@ -54,7 +49,18 @@ abstract class WebTestCase extends WebTestCaseBase
         static::getCurrentBundle();
         static::getFixtureManager();
         static::getFixturePath();
-        static::getEntityNameSpace();
+    }
+
+    /**
+     * Clean up Kernel usage in this test.
+     */
+    public static function tearDownAfterClass()
+    {
+        self::$currentBundle = NULL;
+        self::$fixtureManager = NULL;
+        self::$fixturePath = NULL;
+
+        static::ensureKernelShutdown();
     }
 
     /**
@@ -63,21 +69,14 @@ abstract class WebTestCase extends WebTestCaseBase
     protected function setUp()
     {
         static::bootKernel();
-
     }
 
     /**
-     * Clean up Kernel usage in this test.
+     * overwrite tearDown for KernelTestCase
      */
-    public static function tearDownAfterClass()
+    protected function tearDown()
     {
-
-        self::$currentBundle = null;
-        self::$fixtureManager = null;
-        self::$fixturePath = null;
-        self::$entityNameSpace = null;
-
-        static::ensureKernelShutdown();
+        parent::tearDown();
     }
 
     /**
@@ -104,35 +103,41 @@ abstract class WebTestCase extends WebTestCaseBase
     }
 
     /**
-     * @param $entity
+     * @param $entityName
      *
-     * @return EntityRepository
+     * @return \Doctrine\ORM\EntityRepository
      */
-    protected function getEntityRepository($entity)
+    protected function getEntityRepository($entityName)
     {
-        $repositoryName = static::getCurrentBundle()->getName() . ':' . $entity;
+        if (FALSE !== strpos($entityName, ':')) {
+            $entityDescription = explode(':', $entityName);
 
-        return $this->getEntityManager()->getRepository($repositoryName);
+            $bundleName = $entityDescription[0];
+            $entityName = $entityDescription[1];
+
+        }else{
+            $bundleName = static::getCurrentBundle()->getName();
+        }
+
+        return $this->getEntityManager()->getRepository($bundleName . ':' . $entityName);
     }
 
     /**
-     * @param $entityClassName
+     * @param $entity
      * @param $id
      *
      * @return \PHPUnit_Framework_MockObject_MockObject
      * @throws EntityNotFoundException
      */
-    protected function getMockedEntityWithId($entityClassName, $id)
+    protected function getMockedEntityWithId($entity, $id)
     {
-        if (false === strpos($entityClassName, '\\')) {
-            $entityClassName = static::getEntityNameSpace() . '\\' . $entityClassName;
-        }
+        $entityClass = $this->getFullPathEntity($entity);
 
-        if (!class_exists($entityClassName)) {
+        if (!class_exists($entityClass)) {
             throw new EntityNotFoundException();
         }
 
-        $entityModel = $this->getMock($entityClassName, array('getId'));
+        $entityModel = $this->getMock($entityClass, array('getId'));
         $entityModel
             ->expects($this->any())
             ->method('getId')
@@ -142,27 +147,25 @@ abstract class WebTestCase extends WebTestCaseBase
     }
 
     /**
-     * @param $entityClassName
+     * @param $entity
      * @param $id
      *
      * @return mixed
      * @throws EntityNotFoundException
      */
-    protected function getEntityWithId($entityClassName, $id)
+    protected function getEntityWithId($entity, $id)
     {
-        if (false === strpos($entityClassName, '\\')) {
-            $entityClassName = static::getEntityNameSpace() . '\\' . $entityClassName;
-        }
+        $entityClass = $this->getFullPathEntity($entity);
 
-        if (!class_exists($entityClassName)) {
+        if (!class_exists($entityClass)) {
             throw new EntityNotFoundException();
         }
 
-        $entityObject = new $entityClassName;
+        $entityObject = new $entityClass;
 
-        $reflectionObject   = new \ReflectionObject($entityObject);
+        $reflectionObject = new \ReflectionObject($entityObject);
         $reflectionProperty = $reflectionObject->getProperty('id');
-        $reflectionProperty->setAccessible(true);
+        $reflectionProperty->setAccessible(TRUE);
         $reflectionProperty->setValue($entityObject, $id);
 
         return $entityObject;
@@ -175,7 +178,7 @@ abstract class WebTestCase extends WebTestCaseBase
      * @return array
      * @throws \InvalidArgumentException
      */
-    protected function loadTableFixtures(array $fixtures, $dropDatabaseBefore = true)
+    protected function loadTableFixtures(array $fixtures, $dropDatabaseBefore = TRUE)
     {
         if (0 == count($fixtures)) {
             throw new \InvalidArgumentException('Array is empty.');
@@ -193,15 +196,15 @@ abstract class WebTestCase extends WebTestCaseBase
      * @return array
      * @throws \InvalidArgumentException
      */
-    protected function loadTestFixtures(array $fixtures, $dropDatabaseBefore = true)
+    protected function loadTestFixtures(array $fixtures, $dropDatabaseBefore = TRUE)
     {
         if (0 == count($fixtures)) {
             throw new \InvalidArgumentException('Array is empty.');
         }
 
-        $debugTrace    = debug_backtrace();
+        $debugTrace = debug_backtrace();
         $testClassPath = $this->getTestClassPath($debugTrace);
-        $fixtures      = $this->appendTestFixturesPath($fixtures, $testClassPath);
+        $fixtures = $this->appendTestFixturesPath($fixtures, $testClassPath);
 
         return $this->loadFixture($fixtures, $dropDatabaseBefore);
     }
@@ -213,7 +216,7 @@ abstract class WebTestCase extends WebTestCaseBase
      * @return array
      * @throws \InvalidArgumentException
      */
-    protected function loadCustomFixtures(array $fixtures, $dropDatabaseBefore = true)
+    protected function loadCustomFixtures(array $fixtures, $dropDatabaseBefore = TRUE)
     {
         if (0 == count($fixtures)) {
             throw new \InvalidArgumentException('Array is empty.');
@@ -232,8 +235,8 @@ abstract class WebTestCase extends WebTestCaseBase
     protected function getTestClassPath(array $debugTrace)
     {
         if (isset($debugTrace[0]['file'])) {
-            $testPath      = strpos($debugTrace[0]['file'], "Tests/", 1);
-            $filePath      = substr($debugTrace[0]['file'], $testPath + 6);
+            $testPath = strpos($debugTrace[0]['file'], "Tests/", 1);
+            $filePath = substr($debugTrace[0]['file'], $testPath + 6);
             $testClassPath = str_replace('.php', '', $filePath);
         } else {
             $testClassPath = '';
@@ -247,8 +250,8 @@ abstract class WebTestCase extends WebTestCaseBase
      */
     private static function getCurrentBundle()
     {
-        if (null === self::$currentBundle) {
-            $bundles          = static::$kernel->getBundles();
+        if (NULL === self::$currentBundle) {
+            $bundles = static::$kernel->getBundles();
             $currentTestClass = get_called_class();
 
             foreach ($bundles as $bundle) {
@@ -262,11 +265,28 @@ abstract class WebTestCase extends WebTestCaseBase
     }
 
     /**
+     * @param $bundleName
+     *
+     * @return \Symfony\Component\HttpKernel\Bundle\BundleInterface
+     * @throws \Exception
+     */
+    private function getBundleByName($bundleName)
+    {
+        $bundles = static::$kernel->getBundles();
+        foreach ($bundles as $bundle) {
+            if ($bundleName == $bundle->getName()) {
+                return $bundle;
+            }
+        }
+        throw new \Exception("Bundle not found: {$bundle}");
+    }
+
+    /**
      * @return FixtureManager
      */
     private static function getFixtureManager()
     {
-        if (null === self::$fixtureManager) {
+        if (NULL === self::$fixtureManager) {
             self::$fixtureManager = static::$kernel->getContainer()->get('h4cc_alice_fixtures.manager');
         }
 
@@ -278,8 +298,8 @@ abstract class WebTestCase extends WebTestCaseBase
      */
     private static function getFixturePath()
     {
-        if (null === self::$fixturePath) {
-            $fixturePath = static::getCurrentBundle()->getPath() . '/'.
+        if (NULL === self::$fixturePath) {
+            $fixturePath = static::getCurrentBundle()->getPath() . '/' .
                 static::$kernel->getContainer()->getParameter('cosma_testing.fixture_path');
 
             self::$fixturePath = $fixturePath;
@@ -289,26 +309,48 @@ abstract class WebTestCase extends WebTestCaseBase
     }
 
     /**
-     * @return string
-     */
-    private static function getEntityNameSpace()
-    {
-        if (null === self::$entityNameSpace) {
-            $entityManager = static::$kernel->getContainer()->get('doctrine')->getManager();
-
-            self::$entityNameSpace = static::getEntityNamespaceForBundle($entityManager, static::getCurrentBundle());
-        }
-
-        return self::$entityNameSpace;
-    }
-
-    /**
-     * @param EntityManager   $entityManager
-     * @param BundleInterface $bundle
+     * @param $entity
      *
      * @return mixed
      */
-    private static function getEntityNamespaceForBundle(EntityManager $entityManager, BundleInterface $bundle)
+    private function getFullPathEntity($entity)
+    {
+
+        if (FALSE !== strpos($entity, '\\')) {
+            return $entity;
+        }
+
+        $entityManager = static::$kernel->getContainer()->get('doctrine')->getManager();
+
+        if (FALSE !== strpos($entity, ':')) {
+            $entityDescription = explode(':', $entity);
+
+            $bundleName = $entityDescription[0];
+            $entityName = $entityDescription[1];
+
+            $bundle = $this->getBundleByName($bundleName);
+
+            $fullPathEntity = $this->getEntityNamespaceForBundle($entityManager, $bundle) .
+                '\\' .
+                $entityName;
+
+            return $fullPathEntity;
+        }
+
+        $fullPathEntity = $this->getEntityNamespaceForBundle($entityManager, static::getCurrentBundle()) .
+            '\\' .
+            $entity;
+
+        return $fullPathEntity;
+    }
+
+    /**
+     * @param \Doctrine\ORM\EntityManager                          $entityManager
+     * @param \Symfony\Component\HttpKernel\Bundle\BundleInterface $bundle
+     *
+     * @return mixed
+     */
+    private function getEntityNamespaceForBundle(EntityManager $entityManager, BundleInterface $bundle)
     {
         $metadataCollection = $entityManager->getMetadataFactory()->getAllMetadata();
         /** @var ClassMetadata $m */
@@ -383,7 +425,7 @@ abstract class WebTestCase extends WebTestCaseBase
     {
         $fixtureManager = static::getFixtureManager();
         if ($dropDatabaseBefore) {
-            $fixtureManager->persist(array(), true);
+            $fixtureManager->persist(array(), TRUE);
         }
 
         $objects = $fixtureManager->loadFiles($fixtures);
