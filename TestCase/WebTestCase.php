@@ -18,7 +18,6 @@ use Doctrine\ORM\EntityNotFoundException;
 use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase as WebTestCaseBase;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityRepository;
 use h4cc\AliceFixturesBundle\Fixtures\FixtureManager;
 use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 
