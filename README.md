@@ -151,7 +151,7 @@ class SomeFunctionalTest extends WebTestCase
     public function setUp()
     {
         /**
-         * Important! Need to run this to boot the Symfony kernel
+         * Boot the Symfony kernel
          */
         parent::setUp();
 
@@ -241,7 +241,7 @@ class SomeSolrTest extends SolrTestCase
     public function setUp()
     {
         /**
-         * Important! Need to run this to boot the Symfony kernel
+         * Boot the Symfony kernel
          */
         parent::setUp();
         
@@ -328,7 +328,7 @@ class SomeElasticTest extends ElasticTestCase
     public function setUp()
     {
         /**
-         * Important! Need to run this to boot the Symfony kernel
+         * Boot the Symfony kernel
          */
         parent::setUp();
 
@@ -353,7 +353,7 @@ class SomeElasticTest extends ElasticTestCase
     private function loadElasticSearchData()
     {
         /**
-         * Important! Need to run this to boot the Symfony kernel
+         * Boot the Symfony kernel
          */
         parent::setUp();
 
@@ -441,7 +441,7 @@ class SomeSeleniumTest extends SeleniumTestCase
     public function setUp()
     {
         /**
-         * Important! Need to run this to boot the Symfony kernel
+         * Boot the Symfony kernel
          */
         parent::setUp();
 
