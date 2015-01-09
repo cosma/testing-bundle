@@ -1,7 +1,7 @@
 ##
 # Install php project dependencies through composer
 ##
-composer self-update
+sudo composer self-update
 composer install --prefer-source
 
 
