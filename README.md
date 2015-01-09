@@ -151,6 +151,11 @@ class SomeFunctionalTest extends WebTestCase
     public function setUp()
     {
         /**
+         * Important! Need to run this to boot the Symfony kernel
+         */
+        parent::setUp();
+
+        /**
          * Fixtures loaded the table directory where mostly resides data for DB tables
          * Data from one table is in one file.
          */
@@ -169,30 +174,39 @@ class SomeFunctionalTest extends WebTestCase
         $this->loadCustomFixtures(array('/var/www/Acme/BundleDemo/Fixture/Colleague'), false);
 
     }
-    
+
+    /**
+     * @see SomeFunctional::Something
+     */
     public function testSomething()
     {
+        /**
+         * Fixtures can be load inside a test, too.
+         */
+        $this->loadTableFixtures(array('Favorite', 'Music'));
+
+
         $mockedUserAbsolute = $this->getMockedEntityWithId('Acme\DemoBundle\Entity\User', 11);
-        
+
         $mockedUserRelative = $this->getMockedEntityWithId('User', 1200);
-        
+
         $userAbsolute = $this->getEntityWithId('Acme\DemoBundle\Entity\User', 134);
-        
+
         $userRelative = $this->getEntityWithId('User', 12);
-        
+
         /**
-        *  Client for functional tests. Emulates a browser
-        */
+         *  Client for functional tests. Emulates a browser
+         */
         $client = $this->getClient();
-        
+
         /**
-        *  EntityManager - Doctrine
-        */
+         *  EntityManager - Doctrine
+         */
         $entityManager = $this->getEntityManger();
-        
+
         /**
-        *  EntityRepository for User
-        */
+         *  EntityRepository for User
+         */
         $userRepository = $this->getEntityRepository('User');
     }
 }
@@ -223,10 +237,32 @@ use Cosma\Bundle\TestingBundle\TestCase\SolrTestCase;
 
 class SomeSolrTest extends SolrTestCase
 {
+
     public function setUp()
     {
+        /**
+         * Important! Need to run this to boot the Symfony kernel
+         */
         parent::setUp();
         
+        $this->loadTableFixtures(array('User', 'Group'));
+    }
+
+    public function testIndex()
+    {
+        $client = $this->getClient();
+
+        $crawler = $client->request('GET', '/get/data/from/solr');
+
+        $this->assertGreaterThan(
+            0,
+            $crawler->filter('html:contains("Hello Solr")')->count()
+        );
+    }
+
+    private function loadSolrData()
+    {
+
         $solariumClient = $this->getSolariumClient();
 
         /**
@@ -255,12 +291,13 @@ class SomeSolrTest extends SolrTestCase
          */
         $update->addDocuments(array($documentOne, $documentTwo));
         $update->addCommit();
-        
+
         /**
          * execute query
          */
         $solariumClient->update($update);
     }
+}
 ```
 
 
@@ -286,12 +323,38 @@ It has the following methods:
 
 
 ```php
-use Cosma\Bundle\TestingBundle\TestCase\ElasticTestCase;
-
 class SomeElasticTest extends ElasticTestCase
 {
     public function setUp()
     {
+        /**
+         * Important! Need to run this to boot the Symfony kernel
+         */
+        parent::setUp();
+
+        $this->loadTableFixtures(array('User', 'Group'));
+    }
+
+    /**
+     * @see SomeElasticController::indexAction
+     */
+    public function testIndex()
+    {
+        $client = $this->getClient();
+
+        $crawler = $client->request('GET', '/get/data/from/es');
+
+        $this->assertGreaterThan(
+            0,
+            $crawler->filter('html:contains("Hello Elastic")')->count()
+        );
+    }
+
+    private function loadElasticSearchData()
+    {
+        /**
+         * Important! Need to run this to boot the Symfony kernel
+         */
         parent::setUp();
 
         $elasticType = $this->getElasticType();
@@ -345,6 +408,7 @@ class SomeElasticTest extends ElasticTestCase
          */
         $elasticType->getIndex()->refresh();
     }
+}
 ```
 
 
@@ -373,14 +437,26 @@ use Cosma\Bundle\TestingBundle\TestCase\SeleniumTestCase;
 
 class SomeSeleniumTest extends SeleniumTestCase
 {
+
+    public function setUp()
+    {
         /**
-         * read title from google site
+         * Important! Need to run this to boot the Symfony kernel
          */
-        public function testGoogleTitle()
-        {
-            $webDriver = $this->open('http://google.de');
-            $this->assertContains('Google', $webDriver->getTitle());
-        }
+        parent::setUp();
+
+        $this->loadTableFixtures(array('User', 'Group'));
+    }
+
+    /**
+     * read title from google site
+     */
+    public function testGoogleTitle()
+    {
+        $webDriver = $this->open('http://google.de');
+        $this->assertContains('Google', $webDriver->getTitle());
+    }
+}
 ```
 
 

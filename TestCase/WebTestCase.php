@@ -63,14 +63,6 @@ abstract class WebTestCase extends WebTestCaseBase
     }
 
     /**
-     * @return void
-     */
-    protected function setUp()
-    {
-        static::bootKernel();
-    }
-
-    /**
      * overwrite tearDown for KernelTestCase
      */
     protected function tearDown()
