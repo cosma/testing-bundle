@@ -14,6 +14,7 @@
 
 namespace Cosma\Bundle\TestingBundle\DependencyInjection;
 
+use Cosma\Bundle\TestingBundle\ORM\SchemaTool;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
@@ -33,6 +34,18 @@ class CosmaTestingExtension extends Extension
     {
         $configuration = new Configuration();
         $config        = $this->processConfiguration($configuration, $configs);
+
+        if(isset($config['doctrine']['cleaning_strategy'])){
+            $doctrineCleaningStrategy = $config['doctrine']['cleaning_strategy'];
+            $container->setParameter('cosma_testing.doctrine.cleaning_strategy', $doctrineCleaningStrategy);
+
+            if(SchemaTool::DOCTRINE_CLEANING_TRUNCATE == $doctrineCleaningStrategy){
+                $container->setParameter(
+                    'h4cc_alice_fixtures.orm.schema_tool.doctrine.class',
+                    'Cosma\Bundle\TestingBundle\ORM\SchemaTool'
+                );
+            }
+        }
 
         if(isset($config['fixture_path'])){
             $container->setParameter('cosma_testing.fixture_path', $config['fixture_path']);

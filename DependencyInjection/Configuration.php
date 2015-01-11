@@ -14,6 +14,7 @@
 
 namespace Cosma\Bundle\TestingBundle\DependencyInjection;
 
+use Cosma\Bundle\TestingBundle\ORM\SchemaTool;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -37,6 +38,18 @@ class Configuration implements ConfigurationInterface
                 ->scalarNode('fixture_path')->defaultValue('Fixture')->end()
                 ->scalarNode('fixture_table_directory')->defaultValue('Table')->end()
                 ->scalarNode('fixture_test_directory')->defaultValue('Test')->end()
+                ->arrayNode('doctrine')
+                    ->canBeUnset()
+                    ->children()
+                        ->enumNode('cleaning_strategy')
+                            ->defaultValue(SchemaTool::DOCTRINE_CLEANING_TRUNCATE)
+                            ->values(array(
+                                SchemaTool::DOCTRINE_CLEANING_TRUNCATE,
+                                SchemaTool::DOCTRINE_CLEANING_DROP
+                            ))
+                        ->end()
+                    ->end()
+                ->end()
                 ->arrayNode('solarium')
                     ->canBeUnset()
                     ->children()

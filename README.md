@@ -68,6 +68,10 @@ This sets a new relative path to the fixture directory in your bundle.
 
 cosma_testing:
     fixture_path: Fixture
+    fixture_table_directory: Table
+    fixture_test_directory: Test
+    doctrine:
+        cleaning_strategy: truncate # drop - to drop database
     solarium:
         host: 127.0.0.1
         port: 8080
