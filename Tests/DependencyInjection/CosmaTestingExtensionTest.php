@@ -24,6 +24,9 @@ class CosmaTestingExtensionTest extends \PHPUnit_Framework_TestCase
     {
         $config = array(
             'fixture_path' => 'Some/Fixture/Directory',
+            'doctrine' => array(
+                'cleaning_strategy' => 'drop'
+            ),
             'solarium' => array(
                 'host' => '127.0.0.1',
                 'port' => 8080,
@@ -50,6 +53,7 @@ class CosmaTestingExtensionTest extends \PHPUnit_Framework_TestCase
             'cosma_testing.fixture_path',
             'cosma_testing.fixture_table_directory',
             'cosma_testing.fixture_test_directory',
+            'cosma_testing.doctrine.cleaning_strategy',
             'cosma_testing.solarium.host',
             'cosma_testing.solarium.port',
             'cosma_testing.solarium.path',
@@ -68,6 +72,39 @@ class CosmaTestingExtensionTest extends \PHPUnit_Framework_TestCase
         foreach ($parameters as $parameter) {
             $this->assertTrue($container->hasParameter($parameter), "Container doesn't has the parameter {$parameter}");
         }
+    }
+
+    /**
+     * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
+     */
+    public function testConfigParameters_Exception()
+    {
+        $config = array(
+            'fixture_path' => 'Some/Fixture/Directory',
+            'doctrine'     => array(
+                'cleaning_strategy' => 'qwerty'
+            ),
+            'solarium'     => array(
+                'host'    => '127.0.0.1',
+                'port'    => 8080,
+                'path'    => '/solr',
+                'core'    => 'tests',
+                'timeout' => 45
+            ),
+            'elastica'     => array(
+                'host'    => '127.0.0.1',
+                'port'    => 9200,
+                'path'    => '/',
+                'timeout' => 15,
+                'index'   => 'tests',
+                'type'    => 'tests'
+            ),
+            'selenium'     => array(
+                'domain' => '127.0.0.1:4444'
+            )
+        );
+
+        $this->getContainerWithLoadedExtension($config);
     }
 
     protected function getContainerWithLoadedExtension(array $config = array())

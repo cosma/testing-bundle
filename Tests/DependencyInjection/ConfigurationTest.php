@@ -16,11 +16,6 @@ namespace Cosma\Bundle\TestingBundle\Tests\DependencyInjection;
 
 use Cosma\Bundle\TestingBundle\DependencyInjection\Configuration;
 
-/**
- * Class ConfigurationTest
- *
- * @author Julius Beckmann <github@h4cc.de>
- */
 class ConfigurationTest extends \PHPUnit_Framework_TestCase
 {
     public function testGetConfigTreeBuilder()
@@ -33,10 +28,15 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
 
         /** @var \Symfony\Component\Config\Definition\ScalarNode[] $options */
         $options = $node->getChildren();
-        $this->assertCount(6, $options);
+        $this->assertCount(7, $options);
         $this->assertEquals('Fixture', $options['fixture_path']->getDefaultValue());
         $this->assertEquals('Table', $options['fixture_table_directory']->getDefaultValue());
         $this->assertEquals('Test', $options['fixture_test_directory']->getDefaultValue());
+
+        /** @var \Symfony\Component\Config\Definition\ScalarNode[] $doctrineOptions */
+        $doctrineOptions = $options['doctrine']->getChildren();
+        $this->assertCount(1, $doctrineOptions);
+        $this->assertEquals('truncate', $doctrineOptions['cleaning_strategy']->getDefaultValue());
 
         /** @var \Symfony\Component\Config\Definition\ScalarNode[] $solariumOptions */
         $solariumOptions = $options['solarium']->getChildren();

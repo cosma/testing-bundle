@@ -13,7 +13,7 @@
 
 namespace Cosma\Bundle\TestingBundle\TestCase;
 
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\EntityNotFoundException;
 use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase as WebTestCaseBase;
@@ -344,7 +344,8 @@ abstract class WebTestCase extends WebTestCaseBase
     private function getEntityNamespaceForBundle(EntityManager $entityManager, BundleInterface $bundle)
     {
         $metadataCollection = $entityManager->getMetadataFactory()->getAllMetadata();
-        /** @var ClassMetadata $m */
+
+        /** @var ClassMetadata $metadata */
         foreach ($metadataCollection as $metadata) {
             if (0 === strpos($metadata->namespace, $bundle->getNamespace())) {
                 return $metadata->namespace;

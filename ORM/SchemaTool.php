@@ -23,30 +23,35 @@ class SchemaTool extends DoctrineORMSchemaTool
     const DOCTRINE_CLEANING_TRUNCATE = 'truncate';
     const DOCTRINE_CLEANING_DROP = 'drop';
 
-
     /**
+     * create only missing tables.
+     *
      * {@inheritDoc}
      */
     public function createSchema()
     {
         $connection = $this->entityManager->getConnection();
         $tableNames = $connection->getSchemaManager()->listTableNames();
+
+        $missingTablesMetaData = array();
+
         /** @var ClassMetadata $classMetadata */
         foreach ($this->entityManager->getMetadataFactory()->getAllMetadata() as $classMetadata) {
             if (!in_array($classMetadata->table['name'], $tableNames)) {
-                parent::dropSchema();
-                parent::createSchema();
-                break;
+                $missingTablesMetaData[] = $classMetadata;
             }
+        }
+
+        if(count($missingTablesMetaData)> 0){
+            $this->doctrineSchemaTool->createSchema($missingTablesMetaData);
         }
     }
 
     /**
-     * truncate instead of drop
+     * truncate instead of drop.
      */
     public function dropSchema()
     {
-        print_r("\n\n\6666666n\n");
         $connection = $this->entityManager->getConnection();
 
         $connection->beginTransaction();
@@ -57,7 +62,7 @@ class SchemaTool extends DoctrineORMSchemaTool
             foreach ($connection->getSchemaManager()->listTableNames() as $tableName) {
 
                 $truncateSql = "TRUNCATE `{$tableName}`";
-                $connection->executeUpdate($truncateSql);
+                $connection->exec($truncateSql);
             }
 
             $connection->query('SET FOREIGN_KEY_CHECKS=1');

@@ -17,9 +17,11 @@ namespace Cosma\Bundle\TestingBundle\Tests\TestCase;
 use Doctrine\DBAL\Exception\InvalidArgumentException;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Mapping\ClassMetadata;
 use Symfony\Bundle\FrameworkBundle\Client;
 
 use Cosma\Bundle\TestingBundle\TestCase\WebTestCase;
+use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 
 class WebTestCaseTest extends \PHPUnit_Framework_TestCase
 {
@@ -318,7 +320,11 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
         $reflectionMethod->setAccessible(true);
 
         /** @var ExampleEntity $mockedEntity */
-        $mockedEntity = $reflectionMethod->invoke($webTestCase, 'Cosma\Bundle\TestingBundle\Tests\TestCase\SomeEntity', 12345);
+        $mockedEntity = $reflectionMethod->invoke(
+            $webTestCase,
+            'Cosma\Bundle\TestingBundle\Tests\TestCase\SomeEntity',
+            12345
+        );
 
         $this->assertInstanceOf('Cosma\Bundle\TestingBundle\Tests\TestCase\SomeEntity', $mockedEntity);
         $this->assertEquals(12345, $mockedEntity->getId());
@@ -327,10 +333,69 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
     /**
      * @see Cosma\Bundle\TestingBundle\TestCase\WebTestCase::getMockedEntityWithId
      */
-    public function testGetMockedEntityWithId_NoNamespace()
+    public function testGetMockedEntityWithId_BundleAndEntity()
     {
+        /** @type ClassMetadata $metadata */
+        $metadata = $this->getMockBuilder('Doctrine\ORM\Mapping\ClassMetadata')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getAllMetadata'))
+            ->getMock();
+        $metadata->namespace = 'Cosma\Bundle\TestingBundle\Tests\TestCase';
 
-        $this->markTestSkipped('rewrite test!');
+        $metadataFactory = $this->getMockBuilder('\Doctrine\ORM\Mapping\ClassMetadataFactory')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getAllMetadata'))
+            ->getMock();
+        $metadataFactory->expects($this->any())
+            ->method('getAllMetadata')
+            ->will($this->returnValue(array($metadata)));
+
+        $entityManager = $this->getMockBuilder('Doctrine\ORM\EntityManager')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getMetadataFactory'))
+            ->getMock();
+        $entityManager->expects($this->any())
+            ->method('getMetadataFactory')
+            ->will($this->returnValue($metadataFactory));
+
+        $bundle = $this->getMockBuilder('Symfony\Component\HttpKernel\Bundle\BundleInterface')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getName', 'getNamespace'))
+            ->getMockForAbstractClass();
+        $bundle->expects($this->any())
+            ->method('getName')
+            ->will($this->returnValue('TestingBundle'));
+        $bundle->expects($this->any())
+            ->method('getNamespace')
+            ->will($this->returnValue('Cosma\Bundle\TestingBundle\Tests\TestCase'));
+
+        $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getManager'))
+            ->getMock();
+        $doctrine->expects($this->once())
+            ->method('getManager')
+            ->will($this->returnValue($entityManager));
+
+        $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerInterface')
+            ->disableOriginalConstructor()
+            ->setMethods(array('get'))
+            ->getMockForAbstractClass();
+        $container->expects($this->once())
+            ->method('get')
+            ->with('doctrine')
+            ->will($this->returnValue($doctrine));
+
+        $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\KernelInterface')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getContainer', 'getBundles'))
+            ->getMockForAbstractClass();
+        $kernel->expects($this->once())
+            ->method('getContainer')
+            ->will($this->returnValue($container));
+        $kernel->expects($this->once())
+            ->method('getBundles')
+            ->will($this->returnValue(array($bundle)));
 
         $webTestCase = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\WebTestCase')
             ->disableOriginalConstructor()
@@ -338,6 +403,10 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
 
         $reflectionClassMocked = new \ReflectionClass($webTestCase);
         $reflectionClass       = $reflectionClassMocked->getParentClass();
+
+        $kernelProperty = $reflectionClass->getProperty('kernel');
+        $kernelProperty->setAccessible(true);
+        $kernelProperty->setValue($kernel);
 
         $reflectionMethod = $reflectionClass->getMethod('getMockedEntityWithId');
         $reflectionMethod->setAccessible(true);
@@ -347,6 +416,95 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals(12345, $mockedEntity->getId());
         $this->assertInstanceOf('Cosma\Bundle\TestingBundle\Tests\TestCase\AnotherExampleEntity', $mockedEntity);
+    }
+
+    /**
+     * @see Cosma\Bundle\TestingBundle\TestCase\WebTestCase::getMockedEntityWithId
+     */
+    public function testGetMockedEntityWithId_Entity()
+    {
+        /** @type ClassMetadata $metadata */
+        $metadata = $this->getMockBuilder('Doctrine\ORM\Mapping\ClassMetadata')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getAllMetadata'))
+            ->getMock();
+        $metadata->namespace = 'Cosma\Bundle\TestingBundle\Tests\TestCase';
+
+        $metadataFactory = $this->getMockBuilder('\Doctrine\ORM\Mapping\ClassMetadataFactory')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getAllMetadata'))
+            ->getMock();
+        $metadataFactory->expects($this->any())
+            ->method('getAllMetadata')
+            ->will($this->returnValue(array($metadata)));
+
+        $entityManager = $this->getMockBuilder('Doctrine\ORM\EntityManager')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getMetadataFactory'))
+            ->getMock();
+        $entityManager->expects($this->any())
+            ->method('getMetadataFactory')
+            ->will($this->returnValue($metadataFactory));
+
+        $bundle = $this->getMockBuilder('Symfony\Component\HttpKernel\Bundle\BundleInterface')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getName', 'getNamespace'))
+            ->getMockForAbstractClass();
+        $bundle->expects($this->any())
+            ->method('getName')
+            ->will($this->returnValue('TestingBundle'));
+        $bundle->expects($this->any())
+            ->method('getNamespace')
+            ->will($this->returnValue('Cosma\Bundle\TestingBundle\Tests\TestCase'));
+
+        $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getManager'))
+            ->getMock();
+        $doctrine->expects($this->once())
+            ->method('getManager')
+            ->will($this->returnValue($entityManager));
+
+        $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerInterface')
+            ->disableOriginalConstructor()
+            ->setMethods(array('get'))
+            ->getMockForAbstractClass();
+        $container->expects($this->once())
+            ->method('get')
+            ->with('doctrine')
+            ->will($this->returnValue($doctrine));
+
+        $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\KernelInterface')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getContainer'))
+            ->getMockForAbstractClass();
+        $kernel->expects($this->once())
+            ->method('getContainer')
+            ->will($this->returnValue($container));
+
+        $webTestCase = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\WebTestCase')
+            ->disableOriginalConstructor()
+            ->getMockForAbstractClass();
+
+        $reflectionClassMocked = new \ReflectionClass($webTestCase);
+        $reflectionClass       = $reflectionClassMocked->getParentClass();
+
+        $kernelProperty = $reflectionClass->getProperty('kernel');
+        $kernelProperty->setAccessible(true);
+        $kernelProperty->setValue($kernel);
+
+        $currentBundleProperty = $reflectionClass->getProperty('currentBundle');
+        $currentBundleProperty->setAccessible(true);
+        $currentBundleProperty->setValue($bundle);
+
+        $reflectionMethod = $reflectionClass->getMethod('getMockedEntityWithId');
+        $reflectionMethod->setAccessible(true);
+
+        /** @var SomeEntity $mockedEntity */
+        $mockedEntity = $reflectionMethod->invoke($webTestCase, 'SomeEntity', 12345);
+
+        $this->assertEquals(12345, $mockedEntity->getId());
+        $this->assertInstanceOf('Cosma\Bundle\TestingBundle\Tests\TestCase\SomeEntity', $mockedEntity);
     }
 
     /**
@@ -390,9 +548,69 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
     /**
      * @see Cosma\Bundle\TestingBundle\TestCase\WebTestCase::getEntityWithId
      */
-    public function testGetEntityWithId_NoNamespace()
+    public function testGetEntityWithId_BundleAndEntity()
     {
-        $this->markTestSkipped('rewrite test!');
+        /** @type ClassMetadata $metadata */
+        $metadata = $this->getMockBuilder('Doctrine\ORM\Mapping\ClassMetadata')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getAllMetadata'))
+            ->getMock();
+        $metadata->namespace = 'Cosma\Bundle\TestingBundle\Tests\TestCase';
+
+        $metadataFactory = $this->getMockBuilder('\Doctrine\ORM\Mapping\ClassMetadataFactory')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getAllMetadata'))
+            ->getMock();
+        $metadataFactory->expects($this->any())
+            ->method('getAllMetadata')
+            ->will($this->returnValue(array($metadata)));
+
+        $entityManager = $this->getMockBuilder('Doctrine\ORM\EntityManager')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getMetadataFactory'))
+            ->getMock();
+        $entityManager->expects($this->any())
+            ->method('getMetadataFactory')
+            ->will($this->returnValue($metadataFactory));
+
+        $bundle = $this->getMockBuilder('Symfony\Component\HttpKernel\Bundle\BundleInterface')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getName', 'getNamespace'))
+            ->getMockForAbstractClass();
+        $bundle->expects($this->any())
+            ->method('getName')
+            ->will($this->returnValue('TestingBundle'));
+        $bundle->expects($this->any())
+            ->method('getNamespace')
+            ->will($this->returnValue('Cosma\Bundle\TestingBundle\Tests\TestCase'));
+
+        $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getManager'))
+            ->getMock();
+        $doctrine->expects($this->once())
+            ->method('getManager')
+            ->will($this->returnValue($entityManager));
+
+        $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerInterface')
+            ->disableOriginalConstructor()
+            ->setMethods(array('get'))
+            ->getMockForAbstractClass();
+        $container->expects($this->once())
+            ->method('get')
+            ->with('doctrine')
+            ->will($this->returnValue($doctrine));
+
+        $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\KernelInterface')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getContainer', 'getBundles'))
+            ->getMockForAbstractClass();
+        $kernel->expects($this->once())
+            ->method('getContainer')
+            ->will($this->returnValue($container));
+        $kernel->expects($this->once())
+            ->method('getBundles')
+            ->will($this->returnValue(array($bundle)));
 
         $webTestCase = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\WebTestCase')
             ->disableOriginalConstructor()
@@ -401,18 +619,107 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
         $reflectionClassMocked = new \ReflectionClass($webTestCase);
         $reflectionClass       = $reflectionClassMocked->getParentClass();
 
-//        $entityNameSpaceProperty = $reflectionClass->getProperty('entityNameSpace');
-//        $entityNameSpaceProperty->setAccessible(true);
-//        $entityNameSpaceProperty->setValue('Cosma\Bundle\TestingBundle\Tests\TestCase');
+        $kernelProperty = $reflectionClass->getProperty('kernel');
+        $kernelProperty->setAccessible(true);
+        $kernelProperty->setValue($kernel);
 
         $reflectionMethod = $reflectionClass->getMethod('getEntityWithId');
         $reflectionMethod->setAccessible(true);
 
         /** @var AnotherExampleEntity $entity */
-        $entity = $reflectionMethod->invoke($webTestCase, 'AnotherExampleEntity', 12345);
+        $entity = $reflectionMethod->invoke($webTestCase, 'TestingBundle:AnotherExampleEntity', 12345);
 
         $this->assertEquals(12345, $entity->getId());
         $this->assertInstanceOf('Cosma\Bundle\TestingBundle\Tests\TestCase\AnotherExampleEntity', $entity);
+    }
+
+    /**
+     * @see Cosma\Bundle\TestingBundle\TestCase\WebTestCase::getEntityWithId
+     */
+    public function testGetEntityWithId_Entity()
+    {
+        /** @type ClassMetadata $metadata */
+        $metadata = $this->getMockBuilder('Doctrine\ORM\Mapping\ClassMetadata')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getAllMetadata'))
+            ->getMock();
+        $metadata->namespace = 'Cosma\Bundle\TestingBundle\Tests\TestCase';
+
+        $metadataFactory = $this->getMockBuilder('\Doctrine\ORM\Mapping\ClassMetadataFactory')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getAllMetadata'))
+            ->getMock();
+        $metadataFactory->expects($this->any())
+            ->method('getAllMetadata')
+            ->will($this->returnValue(array($metadata)));
+
+        $entityManager = $this->getMockBuilder('Doctrine\ORM\EntityManager')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getMetadataFactory'))
+            ->getMock();
+        $entityManager->expects($this->any())
+            ->method('getMetadataFactory')
+            ->will($this->returnValue($metadataFactory));
+
+        $bundle = $this->getMockBuilder('Symfony\Component\HttpKernel\Bundle\BundleInterface')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getName', 'getNamespace'))
+            ->getMockForAbstractClass();
+        $bundle->expects($this->any())
+            ->method('getName')
+            ->will($this->returnValue('TestingBundle'));
+        $bundle->expects($this->any())
+            ->method('getNamespace')
+            ->will($this->returnValue('Cosma\Bundle\TestingBundle\Tests\TestCase'));
+
+        $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getManager'))
+            ->getMock();
+        $doctrine->expects($this->once())
+            ->method('getManager')
+            ->will($this->returnValue($entityManager));
+
+        $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerInterface')
+            ->disableOriginalConstructor()
+            ->setMethods(array('get'))
+            ->getMockForAbstractClass();
+        $container->expects($this->once())
+            ->method('get')
+            ->with('doctrine')
+            ->will($this->returnValue($doctrine));
+
+        $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\KernelInterface')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getContainer'))
+            ->getMockForAbstractClass();
+        $kernel->expects($this->once())
+            ->method('getContainer')
+            ->will($this->returnValue($container));
+
+        $webTestCase = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\WebTestCase')
+            ->disableOriginalConstructor()
+            ->getMockForAbstractClass();
+
+        $reflectionClassMocked = new \ReflectionClass($webTestCase);
+        $reflectionClass       = $reflectionClassMocked->getParentClass();
+
+        $kernelProperty = $reflectionClass->getProperty('kernel');
+        $kernelProperty->setAccessible(true);
+        $kernelProperty->setValue($kernel);
+
+        $currentBundleProperty = $reflectionClass->getProperty('currentBundle');
+        $currentBundleProperty->setAccessible(true);
+        $currentBundleProperty->setValue($bundle);
+
+        $reflectionMethod = $reflectionClass->getMethod('getEntityWithId');
+        $reflectionMethod->setAccessible(true);
+
+        /** @var SomeEntity $entity */
+        $entity = $reflectionMethod->invoke($webTestCase, 'SomeEntity', 12345);
+
+        $this->assertEquals(12345, $entity->getId());
+        $this->assertInstanceOf('Cosma\Bundle\TestingBundle\Tests\TestCase\SomeEntity', $entity);
     }
 
     /**
