@@ -13,7 +13,6 @@
 
 namespace Cosma\Bundle\TestingBundle\TestCase;
 
-use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\Common\Persistence\Mapping\ClassMetadataFactory;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\EntityNotFoundException;
