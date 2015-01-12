@@ -36,6 +36,55 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @see SolrTestCase::setUpBeforeClass
+     */
+    public function testSetUpBeforeClass()
+    {
+        $webTestCase = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\WebTestCase')
+            ->disableOriginalConstructor()
+            ->getMockForAbstractClass();
+
+        $reflectionClassMocked = new \ReflectionClass($webTestCase);
+        $reflectionClass = $reflectionClassMocked->getParentClass();
+
+        $classProperty = $reflectionClass->getProperty('class');
+        $classProperty->setAccessible(TRUE);
+        $classProperty->setValue($webTestCase, 'Cosma\Bundle\TestingBundle\Tests\AppKernel');
+
+        $currentBundle = $this->getMockBuilder('Symfony\Component\HttpKernel\Bundle\BundleInterface')
+            ->disableOriginalConstructor()
+            ->getMockForAbstractClass();
+        $currentBundleProperty = $reflectionClass->getProperty('currentBundle');
+        $currentBundleProperty->setAccessible(TRUE);
+        $currentBundleProperty->setValue($currentBundle);
+
+        $fixtureManager = $this->getMockBuilder('h4cc\AliceFixturesBundle\Fixtures\FixtureManagerInterface')
+            ->disableOriginalConstructor()
+            ->setMethods(array('persist', 'loadFiles'))
+            ->getMockForAbstractClass();
+        $fixtureManagerProperty = $reflectionClass->getProperty('fixtureManager');
+        $fixtureManagerProperty->setAccessible(TRUE);
+        $fixtureManagerProperty->setValue($fixtureManager);
+
+        $fixturePathProperty = $reflectionClass->getProperty('fixturePath');
+        $fixturePathProperty->setAccessible(TRUE);
+        $fixturePathProperty->setValue('Fixture');
+
+        $setUpMethod = $reflectionClass->getMethod('setUpBeforeClass');
+        $setUpMethod->setAccessible(TRUE);
+        $setUpMethod->invoke($webTestCase);
+
+        $kernelProperty = $reflectionClass->getProperty('kernel');
+        $kernelProperty->setAccessible(TRUE);
+        $kernel = $kernelProperty->getValue();
+
+        $this->assertInstanceOf('Cosma\Bundle\TestingBundle\Tests\AppKernel', $kernel, 'set up is wrong');
+
+        $reflectionMethod = $reflectionClass->getMethod('tearDownAfterClass');
+        $reflectionMethod->invoke($webTestCase);
+    }
+
+    /**
      * @see SolrTestCase::setUp
      */
     public function testSetUp()
@@ -45,18 +94,18 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
             ->getMockForAbstractClass();
 
         $reflectionClassMocked = new \ReflectionClass($webTestCase);
-        $reflectionClass       = $reflectionClassMocked->getParentClass();
+        $reflectionClass = $reflectionClassMocked->getParentClass();
 
         $classProperty = $reflectionClass->getProperty('class');
-        $classProperty->setAccessible(true);
+        $classProperty->setAccessible(TRUE);
         $classProperty->setValue($webTestCase, 'Cosma\Bundle\TestingBundle\Tests\AppKernel');
 
         $setUpMethod = $reflectionClass->getMethod('setUp');
-        $setUpMethod->setAccessible(true);
+        $setUpMethod->setAccessible(TRUE);
         $setUpMethod->invoke($webTestCase);
 
         $kernelProperty = $reflectionClass->getProperty('kernel');
-        $kernelProperty->setAccessible(true);
+        $kernelProperty->setAccessible(TRUE);
         $kernel = $kernelProperty->getValue();
 
         $this->assertInstanceOf('Cosma\Bundle\TestingBundle\Tests\AppKernel', $kernel, 'set up is wrong');
@@ -75,14 +124,14 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
             ->getMock();
 
         $reflectionClassMocked = new \ReflectionClass($webTestCase);
-        $reflectionClass       = $reflectionClassMocked->getParentClass();
+        $reflectionClass = $reflectionClassMocked->getParentClass();
 
         $currentBundle = $this->getMockBuilder('Symfony\Component\HttpKernel\Bundle\BundleInterface')
             ->disableOriginalConstructor()
             ->getMock();
 
         $currentBundleProperty = $reflectionClass->getProperty('currentBundle');
-        $currentBundleProperty->setAccessible(true);
+        $currentBundleProperty->setAccessible(TRUE);
         $currentBundleProperty->setValue($currentBundle);
 
         $fixtureManager = $this->getMockBuilder('h4cc\AliceFixturesBundle\Fixtures\FixtureManager')
@@ -91,15 +140,15 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
             ->getMockForAbstractClass();
 
         $fixtureManagerProperty = $reflectionClass->getProperty('fixtureManager');
-        $fixtureManagerProperty->setAccessible(true);
+        $fixtureManagerProperty->setAccessible(TRUE);
         $fixtureManagerProperty->setValue($fixtureManager);
 
         $fixturePathProperty = $reflectionClass->getProperty('fixturePath');
-        $fixturePathProperty->setAccessible(true);
+        $fixturePathProperty->setAccessible(TRUE);
         $fixturePathProperty->setValue('fixture/path');
 
         $reflectionMethod = $reflectionClass->getMethod('tearDownAfterClass');
-        $reflectionMethod->invoke(null);
+        $reflectionMethod->invoke(NULL);
 
         $this->assertNull($currentBundleProperty->getValue($webTestCase));
         $this->assertNull($fixtureManagerProperty->getValue($webTestCase));
@@ -139,12 +188,11 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
         $reflectionClass = new \ReflectionClass($webTestCase);
 
         $kernelProperty = $reflectionClass->getProperty('kernel');
-        $kernelProperty->setAccessible(true);
+        $kernelProperty->setAccessible(TRUE);
         $kernelProperty->setValue($kernel);
 
-
         $reflectionMethod = $reflectionClass->getMethod('getClient');
-        $reflectionMethod->setAccessible(true);
+        $reflectionMethod->setAccessible(TRUE);
 
         /** @var Client $client */
         $client = $reflectionMethod->invoke($webTestCase);
@@ -198,12 +246,11 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
         $reflectionClass = new \ReflectionClass($webTestCase);
 
         $kernelProperty = $reflectionClass->getProperty('kernel');
-        $kernelProperty->setAccessible(true);
+        $kernelProperty->setAccessible(TRUE);
         $kernelProperty->setValue($kernel);
 
-
         $reflectionMethod = $reflectionClass->getMethod('getEntityManager');
-        $reflectionMethod->setAccessible(true);
+        $reflectionMethod->setAccessible(TRUE);
 
         /** @var EntityManager $entityManager */
         $entityManager = $reflectionMethod->invoke($webTestCase);
@@ -233,6 +280,71 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
             ->with('BundleExample:User')
             ->will($this->returnValue($entityRepository));
 
+        $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getManager'))
+            ->getMock();
+        $doctrine->expects($this->once())
+            ->method('getManager')
+            ->will($this->returnValue($entityManager));
+
+        $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerInterface')
+            ->disableOriginalConstructor()
+            ->setMethods(array('get'))
+            ->getMockForAbstractClass();
+        $container->expects($this->once())
+            ->method('get')
+            ->with('doctrine')
+            ->will($this->returnValue($doctrine));
+
+        $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\KernelInterface')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getContainer', 'getBundles'))
+            ->getMockForAbstractClass();
+        $kernel->expects($this->once())
+            ->method('getContainer')
+            ->will($this->returnValue($container));
+
+        $webTestCase = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\WebTestCase')
+            ->disableOriginalConstructor()
+            ->getMockForAbstractClass();
+
+        $reflectionClass = new \ReflectionClass($webTestCase);
+
+        $kernelProperty = $reflectionClass->getProperty('kernel');
+        $kernelProperty->setAccessible(TRUE);
+        $kernelProperty->setValue($kernel);
+
+        $reflectionMethod = $reflectionClass->getMethod('getEntityRepository');
+        $reflectionMethod->setAccessible(TRUE);
+
+        /** @var EntityRepository $entityRepository */
+        $entityRepository = $reflectionMethod->invoke($webTestCase, 'BundleExample:User');
+
+        $this->assertInstanceOf(
+            'Doctrine\ORM\EntityRepository',
+            $entityRepository,
+            'must return a EntityRepository object'
+        );
+    }
+
+    /**
+     * @see Cosma\Bundle\TestingBundle\TestCase\WebTestCase::getEntityRepository
+     */
+    public function testGetEntityRepository_ShortName()
+    {
+        $entityRepository = $this->getMockBuilder('Doctrine\ORM\EntityRepository')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $entityManager = $this->getMockBuilder('Doctrine\ORM\EntityManager')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getRepository'))
+            ->getMock();
+        $entityManager->expects($this->once())
+            ->method('getRepository')
+            ->with('BundleExample:User')
+            ->will($this->returnValue($entityRepository));
 
         $doctrine = $this->getMockBuilder('Doctrine\Bundle\DoctrineBundle\Registry')
             ->disableOriginalConstructor()
@@ -251,11 +363,6 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
             ->with('doctrine')
             ->will($this->returnValue($doctrine));
 
-        $currentBundle = $this->getMockBuilder('Symfony\Component\HttpKernel\Bundle\BundleInterface')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getNamespace', 'getName'))
-            ->getMockForAbstractClass();
-
         $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\KernelInterface')
             ->disableOriginalConstructor()
             ->setMethods(array('getContainer', 'getBundles'))
@@ -264,24 +371,33 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
             ->method('getContainer')
             ->will($this->returnValue($container));
 
-
-
         $webTestCase = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\WebTestCase')
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
 
-
         $reflectionClass = new \ReflectionClass($webTestCase);
 
         $kernelProperty = $reflectionClass->getProperty('kernel');
-        $kernelProperty->setAccessible(true);
+        $kernelProperty->setAccessible(TRUE);
         $kernelProperty->setValue($kernel);
 
+        $currentBundle = $this->getMockBuilder('Symfony\Component\HttpKernel\Bundle\BundleInterface')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getName'))
+            ->getMockForAbstractClass();
+        $currentBundle->expects($this->once())
+            ->method('getName')
+            ->will($this->returnValue('BundleExample'));
+
+        $currentBundleProperty = $reflectionClass->getParentClass()->getProperty('currentBundle');
+        $currentBundleProperty->setAccessible(TRUE);
+        $currentBundleProperty->setValue($currentBundle);
+
         $reflectionMethod = $reflectionClass->getMethod('getEntityRepository');
-        $reflectionMethod->setAccessible(true);
+        $reflectionMethod->setAccessible(TRUE);
 
         /** @var EntityRepository $entityRepository */
-        $entityRepository = $reflectionMethod->invoke($webTestCase, 'BundleExample:User');
+        $entityRepository = $reflectionMethod->invoke($webTestCase, 'User');
 
         $this->assertInstanceOf(
             'Doctrine\ORM\EntityRepository',
@@ -302,7 +418,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
 
         $reflectionClass = new \ReflectionClass($webTestCase);
         $reflectionMethod = $reflectionClass->getMethod('getMockedEntityWithId');
-        $reflectionMethod->setAccessible(true);
+        $reflectionMethod->setAccessible(TRUE);
         $reflectionMethod->invoke($webTestCase, 'Cosma\Bundle\TestingBundle\xxx', 12345);
     }
 
@@ -317,7 +433,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
 
         $reflectionClass = new \ReflectionClass($webTestCase);
         $reflectionMethod = $reflectionClass->getMethod('getMockedEntityWithId');
-        $reflectionMethod->setAccessible(true);
+        $reflectionMethod->setAccessible(TRUE);
 
         /** @var ExampleEntity $mockedEntity */
         $mockedEntity = $reflectionMethod->invoke(
@@ -402,14 +518,14 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
             ->getMockForAbstractClass();
 
         $reflectionClassMocked = new \ReflectionClass($webTestCase);
-        $reflectionClass       = $reflectionClassMocked->getParentClass();
+        $reflectionClass = $reflectionClassMocked->getParentClass();
 
         $kernelProperty = $reflectionClass->getProperty('kernel');
-        $kernelProperty->setAccessible(true);
+        $kernelProperty->setAccessible(TRUE);
         $kernelProperty->setValue($kernel);
 
         $reflectionMethod = $reflectionClass->getMethod('getMockedEntityWithId');
-        $reflectionMethod->setAccessible(true);
+        $reflectionMethod->setAccessible(TRUE);
 
         /** @var AnotherExampleEntity $mockedEntity */
         $mockedEntity = $reflectionMethod->invoke($webTestCase, 'TestingBundle:AnotherExampleEntity', 12345);
@@ -487,18 +603,18 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
             ->getMockForAbstractClass();
 
         $reflectionClassMocked = new \ReflectionClass($webTestCase);
-        $reflectionClass       = $reflectionClassMocked->getParentClass();
+        $reflectionClass = $reflectionClassMocked->getParentClass();
 
         $kernelProperty = $reflectionClass->getProperty('kernel');
-        $kernelProperty->setAccessible(true);
+        $kernelProperty->setAccessible(TRUE);
         $kernelProperty->setValue($kernel);
 
         $currentBundleProperty = $reflectionClass->getProperty('currentBundle');
-        $currentBundleProperty->setAccessible(true);
+        $currentBundleProperty->setAccessible(TRUE);
         $currentBundleProperty->setValue($bundle);
 
         $reflectionMethod = $reflectionClass->getMethod('getMockedEntityWithId');
-        $reflectionMethod->setAccessible(true);
+        $reflectionMethod->setAccessible(TRUE);
 
         /** @var SomeEntity $mockedEntity */
         $mockedEntity = $reflectionMethod->invoke($webTestCase, 'SomeEntity', 12345);
@@ -519,7 +635,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
 
         $reflectionClass = new \ReflectionClass($webTestCase);
         $reflectionMethod = $reflectionClass->getMethod('getEntityWithId');
-        $reflectionMethod->setAccessible(true);
+        $reflectionMethod->setAccessible(TRUE);
         $reflectionMethod->invoke($webTestCase, 'Cosma\Bundle\TestingBundle\xxx', 12345);
     }
 
@@ -532,10 +648,9 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
 
-
         $reflectionClass = new \ReflectionClass($webTestCase);
         $reflectionMethod = $reflectionClass->getMethod('getEntityWithId');
-        $reflectionMethod->setAccessible(true);
+        $reflectionMethod->setAccessible(TRUE);
 
         /** @var ExampleEntity $entity */
         $entity = $reflectionMethod->invoke($webTestCase, 'Cosma\Bundle\TestingBundle\Tests\TestCase\SomeEntity', 12345);
@@ -617,14 +732,14 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
             ->getMockForAbstractClass();
 
         $reflectionClassMocked = new \ReflectionClass($webTestCase);
-        $reflectionClass       = $reflectionClassMocked->getParentClass();
+        $reflectionClass = $reflectionClassMocked->getParentClass();
 
         $kernelProperty = $reflectionClass->getProperty('kernel');
-        $kernelProperty->setAccessible(true);
+        $kernelProperty->setAccessible(TRUE);
         $kernelProperty->setValue($kernel);
 
         $reflectionMethod = $reflectionClass->getMethod('getEntityWithId');
-        $reflectionMethod->setAccessible(true);
+        $reflectionMethod->setAccessible(TRUE);
 
         /** @var AnotherExampleEntity $entity */
         $entity = $reflectionMethod->invoke($webTestCase, 'TestingBundle:AnotherExampleEntity', 12345);
@@ -702,18 +817,18 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
             ->getMockForAbstractClass();
 
         $reflectionClassMocked = new \ReflectionClass($webTestCase);
-        $reflectionClass       = $reflectionClassMocked->getParentClass();
+        $reflectionClass = $reflectionClassMocked->getParentClass();
 
         $kernelProperty = $reflectionClass->getProperty('kernel');
-        $kernelProperty->setAccessible(true);
+        $kernelProperty->setAccessible(TRUE);
         $kernelProperty->setValue($kernel);
 
         $currentBundleProperty = $reflectionClass->getProperty('currentBundle');
-        $currentBundleProperty->setAccessible(true);
+        $currentBundleProperty->setAccessible(TRUE);
         $currentBundleProperty->setValue($bundle);
 
         $reflectionMethod = $reflectionClass->getMethod('getEntityWithId');
-        $reflectionMethod->setAccessible(true);
+        $reflectionMethod->setAccessible(TRUE);
 
         /** @var SomeEntity $entity */
         $entity = $reflectionMethod->invoke($webTestCase, 'SomeEntity', 12345);
@@ -734,8 +849,8 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
             ->getMockForAbstractClass();
 
         $reflectionClass = new \ReflectionClass($webTestCase);
-        $method          = $reflectionClass->getParentClass()->getMethod('loadTableFixtures');
-        $method->setAccessible(true);
+        $method = $reflectionClass->getParentClass()->getMethod('loadTableFixtures');
+        $method->setAccessible(TRUE);
 
         $method->invoke($webTestCase, array());
     }
@@ -751,7 +866,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
             ->getMockForAbstractClass();
         $fixtureManager->expects($this->atLeast(2))
             ->method('persist')
-            ->will($this->returnValue(true));
+            ->will($this->returnValue(TRUE));
         $fixtureManager->expects($this->once())
             ->method('loadFiles')
             ->with(array(
@@ -799,20 +914,20 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
         $reflectionClass = new \ReflectionClass($webTestCase);
 
         $kernelProperty = $reflectionClass->getProperty('kernel');
-        $kernelProperty->setAccessible(true);
+        $kernelProperty->setAccessible(TRUE);
         $kernelProperty->setValue($kernel);
 
         $currentBundleProperty = $reflectionClass->getParentClass()->getProperty('currentBundle');
-        $currentBundleProperty->setAccessible(true);
+        $currentBundleProperty->setAccessible(TRUE);
         $currentBundleProperty->setValue($currentBundle);
 
-        $loadTableFixturesMethod          = $reflectionClass->getParentClass()->getMethod('loadTableFixtures');
-        $loadTableFixturesMethod->setAccessible(true);
+        $loadTableFixturesMethod = $reflectionClass->getParentClass()->getMethod('loadTableFixtures');
+        $loadTableFixturesMethod->setAccessible(TRUE);
 
         $entities = $loadTableFixturesMethod->invoke($webTestCase, array('SomeEntity', 'AnotherExampleEntity'));
 
         $reflectionMethod = $reflectionClass->getMethod('tearDownAfterClass');
-        $reflectionMethod->invoke(null);
+        $reflectionMethod->invoke(NULL);
 
         $this->assertEquals($this->getEntities(), $entities, 'Entities are wrong');
     }
@@ -829,8 +944,8 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
             ->getMockForAbstractClass();
 
         $reflectionClass = new \ReflectionClass($webTestCase);
-        $method          = $reflectionClass->getParentClass()->getMethod('loadTestFixtures');
-        $method->setAccessible(true);
+        $method = $reflectionClass->getParentClass()->getMethod('loadTestFixtures');
+        $method->setAccessible(TRUE);
 
         $method->invoke($webTestCase, array());
     }
@@ -853,7 +968,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($this->getEntities()));
         $fixtureManager->expects($this->atLeast(2))
             ->method('persist')
-            ->will($this->returnValue(true));
+            ->will($this->returnValue(TRUE));
 
         $valueMap = array(
             array('cosma_testing.fixture_path', 'FixtureDirectory'),
@@ -887,11 +1002,10 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
             ->method('getTestClassPath')
             ->will($this->returnValue('TestCase/WebTestCase'));
 
-
         $reflectionClass = new \ReflectionClass($webTestCase);
 
         $kernelProperty = $reflectionClass->getProperty('kernel');
-        $kernelProperty->setAccessible(true);
+        $kernelProperty->setAccessible(TRUE);
         $kernelProperty->setValue($kernel);
 
         $currentBundle = $this->getMockBuilder('Symfony\Component\HttpKernel\Bundle\BundleInterface')
@@ -903,16 +1017,16 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue('Cosma/Bundle/TestingBundle'));
 
         $currentBundleProperty = $reflectionClass->getParentClass()->getProperty('currentBundle');
-        $currentBundleProperty->setAccessible(true);
+        $currentBundleProperty->setAccessible(TRUE);
         $currentBundleProperty->setValue($currentBundle);
 
-        $loadTestFixturesMethod          = $reflectionClass->getParentClass()->getMethod('loadTestFixtures');
-        $loadTestFixturesMethod->setAccessible(true);
+        $loadTestFixturesMethod = $reflectionClass->getParentClass()->getMethod('loadTestFixtures');
+        $loadTestFixturesMethod->setAccessible(TRUE);
 
         $entities = $loadTestFixturesMethod->invoke($webTestCase, array('SomeEntity', 'AnotherExampleEntity'));
 
         $reflectionMethod = $reflectionClass->getMethod('tearDownAfterClass');
-        $reflectionMethod->invoke(null);
+        $reflectionMethod->invoke(NULL);
 
         $this->assertEquals($this->getEntities(), $entities, 'Entities are wrong');
     }
@@ -929,8 +1043,8 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
             ->getMockForAbstractClass();
 
         $reflectionClass = new \ReflectionClass($webTestCase);
-        $method          = $reflectionClass->getParentClass()->getMethod('loadCustomFixtures');
-        $method->setAccessible(true);
+        $method = $reflectionClass->getParentClass()->getMethod('loadCustomFixtures');
+        $method->setAccessible(TRUE);
 
         $method->invoke($webTestCase, array());
     }
@@ -953,7 +1067,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($this->getEntities()));
         $fixtureManager->expects($this->atLeast(2))
             ->method('persist')
-            ->will($this->returnValue(true));
+            ->will($this->returnValue(TRUE));
 
         $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerInterface')
             ->disableOriginalConstructor()
@@ -976,11 +1090,10 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
 
-
         $reflectionClass = new \ReflectionClass($webTestCase);
 
         $kernelProperty = $reflectionClass->getProperty('kernel');
-        $kernelProperty->setAccessible(true);
+        $kernelProperty->setAccessible(TRUE);
         $kernelProperty->setValue($kernel);
 
         $currentBundle = $this->getMockBuilder('Symfony\Component\HttpKernel\Bundle\BundleInterface')
@@ -992,11 +1105,11 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue('Cosma/Bundle/TestingBundle'));
 
         $currentBundleProperty = $reflectionClass->getParentClass()->getProperty('currentBundle');
-        $currentBundleProperty->setAccessible(true);
+        $currentBundleProperty->setAccessible(TRUE);
         $currentBundleProperty->setValue($currentBundle);
 
-        $loadTestFixturesMethod          = $reflectionClass->getParentClass()->getMethod('loadCustomFixtures');
-        $loadTestFixturesMethod->setAccessible(true);
+        $loadTestFixturesMethod = $reflectionClass->getParentClass()->getMethod('loadCustomFixtures');
+        $loadTestFixturesMethod->setAccessible(TRUE);
 
         $entities = $loadTestFixturesMethod->invoke(
             $webTestCase,
@@ -1007,7 +1120,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
         );
 
         $reflectionMethod = $reflectionClass->getMethod('tearDownAfterClass');
-        $reflectionMethod->invoke(null);
+        $reflectionMethod->invoke(NULL);
 
         $this->assertEquals($this->getEntities(), $entities, 'Entities are wrong');
     }
@@ -1017,7 +1130,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
      */
     private function getEntities()
     {
-        $objects   = array();
+        $objects = array();
 
         $entityOne = new SomeEntity();
         $entityOne->setName('Some Entity One');

@@ -142,4 +142,58 @@ class SchemaToolTest extends \PHPUnit_Framework_TestCase
 
         $mockedSchemaTool->dropSchema();
     }
+
+    /**
+     * @see Cosma\Bundle\TestingBundle\ORM\SchemaTool::dropSchema
+     *
+     * @expectedException \Exception
+     */
+    public function testDropSchema_Rollback()
+    {
+        $schemaManager = $this->getMockBuilder('\Doctrine\DBAL\Schema\AbstractSchemaManager')
+            ->disableOriginalConstructor()
+            ->setMethods(array('listTableNames', 'createSchemaConfig'))
+            ->getMockForAbstractClass();
+        $schemaManager->expects($this->once())
+            ->method('listTableNames')
+            ->will($this->returnValue(array('table_example')));
+
+        $connection = $this->getMockBuilder('\Doctrine\DBAL\Connection')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getSchemaManager', 'connect', 'beginTransaction', 'query', 'exec', 'commit', 'rollback'))
+            ->getMock();
+        $connection->expects($this->once())
+            ->method('getSchemaManager')
+            ->will($this->returnValue($schemaManager));
+        $connection->expects($this->once())
+            ->method('exec')
+            ->with('TRUNCATE `table_example`')
+            ->will($this->throwException(new \Exception('Some Exception')));
+        $connection->expects($this->once())
+            ->method('rollback')
+            ->will($this->returnValue(true));
+
+        $entityManager = $this->getMockBuilder('Doctrine\ORM\EntityManager')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getConnection'))
+            ->getMock();
+        $entityManager->expects($this->once())
+            ->method('getConnection')
+            ->will($this->returnValue($connection));
+
+        /** @var SchemaTool $mockedSchemaTool */
+        $mockedSchemaTool = $this->getMockBuilder('\Cosma\Bundle\TestingBundle\ORM\SchemaTool')
+            ->disableOriginalConstructor()
+            ->setMethods(array('createSchema'))
+            ->getMock();
+
+        $reflectionClassMocked = new \ReflectionClass($mockedSchemaTool);
+        $reflectionClass       = $reflectionClassMocked->getParentClass();
+
+        $entityManagerProperty = $reflectionClass->getProperty('entityManager');
+        $entityManagerProperty->setAccessible(TRUE);
+        $entityManagerProperty->setValue($mockedSchemaTool, $entityManager);
+
+        $mockedSchemaTool->dropSchema();
+    }
 }

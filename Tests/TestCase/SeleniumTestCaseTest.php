@@ -64,11 +64,84 @@ class SeleniumTestCaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @see SeleniumTestCase::tearDown
+     */
+    public function testTearDown()
+    {
+        $webDriver = $this->getMockBuilder('\RemoteWebDriver')
+            ->disableOriginalConstructor()
+            ->setMethods(array('execute'))
+            ->getMockForAbstractClass();
+
+        $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\KernelInterface')
+            ->disableOriginalConstructor()
+            ->getMockForAbstractClass();
+
+        $seleniumTestCase = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\SeleniumTestCase')
+            ->disableOriginalConstructor()
+            ->getMockForAbstractClass();
+
+        $reflectionClassMocked = new \ReflectionClass($seleniumTestCase);
+        $reflectionClass       = $reflectionClassMocked->getParentClass();
+
+
+        $kernelProperty = $reflectionClass->getProperty('kernel');
+        $kernelProperty->setAccessible(TRUE);
+        $kernelProperty->setValue($seleniumTestCase, $kernel);
+
+        $classProperty = $reflectionClass->getParentClass()->getProperty('class');
+        $classProperty->setAccessible(TRUE);
+        $classProperty->setValue($seleniumTestCase, 'Cosma\Bundle\TestingBundle\Tests\AppKernel');
+
+
+        $webDriverProperty = $reflectionClass->getProperty('webDriver');
+        $webDriverProperty->setAccessible(TRUE);
+        $webDriverProperty->setValue($seleniumTestCase, $webDriver);
+
+        $setUpMethod = $reflectionClass->getMethod('tearDown');
+        $setUpMethod->setAccessible(TRUE);
+        $setUpMethod->invoke($seleniumTestCase);
+
+        $afterProperty = $reflectionClass->getProperty('webDriver');
+        $afterProperty->setAccessible(TRUE);
+        $this->assertNull($afterProperty->getValue($seleniumTestCase));
+
+    }
+
+    /**
+     * @see SeleniumTestCase::getWebDriver
+     */
+    public function testGetWebDriver()
+    {
+        $webDriver = $this->getMockBuilder('\RemoteWebDriver')
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $seleniumTestCase = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\SeleniumTestCase')
+            ->disableOriginalConstructor()
+            ->getMockForAbstractClass();
+
+        $reflectionClassMocked = new \ReflectionClass($seleniumTestCase);
+        $reflectionClass       = $reflectionClassMocked->getParentClass();
+
+        $webDriverProperty = $reflectionClass->getProperty('webDriver');
+        $webDriverProperty->setAccessible(TRUE);
+        $webDriverProperty->setValue($seleniumTestCase, $webDriver);
+
+        $reflectionMethod = $reflectionClass->getMethod('getWebDriver');
+        $reflectionMethod->setAccessible(TRUE);
+
+        $webDriver = $reflectionMethod->invoke($seleniumTestCase);
+
+        $this->assertInstanceOf('\RemoteWebDriver', $webDriver);
+    }
+
+    /**
      * @see SeleniumTestCase::getWebDriver
      *
      * @expectedException \WebDriverCurlException
      */
-    public function testGetWebDriver()
+    public function testGetWebDriver_NUll()
     {
         $valueMap = array(
             array('cosma_testing.selenium.server', 'http://127.0.0.1:4444/wd/hub')
@@ -103,7 +176,9 @@ class SeleniumTestCaseTest extends \PHPUnit_Framework_TestCase
         $reflectionMethod = $reflectionClass->getMethod('getWebDriver');
         $reflectionMethod->setAccessible(TRUE);
 
-        $reflectionMethod->invoke($seleniumTestCase);
+        $webDriver = $reflectionMethod->invoke($seleniumTestCase);
+
+        $this->assertInstanceOf('\RemoteWebDriver', $webDriver);
     }
 
     /**
