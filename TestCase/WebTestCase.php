@@ -13,6 +13,8 @@
 
 namespace Cosma\Bundle\TestingBundle\TestCase;
 
+use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\Common\Persistence\Mapping\ClassMetadataFactory;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\EntityNotFoundException;
 use Symfony\Bundle\FrameworkBundle\Client;
@@ -311,7 +313,11 @@ abstract class WebTestCase extends WebTestCaseBase
             return $entity;
         }
 
+        /** @var EntityManager $entityManager */
         $entityManager = static::$kernel->getContainer()->get('doctrine')->getManager();
+
+        /** @var ClassMetadataFactory $metadataFactory */
+        $metadataFactory = $entityManager->getMetadataFactory();
 
         if (FALSE !== strpos($entity, ':')) {
             $entityDescription = explode(':', $entity);
@@ -321,14 +327,14 @@ abstract class WebTestCase extends WebTestCaseBase
 
             $bundle = $this->getBundleByName($bundleName);
 
-            $fullPathEntity = $this->getEntityNamespaceForBundle($entityManager, $bundle) .
+            $fullPathEntity = $this->getEntityNamespaceForBundle($bundle, $metadataFactory) .
                 '\\' .
                 $entityName;
 
             return $fullPathEntity;
         }
 
-        $fullPathEntity = $this->getEntityNamespaceForBundle($entityManager, static::getCurrentBundle()) .
+        $fullPathEntity = $this->getEntityNamespaceForBundle(static::getCurrentBundle(), $metadataFactory) .
             '\\' .
             $entity;
 
@@ -336,14 +342,15 @@ abstract class WebTestCase extends WebTestCaseBase
     }
 
     /**
-     * @param \Doctrine\ORM\EntityManager                          $entityManager
-     * @param \Symfony\Component\HttpKernel\Bundle\BundleInterface $bundle
+     * @param \Symfony\Component\HttpKernel\Bundle\BundleInterface      $bundle
+     * @param \Doctrine\Common\Persistence\Mapping\ClassMetadataFactory $metadataFactory
      *
-     * @return mixed
+     * @return string
      */
-    private function getEntityNamespaceForBundle(EntityManager $entityManager, BundleInterface $bundle)
+    private function getEntityNamespaceForBundle(BundleInterface $bundle,ClassMetadataFactory $metadataFactory)
     {
-        $metadataCollection = $entityManager->getMetadataFactory()->getAllMetadata();
+
+        $metadataCollection = $metadataFactory->getAllMetadata();
 
         /** @var ClassMetadata $metadata */
         foreach ($metadataCollection as $metadata) {

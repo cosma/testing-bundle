@@ -61,4 +61,4 @@ abstract class SimpleTestCase extends \PHPUnit_Framework_TestCase
 
         return $entityObject;
     }
-} 
+}

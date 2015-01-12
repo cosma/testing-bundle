@@ -72,4 +72,4 @@ class SchemaTool extends DoctrineORMSchemaTool
             throw $e;
         }
     }
-} 
+}
