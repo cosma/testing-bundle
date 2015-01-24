@@ -1,0 +1,8 @@
+parameters:
+    cosma_testing.fixture_dumper.class: Cosma\Bundle\TestingBundle\Fixture\Dumper
+
+services:
+    cosma_testing.fixture_dumper:
+         class: %cosma_testing.fixture_dumper.class%
+         arguments:
+              - @doctrine.orm.entity_manager
