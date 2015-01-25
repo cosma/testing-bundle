@@ -8,15 +8,20 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Date: 11/07/14
+ * Date: 01/26/15
  * Time: 23:33
  */
 
 namespace Cosma\Bundle\TestingBundle\Tests\Command;
 
 
-class FixturesDumpCommandTest extends \PHPUnit_Framework_TestCase
+use Cosma\Bundle\TestingBundle\TestCase\CommandTestCase;
+
+class FixturesDumpCommandTest extends CommandTestCase
 {
+
+
+
     public function testExecute()
     {
 

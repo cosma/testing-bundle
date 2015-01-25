@@ -16,18 +16,9 @@ namespace Cosma\Bundle\TestingBundle\Tests\TestCase;
 
 use Cosma\Bundle\TestingBundle\TestCase\CommandTestCase;
 use Symfony\Component\Console\Input\StringInput;
-use Symfony\Component\Console\Output\StreamOutput;
 
 class CommandTestCaseTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @see CommandTestCase
-     */
-    public function testStaticAttributes()
-    {
-        $this->assertClassHasAttribute('application', 'Cosma\Bundle\TestingBundle\TestCase\CommandTestCase');
-    }
-
     /**
      * @see CommandTestCase::setUp
      */
@@ -98,11 +89,6 @@ class CommandTestCaseTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEmpty($result, 'Command is not working properly');
     }
-
-}
-
-class CommandTestCaseExample extends CommandTestCase
-{
 }
 
 
