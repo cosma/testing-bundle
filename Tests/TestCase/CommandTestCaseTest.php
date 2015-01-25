@@ -15,19 +15,11 @@
 namespace Cosma\Bundle\TestingBundle\Tests\TestCase;
 
 use Cosma\Bundle\TestingBundle\TestCase\CommandTestCase;
-use Doctrine\DBAL\Exception\InvalidArgumentException;
-use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\EntityRepository;
-use Doctrine\ORM\Mapping\ClassMetadata;
-use Symfony\Bundle\FrameworkBundle\Client;
-
-use Cosma\Bundle\TestingBundle\TestCase\WebTestCase;
-use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 
 class CommandTestCaseTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @see Cosma\Bundle\TestingBundle\TestCase\CommandTestCase
+     * @see CommandTestCase
      */
     public function testStaticAttributes()
     {
@@ -35,18 +27,39 @@ class CommandTestCaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @see CommandTestCase::executeCommand
+     * @see CommandTestCase::setUp
      */
-    public function testSetUpBeforeClass()
+    public function testSetUp()
     {
-        $webTestCase = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\CommandTestCase')
+        $commandTestCase = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\CommandTestCase')
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
 
+        $reflectionClassMocked = new \ReflectionClass($commandTestCase);
+        $reflectionClass = $reflectionClassMocked->getParentClass()->getParentClass();
 
+        $classProperty = $reflectionClass->getProperty('class');
+        $classProperty->setAccessible(TRUE);
+        $classProperty->setValue($commandTestCase, 'Cosma\Bundle\TestingBundle\Tests\AppKernel');
+
+
+        $setUpMethod = $reflectionClass->getMethod('setUp');
+        $setUpMethod->setAccessible(TRUE);
+        $setUpMethod->invoke($commandTestCase);
+
+        $kernelProperty = $reflectionClass->getProperty('kernel');
+        $kernelProperty->setAccessible(TRUE);
+        $kernel = $kernelProperty->getValue();
+
+        $this->assertInstanceOf('Cosma\Bundle\TestingBundle\Tests\AppKernel', $kernel, 'set up is wrong');
+
+        $applicationProperty = $reflectionClassMocked->getParentClass()->getProperty('application');
+        $applicationProperty->setAccessible(TRUE);
+        $applicationProperty->getValue($commandTestCase);
+
+        $reflectionMethod = $reflectionClass->getMethod('tearDownAfterClass');
+        $reflectionMethod->invoke($commandTestCase);
     }
-
-
 }
 
 class CommandTestCaseExample extends CommandTestCase
