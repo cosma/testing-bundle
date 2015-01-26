@@ -19,7 +19,6 @@ use Symfony\Component\Console\Output\StreamOutput;
 
 abstract class CommandTestCase extends WebTestCase
 {
-
     /**
      * @type Application
      */
@@ -32,7 +31,9 @@ abstract class CommandTestCase extends WebTestCase
     {
         parent::setUp();
 
-        $this->application = new Application($this->getClient()->getKernel());
+        $client = static::createClient();
+
+        $this->application = new Application($client->getKernel());
         $this->application->setAutoExit(false);
     }
 
