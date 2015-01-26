@@ -42,6 +42,16 @@ class FixturesDumpCommand extends ContainerAwareCommand
     /**
      * Configure name, description and arguments of this command.
      */
+
+    /**
+     * app/console cosma_testing:fixtures:dump "path/to/yaml/file.yml" BundleName:Entity  [--no-relations}
+     *
+     * Argument :: target
+     * Argument :: query DQL  - optional
+     * Option :: --no-relations - optional for relations
+     *
+     *
+     */
     protected function configure()
     {
         $this
@@ -96,33 +106,36 @@ class FixturesDumpCommand extends ContainerAwareCommand
 
         $this->dumper->setDumpDirectory($dumpDirectory);
 
+        $this->output->writeln(PHP_EOL);
+
         if ('*' == $entity) {
             $this->output->writeln("[" . date('c') . "] export fixtures in {$dumpDirectory} for all entities");
+            $output->writeln(PHP_EOL);
 
             $classMetadataCollection = $this->entityManager->getMetadataFactory()->getAllMetadata();
 
+            /** @type ClassMetadata $classMetadata */
             foreach ($classMetadataCollection as $classMetadata) {
-                $this->dumpEntityFile($classMetadata, $dumpDirectory, $noRelations);
+                $this->dumpEntityFile($classMetadata->getName(), $dumpDirectory, $noRelations);
             }
         } else {
-            $classMetadata = $this->entityManager->getMetadataFactory()->getMetadataFor($entity);
-
-            $this->dumpEntityFile($classMetadata, $dumpDirectory, $noRelations);
+            $this->dumpEntityFile($entity, $dumpDirectory, $noRelations);
         }
 
         $output->writeln("[" . date('c') . "] finished");
+        $output->writeln(PHP_EOL);
     }
 
     /**
-     * @param ClassMetadata $classMetadata
-     * @param string        $dumpDirectory
+     * @param string     $entity
+     * @param string     $dumpDirectory
      *
-     * @param bool  $noRelations
+     * @param bool $noRelations
      */
-    private function dumpEntityFile(ClassMetadata $classMetadata, $dumpDirectory, $noRelations = FALSE)
+    private function dumpEntityFile($entity, $dumpDirectory, $noRelations = FALSE)
     {
-        $this->output->writeln("[" . date('c') . "] dump fixture for entity {$classMetadata->getName()} in {$dumpDirectory}");
-
-        $this->dumper->dumpToFile($classMetadata, $noRelations);
+        $file = $this->dumper->dumpEntityToFile($entity, $noRelations);
+        $this->output->writeln("[" . date('c') . "] dump fixture for entity {$entity} in {$file}");
+        $this->output->writeln(PHP_EOL);
     }
 }
