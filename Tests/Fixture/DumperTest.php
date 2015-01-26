@@ -33,7 +33,7 @@ class DumperTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
 
-        $dumper->dumpToFile($classMetadata);
+        //$dumper->dumpEntityToFile($classMetadata);
 
     }
 
