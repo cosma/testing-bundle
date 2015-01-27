@@ -135,8 +135,11 @@ class FixturesDumpCommand extends ContainerAwareCommand
      */
     private function dumpEntityFile($entity, $associations = FALSE)
     {
+        $this->output->writeln("[" . date('c') . "] dumping {$entity} ...");
+
         $file = $this->dumper->dumpEntityTableToFile($entity, $associations);
-        $this->output->writeln("[" . date('c') . "] dump fixture for entity {$entity} in {$file}");
+        $this->output->writeln("[" . date('c') . "] successfully dumped fixture for entity {$entity} in {$file}");
+
         $this->output->writeln(PHP_EOL);
     }
 }

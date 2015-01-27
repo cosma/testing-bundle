@@ -13,9 +13,6 @@
 
 namespace Cosma\Bundle\TestingBundle\Fixture;
 
-use Cosma\Bundle\TestingBundle\Exception\NonExistentEntityMethodException;
-use Cosma\Bundle\TestingBundle\Exception\InvalidEntityIdentifierException;
-
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Symfony\Component\Filesystem\Filesystem;
@@ -84,7 +81,6 @@ class Dumper
      * @param bool $associations
      *
      * @return array
-     * @throws \Cosma\Bundle\TestingBundle\Exception\InvalidEntityIdentifierException
      */
     public function getEntityTableData($entity, $associations = FALSE)
     {
@@ -129,8 +125,6 @@ class Dumper
      * @param bool                                    $associations
      *
      * @return array
-     * @throws \Cosma\Bundle\TestingBundle\Exception\InvalidEntityIdentifierException
-     * @throws \Cosma\Bundle\TestingBundle\Exception\NonExistentEntityMethodException
      */
     private function getDataForOneRow(ClassMetadataInfo $classMetadataInfo, $entity, $associations = FALSE)
     {
@@ -153,22 +147,17 @@ class Dumper
      * @param                                         $entity
      *
      * @return string
-     * @throws \Cosma\Bundle\TestingBundle\Exception\InvalidEntityIdentifierException
      */
     private function getFixtureIdentifierForEntity(ClassMetadataInfo $classMetadataInfo, $entity)
     {
         $entityName = $classMetadataInfo->getName();
-        $fixtureEntityIdentifier = strtolower(str_replace('\\', '_', $entityName)) . '_';
+        $fixtureEntityIdentifier = strtolower(str_replace('\\', '_', $entityName)) ;
 
         $identifiers = $classMetadataInfo->getIdentifier();
 
         foreach ($identifiers as $identifier) {
-            $identifierMethod = 'get' . ucfirst($identifier);
-            if (method_exists($entity, $identifierMethod)) {
-                $fixtureEntityIdentifier .= $entity->$identifierMethod();
-            } else {
-                throw new InvalidEntityIdentifierException($entityName, $identifier);
-            }
+            $fixtureEntityIdentifier .= '_' . $classMetadataInfo->getFieldValue($entity, $identifier);
+
         }
 
         return $fixtureEntityIdentifier;
@@ -179,7 +168,6 @@ class Dumper
      * @param \Doctrine\ORM\Mapping\ClassMetadataInfo $classMetadataInfo
      *
      * @return array
-     * @throws \Cosma\Bundle\TestingBundle\Exception\NonExistentEntityMethodException
      */
     private function getFieldsDataForEntity($entity, ClassMetadataInfo $classMetadataInfo)
     {
@@ -192,13 +180,9 @@ class Dumper
                 continue;
             }
 
-            $fieldMethodName = 'get' . ucfirst($fieldName);
+            $fieldValue = $classMetadataInfo->getFieldValue($entity, $fieldName);
 
-            if (method_exists($entity, $fieldMethodName)) {
-                $data [ $fieldName ] = $this->treatFieldValueByType($entity->$fieldMethodName());
-            } else {
-                throw new NonExistentEntityMethodException($classMetadataInfo->getName(), $fieldMethodName);
-            }
+            $data [ $fieldName ] = $this->treatFieldValueByType($fieldValue);
         }
 
         return $data;
@@ -209,7 +193,6 @@ class Dumper
      * @param \Doctrine\ORM\Mapping\ClassMetadataInfo $classMetadataInfo
      *
      * @return array
-     * @throws \Cosma\Bundle\TestingBundle\Exception\NonExistentEntityMethodException
      */
     private function getAssociationsDataForEntity($entity, ClassMetadataInfo $classMetadataInfo)
     {
@@ -221,60 +204,53 @@ class Dumper
 
             $data += $this->getDataForAssociation($entity, $associationMapping, $classMetadataInfo);
         }
+
         return $data;
     }
 
     /**
-     * @param       $entity
-     * @param array $associationMapping
+     * @param                                         $entity
+     * @param array                                   $associationMapping
+     * @param \Doctrine\ORM\Mapping\ClassMetadataInfo $classMetadataInfo
      *
      * @return array
-     * @throws \Cosma\Bundle\TestingBundle\Exception\NonExistentEntityMethodException
      */
-    private function getDataForAssociation($entity, array $associationMapping)
+    private function getDataForAssociation($entity, array $associationMapping, ClassMetadataInfo $classMetadataInfo)
     {
         $data = array();
 
         if ($associationMapping['isOwningSide'] > 0) {
 
-            $associationMethodName = 'get' . ucfirst($associationMapping['fieldName']);
+            $targetEntityClassMetadataInfo = $this->entityManager
+                ->getMetadataFactory()
+                ->getMetadataFor($associationMapping['targetEntity']);
 
-            if (method_exists($entity, $associationMethodName)) {
+            if (
+                ClassMetadataInfo::ONE_TO_ONE == $associationMapping['type'] ||
+                ClassMetadataInfo::MANY_TO_ONE == $associationMapping['type']
+            ) {
+                $targetEntity = $classMetadataInfo->getFieldValue($entity, $associationMapping['fieldName']);
 
-                $targetEntityClassMetadataInfo = $this->entityManager
-                    ->getMetadataFactory()
-                    ->getMetadataFor($associationMapping['targetEntity']);
+                if ($targetEntity instanceof $associationMapping['targetEntity']) {
+                    $targetEntityIdentifier = $this->getFixtureIdentifierForEntity($targetEntityClassMetadataInfo, $targetEntity);
+                    $data[ $associationMapping['fieldName'] ] = '@' . $targetEntityIdentifier;
+                }
+            }
 
-                if (
-                    ClassMetadataInfo::ONE_TO_ONE == $associationMapping['type'] ||
-                    ClassMetadataInfo::MANY_TO_ONE == $associationMapping['type']
-                ) {
-                    $targetEntity = $entity->$associationMethodName();
-
-                    if ($targetEntity instanceof $associationMapping['targetEntity']) {
+            if (
+                ClassMetadataInfo::ONE_TO_MANY == $associationMapping['type'] ||
+                ClassMetadataInfo::MANY_TO_MANY == $associationMapping['type']
+            ) {
+                $targetEntities = $classMetadataInfo->getFieldValue($entity, $associationMapping['fieldName']);
+                if (count($targetEntities) > 0) {
+                    $targetEntityIdentifierCollection = array();
+                    foreach ($targetEntities as $targetEntity) {
                         $targetEntityIdentifier = $this->getFixtureIdentifierForEntity($targetEntityClassMetadataInfo, $targetEntity);
-                        $data[ $associationMapping['fieldName'] ] = '@' . $targetEntityIdentifier;
+                        $targetEntityIdentifierCollection[] = '@' . $targetEntityIdentifier;
                     }
+
+                    $data[ $associationMapping['fieldName'] ] = '[ ' . implode(', ', $targetEntityIdentifierCollection) . ' ]';
                 }
-
-                if (
-                    ClassMetadataInfo::ONE_TO_MANY == $associationMapping['type'] ||
-                    ClassMetadataInfo::MANY_TO_MANY == $associationMapping['type']
-                ) {
-                    $targetEntities = $entity->$associationMethodName();
-                    if (count($targetEntities)> 0) {
-                        $targetEntityIdentifierCollection = array();
-                        foreach ($targetEntities as $targetEntity) {
-                            $targetEntityIdentifier = $this->getFixtureIdentifierForEntity($targetEntityClassMetadataInfo, $targetEntity);
-                            $targetEntityIdentifierCollection[] = '@' . $targetEntityIdentifier;
-                        }
-
-                        $data[ $associationMapping['fieldName'] ] = '[ '. implode(', ', $targetEntityIdentifierCollection) .' ]';
-                    }
-                }
-
-            } else {
-                throw new NonExistentEntityMethodException($associationMapping['sourceEntity'], $associationMethodName);
             }
         }
 
@@ -319,6 +295,5 @@ class Dumper
         $yamlData = str_replace(array(": '[ ", " ]'"), array(": [ ", " ]"), $yamlData);
 
         return $yamlData;
-
     }
 }
