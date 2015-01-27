@@ -13,9 +13,10 @@
 
 namespace Cosma\Bundle\TestingBundle\Fixture;
 
-use Doctrine\ORM\EntityManagerInterface;
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
+use Cosma\Bundle\TestingBundle\Exception\NonExistentEntityMethodException;
 use Cosma\Bundle\TestingBundle\Exception\InvalidEntityIdentifierException;
+
+use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Symfony\Component\Filesystem\Filesystem;
 use Symfony\Component\Yaml\Dumper as YamlDumper;
@@ -42,20 +43,20 @@ class Dumper
 
     /**
      * @param string $entity
-     * @param bool   $noRelations
+     * @param bool   $associations
      *
      * @return bool
      */
-    public function dumpEntityToFile($entity, $noRelations = TRUE)
+    public function dumpEntityTableToFile($entity, $associations = FALSE)
     {
-        /** @type ClassMetadataInfo $classMetadata */
-        $classMetadata = $this->entityManager->getMetadataFactory()->getMetadataFor($entity);
+        /** @type ClassMetadataInfo $classMetadataInfo */
+        $classMetadataInfo = $this->entityManager->getMetadataFactory()->getMetadataFor($entity);
 
         $dumpData = array(
-            $classMetadata->getName() => $this->dumpEntityData($entity, $noRelations)
+            $classMetadataInfo->getName() => $this->getEntityTableData($entity, $associations)
         );
 
-        $table = $classMetadata->getTableName();
+        $table = $classMetadataInfo->getTableName();
 
         $filePath = "{$this->dumpDirectory}/{$table}.yml";
 
@@ -80,12 +81,12 @@ class Dumper
 
     /**
      * @param      $entity
-     * @param bool $noRelations
+     * @param bool $associations
      *
      * @return array
      * @throws \Cosma\Bundle\TestingBundle\Exception\InvalidEntityIdentifierException
      */
-    public function dumpEntityData($entity, $noRelations = TRUE)
+    public function getEntityTableData($entity, $associations = FALSE)
     {
         /** @type ClassMetadataInfo $classMetadataInfo */
         $classMetadataInfo = $this->entityManager->getMetadataFactory()->getMetadataFor($entity);
@@ -95,7 +96,7 @@ class Dumper
         $tableData = array();
 
         foreach ($entities as $entity) {
-            $tableData += $this->dumpDataForOneRow($classMetadataInfo, $entity, $noRelations = TRUE);
+            $tableData += $this->getDataForOneRow($classMetadataInfo, $entity, $associations);
         }
 
         return $tableData;
@@ -107,7 +108,7 @@ class Dumper
      *
      * @return mixed
      */
-    private function saveYamlFile($filePath,array $dumpData)
+    private function saveYamlFile($filePath, array $dumpData)
     {
         $yamlDumper = new YamlDumper();
 
@@ -123,45 +124,26 @@ class Dumper
     /**
      * @param \Doctrine\ORM\Mapping\ClassMetadataInfo $classMetadataInfo
      * @param                                         $entity
-     * @param bool                                    $noRelations
+     * @param bool                                    $associations
      *
      * @return array
      * @throws \Cosma\Bundle\TestingBundle\Exception\InvalidEntityIdentifierException
+     * @throws \Cosma\Bundle\TestingBundle\Exception\NonExistentEntityMethodException
      */
-    private function dumpDataForOneRow(ClassMetadataInfo $classMetadataInfo, $entity, $noRelations = TRUE)
+    private function getDataForOneRow(ClassMetadataInfo $classMetadataInfo, $entity, $associations = FALSE)
     {
-        $fixtureEntityIdentifier = $this->getFixtureIdentifierForEntity( $classMetadataInfo, $entity);
+        $fixtureEntityIdentifier = $this->getFixtureIdentifierForEntity($classMetadataInfo, $entity);
 
-        $fieldNames = $classMetadataInfo->getFieldNames();
+        $fieldsDataFromRow = $this->getFieldsDataForEntity($entity, $classMetadataInfo);
 
-        $dataFromRow = array();
-
-        foreach($fieldNames as $fieldName){
-            $fieldMethod = 'get'.ucfirst($fieldName);
-            if(method_exists($entity, $fieldMethod)){
-                $dataFromRow [$fieldName]= $this->treatFieldValue($entity->$fieldMethod());
-            }else{
-                throw new InvalidEntityIdentifierException("entity {$fixtureEntityIdentifier} does not have method {$fieldMethod}");
-            }
+        $associationsDataFromRow = array();
+        if ($associations) {
+            $associationsDataFromRow = $this->getAssociationsDataForEntity($entity, $classMetadataInfo);
         }
 
-        return  array(
-            $fixtureEntityIdentifier => $dataFromRow
+        return array(
+            $fixtureEntityIdentifier => $fieldsDataFromRow + $associationsDataFromRow
         );
-    }
-
-    /**
-     * @param $fieldValue
-     *
-     * @return string
-     */
-    private function treatFieldValue($fieldValue)
-    {
-        if($fieldValue instanceof \DateTime){
-            return '<dateTimeBetween("'.$fieldValue->format('Y-m-d H:i:s').'", "'.$fieldValue->format('Y-m-d H:i:s').'")>';
-        }
-
-        return $fieldValue;
     }
 
     /**
@@ -173,21 +155,145 @@ class Dumper
      */
     private function getFixtureIdentifierForEntity(ClassMetadataInfo $classMetadataInfo, $entity)
     {
-
         $entityName = $classMetadataInfo->getName();
         $fixtureEntityIdentifier = strtolower(str_replace('\\', '_', $entityName)) . '_';
 
         $identifiers = $classMetadataInfo->getIdentifier();
 
-        foreach($identifiers as $identifier){
-            $identifierMethod = 'get'.ucfirst($identifier);
-            if(method_exists($entity, $identifierMethod)){
+        foreach ($identifiers as $identifier) {
+            $identifierMethod = 'get' . ucfirst($identifier);
+            if (method_exists($entity, $identifierMethod)) {
                 $fixtureEntityIdentifier .= $entity->$identifierMethod();
-            }else{
-                throw new InvalidEntityIdentifierException("entity {$entityName} does not have identifier {$identifier}");
+            } else {
+                throw new InvalidEntityIdentifierException($entityName, $identifier);
             }
         }
 
         return $fixtureEntityIdentifier;
+    }
+
+    /**
+     * @param                                         $entity
+     * @param \Doctrine\ORM\Mapping\ClassMetadataInfo $classMetadataInfo
+     *
+     * @return array
+     * @throws \Cosma\Bundle\TestingBundle\Exception\NonExistentEntityMethodException
+     */
+    private function getFieldsDataForEntity($entity, ClassMetadataInfo $classMetadataInfo)
+    {
+        $data = array();
+
+        $fieldNames = $classMetadataInfo->getFieldNames();
+
+        foreach ($fieldNames as $fieldName) {
+            if ($this->isGeneratedIdentity($fieldName, $classMetadataInfo)) {
+                continue;
+            }
+
+            $fieldMethodName = 'get' . ucfirst($fieldName);
+
+            if (method_exists($entity, $fieldMethodName)) {
+                $data [ $fieldName ] = $this->treatFieldValueByType($entity->$fieldMethodName());
+            } else {
+                throw new NonExistentEntityMethodException($classMetadataInfo->getName(), $fieldMethodName);
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param                                         $entity
+     * @param \Doctrine\ORM\Mapping\ClassMetadataInfo $classMetadataInfo
+     *
+     * @return array
+     * @throws \Cosma\Bundle\TestingBundle\Exception\NonExistentEntityMethodException
+     */
+    private function getAssociationsDataForEntity($entity, ClassMetadataInfo $classMetadataInfo)
+    {
+        $data = array();
+
+        $associationMappings = $classMetadataInfo->getAssociationMappings();
+
+        foreach ($associationMappings as $associationMapping) {
+
+            $data += $this->getDataForAssociation($entity, $associationMapping, $classMetadataInfo);
+        }
+
+        print_r($data);
+        //die('stop');
+
+        return $data;
+    }
+
+    /**
+     * @param       $entity
+     * @param array $associationMapping
+     *
+     * @return array
+     * @throws \Cosma\Bundle\TestingBundle\Exception\NonExistentEntityMethodException
+     */
+    private function getDataForAssociation($entity, array $associationMapping)
+    {
+        print_r($associationMapping);
+        $data = array();
+
+        if ($associationMapping['isOwningSide'] > 0) {
+
+            $associationMethodName = 'get' . ucfirst($associationMapping['fieldName']);
+
+            if (method_exists($entity, $associationMethodName)) {
+
+                $classMetadataInfo = $this->entityManager
+                    ->getMetadataFactory()
+                    ->getMetadataFor($associationMapping['targetEntity']);
+
+                $targetEntity = $entity->$associationMethodName();
+                if ($targetEntity instanceof $associationMapping['targetEntity']) {
+                    $targetEntityIdentifier = $this->getFixtureIdentifierForEntity($classMetadataInfo, $targetEntity);
+
+                    $data[ $associationMapping['fieldName'] ] = '@' . $targetEntityIdentifier;
+                } elseif (is_array($targetEntity)) {
+                    echo "cacac"; die();
+                } else {
+                    $data[ $associationMapping['fieldName'] ] = NULL;
+                }
+            } else {
+                throw new NonExistentEntityMethodException($associationMapping['sourceEntity'], $associationMethodName);
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * @param string                                  $fieldName
+     * @param \Doctrine\ORM\Mapping\ClassMetadataInfo $classMetadataInfo
+     *
+     * @return bool
+     */
+    private
+    function isGeneratedIdentity($fieldName, ClassMetadataInfo $classMetadataInfo)
+    {
+        return ($classMetadataInfo->isIdGeneratorIdentity() &&
+            $classMetadataInfo->isIdentifier($fieldName));
+    }
+
+    /**
+     * @param $fieldValue
+     *
+     * @return string
+     */
+    private
+    function treatFieldValueByType($fieldValue)
+    {
+        /**
+         * DateTime for fzaninotto/Faker format
+         */
+        if ($fieldValue instanceof \DateTime) {
+            return '<dateTimeBetween("' . $fieldValue->format('Y-m-d H:i:s') . '", "' . $fieldValue->format('Y-m-d H:i:s') . '")>';
+        }
+
+        return $fieldValue;
     }
 }

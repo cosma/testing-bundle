@@ -33,6 +33,8 @@ class YamlDumpCommand extends ContainerAwareCommand
     private $targetPath;
 
     /**
+     * app/console cosma_testing:yaml:generate sql target
+     *
      * app/console cosma_testing:yaml:generate "select e from BundleName:Entity e" "path/to/yaml/file.yml"
      *
      * Argument :: query DQL

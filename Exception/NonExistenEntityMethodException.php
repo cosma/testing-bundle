@@ -13,15 +13,15 @@
  */
 namespace Cosma\Bundle\TestingBundle\Exception;
 
-class InvalidEntityIdentifierException extends \Exception
+class NonExistentEntityMethodException extends \Exception
 {
     /**
      * @param string $entity
-     * @param string $identifier
+     * @param string $method
      */
-    public function __construct($entity, $identifier)
+    public function __construct($entity, $method)
     {
-        $message =  "Entity {$entity} does not have identifier {$identifier}";
+        $message =  "Entity {$entity} does not have method {$method}";
 
         parent::__construct($message);
     }

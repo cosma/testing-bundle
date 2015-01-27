@@ -44,13 +44,14 @@ class FixturesDumpCommand extends ContainerAwareCommand
      */
 
     /**
-     * app/console cosma_testing:fixtures:dump "path/to/yaml/file.yml" BundleName:Entity  [--no-relations}
      *
-     * Argument :: target
-     * Argument :: query DQL  - optional
-     * Option :: --no-relations - optional for relations
+     * app/console cosma_testing:fixtures:dump [-a|--associations] dumpDirectory [entity]
      *
+     * app/console cosma_testing:fixtures:dump [-a|--associations] "path/to/dump/directory" BundleName:Entity
      *
+     * Argument :: dump directory - required
+     * Argument :: entity  - if not specified will save all entities
+     * Option :: --associations / -a - saves the associations between entities, too
      */
     protected function configure()
     {
@@ -69,8 +70,8 @@ class FixturesDumpCommand extends ContainerAwareCommand
                 '*'
             )
             ->addOption(
-                'no-relations',
-                NULL,
+                'associations',
+                'a',
                 InputOption::VALUE_NONE,
                 'If set, the the relations between entities will be populated'
             );
@@ -94,11 +95,12 @@ class FixturesDumpCommand extends ContainerAwareCommand
         $dumpDirectory = $input->getArgument('dumpDirectory');
         $entity = $input->getArgument('entity');
 
-        $noRelations = FALSE;
+        $associations = FALSE;
 
-        if ($input->getOption('no-relations')) {
-            $noRelations = TRUE;
+        if ($input->getOption('associations')) {
+            $associations = TRUE;
         }
+
 
         if (!is_writable($dumpDirectory)) {
             throw new \Exception("Dump directory {$dumpDirectory} is not writable");
@@ -116,10 +118,10 @@ class FixturesDumpCommand extends ContainerAwareCommand
 
             /** @type ClassMetadata $classMetadata */
             foreach ($classMetadataCollection as $classMetadata) {
-                $this->dumpEntityFile($classMetadata->getName(), $dumpDirectory, $noRelations);
+                $this->dumpEntityFile($classMetadata->getName(), $associations);
             }
         } else {
-            $this->dumpEntityFile($entity, $dumpDirectory, $noRelations);
+            $this->dumpEntityFile($entity, $associations);
         }
 
         $output->writeln("[" . date('c') . "] finished");
@@ -128,13 +130,12 @@ class FixturesDumpCommand extends ContainerAwareCommand
 
     /**
      * @param string     $entity
-     * @param string     $dumpDirectory
      *
-     * @param bool $noRelations
+     * @param bool $associations
      */
-    private function dumpEntityFile($entity, $dumpDirectory, $noRelations = FALSE)
+    private function dumpEntityFile($entity, $associations = FALSE)
     {
-        $file = $this->dumper->dumpEntityToFile($entity, $noRelations);
+        $file = $this->dumper->dumpEntityTableToFile($entity, $associations);
         $this->output->writeln("[" . date('c') . "] dump fixture for entity {$entity} in {$file}");
         $this->output->writeln(PHP_EOL);
     }
