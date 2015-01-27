@@ -114,6 +114,8 @@ class Dumper
 
         $yaml = $yamlDumper->dump($dumpData, 20);
 
+        $yaml = $this->treatYamlData($yaml);
+
         $fileSystem = new Filesystem();
 
         $fileSystem->dumpFile($filePath, $yaml);
@@ -219,10 +221,6 @@ class Dumper
 
             $data += $this->getDataForAssociation($entity, $associationMapping, $classMetadataInfo);
         }
-
-        print_r($data);
-        //die('stop');
-
         return $data;
     }
 
@@ -235,7 +233,6 @@ class Dumper
      */
     private function getDataForAssociation($entity, array $associationMapping)
     {
-        print_r($associationMapping);
         $data = array();
 
         if ($associationMapping['isOwningSide'] > 0) {
@@ -244,20 +241,38 @@ class Dumper
 
             if (method_exists($entity, $associationMethodName)) {
 
-                $classMetadataInfo = $this->entityManager
+                $targetEntityClassMetadataInfo = $this->entityManager
                     ->getMetadataFactory()
                     ->getMetadataFor($associationMapping['targetEntity']);
 
-                $targetEntity = $entity->$associationMethodName();
-                if ($targetEntity instanceof $associationMapping['targetEntity']) {
-                    $targetEntityIdentifier = $this->getFixtureIdentifierForEntity($classMetadataInfo, $targetEntity);
+                if (
+                    ClassMetadataInfo::ONE_TO_ONE == $associationMapping['type'] ||
+                    ClassMetadataInfo::MANY_TO_ONE == $associationMapping['type']
+                ) {
+                    $targetEntity = $entity->$associationMethodName();
 
-                    $data[ $associationMapping['fieldName'] ] = '@' . $targetEntityIdentifier;
-                } elseif (is_array($targetEntity)) {
-                    echo "cacac"; die();
-                } else {
-                    $data[ $associationMapping['fieldName'] ] = NULL;
+                    if ($targetEntity instanceof $associationMapping['targetEntity']) {
+                        $targetEntityIdentifier = $this->getFixtureIdentifierForEntity($targetEntityClassMetadataInfo, $targetEntity);
+                        $data[ $associationMapping['fieldName'] ] = '@' . $targetEntityIdentifier;
+                    }
                 }
+
+                if (
+                    ClassMetadataInfo::ONE_TO_MANY == $associationMapping['type'] ||
+                    ClassMetadataInfo::MANY_TO_MANY == $associationMapping['type']
+                ) {
+                    $targetEntities = $entity->$associationMethodName();
+                    if (count($targetEntities)> 0) {
+                        $targetEntityIdentifierCollection = array();
+                        foreach ($targetEntities as $targetEntity) {
+                            $targetEntityIdentifier = $this->getFixtureIdentifierForEntity($targetEntityClassMetadataInfo, $targetEntity);
+                            $targetEntityIdentifierCollection[] = '@' . $targetEntityIdentifier;
+                        }
+
+                        $data[ $associationMapping['fieldName'] ] = '[ '. implode(', ', $targetEntityIdentifierCollection) .' ]';
+                    }
+                }
+
             } else {
                 throw new NonExistentEntityMethodException($associationMapping['sourceEntity'], $associationMethodName);
             }
@@ -284,8 +299,7 @@ class Dumper
      *
      * @return string
      */
-    private
-    function treatFieldValueByType($fieldValue)
+    private function treatFieldValueByType($fieldValue)
     {
         /**
          * DateTime for fzaninotto/Faker format
@@ -295,5 +309,16 @@ class Dumper
         }
 
         return $fieldValue;
+    }
+
+    private function treatYamlData($yamlData)
+    {
+        /**
+         * strip quotes for associative collection
+         */
+        $yamlData = str_replace(array(": '[ ", " ]'"), array(": [ ", " ]"), $yamlData);
+
+        return $yamlData;
+
     }
 }
