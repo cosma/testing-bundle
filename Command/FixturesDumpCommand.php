@@ -14,7 +14,6 @@
 namespace Cosma\Bundle\TestingBundle\Command;
 
 use Cosma\Bundle\TestingBundle\Fixture\Dumper;
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
@@ -120,42 +119,45 @@ EOT
         $this->entityManager = $this->getContainer()->get('doctrine')->getManager();
 
         $this->dumper = $this->getContainer()->get('cosma_testing.fixture_dumper');
-        $this->dumper->setDumpDirectory($dumpDirectory);
+        $this->dumper->setAssociation($associations);
 
 
         $this->output->writeln(PHP_EOL);
 
         if ('*' == $entity) {
             $this->output->writeln("[" . date('c') . "] export fixtures in {$dumpDirectory} for all entities");
-            $output->writeln(PHP_EOL);
+            $this->output->writeln(PHP_EOL);
 
             $classMetadataInfoCollection = $this->entityManager->getMetadataFactory()->getAllMetadata();
 
             /** @type ClassMetadataInfo $classMetadataInfo */
             foreach ($classMetadataInfoCollection as $classMetadataInfo) {
-
-                $this->dumpEntityFile($classMetadataInfo->getName(), $associations);
+                $this->dumpFile($classMetadataInfo, $dumpDirectory);
             }
         } else {
-            $this->dumpEntityFile($entity, $associations);
+            $classMetadataInfo = $this->entityManager->getMetadataFactory()->getMetadataFor($entity);
+            $this->dumpFile($classMetadataInfo, $dumpDirectory);
+
         }
 
-        $output->writeln("[" . date('c') . "] finished");
-        $output->writeln(PHP_EOL);
+        $this->output->writeln("[" . date('c') . "] finished");
+        $this->output->writeln(PHP_EOL);
     }
 
     /**
-     * @param string $entity
+     * @param ClassMetadataInfo $classMetadataInfo
+     * @param string $dumpDirectory
      *
-     * @param bool $associations
+     * return void
      */
-    private function dumpEntityFile($entity, $associations = FALSE)
+    private function dumpFile(ClassMetadataInfo $classMetadataInfo, $dumpDirectory)
     {
-        $this->output->writeln("[" . date('c') . "] dumping {$entity} ...");
+        $this->output->writeln("[" . date('c') . "] dumping {$classMetadataInfo->getName()} ...");
 
-        $file = $this->dumper->dumpDataToYamlFile($entity, $associations);
-        $this->output->writeln("[" . date('c') . "] successfully dumped fixture for entity {$entity} in {$file}");
+        $this->dumper->setClassMetadataInfo($classMetadataInfo);
+        $file = $this->dumper->dumpToYaml($dumpDirectory);
 
+        $this->output->writeln("[" . date('c') . "] successfully dumped in file  {$file}");
         $this->output->writeln(PHP_EOL);
     }
 }

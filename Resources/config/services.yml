@@ -6,5 +6,3 @@ services:
          class: %cosma_testing.fixture_dumper.class%
          arguments:
               - @doctrine.orm.entity_manager
-         calls:
-              - [setDumpDirectory, ["ceva/pula"]]

@@ -26,15 +26,14 @@ class Dumper
     private $entityManager;
 
     /**
-     * @var string
-     */
-    private $dumpDirectory;
-
-    /**
      * @var ClassMetadataInfo
      */
-    private $entityClassMetadataInfo;
+    private $classMetadataInfo;
 
+    /**
+     * @var bool
+     */
+    private $association = FALSE;
 
     /**
      * @param EntityManagerInterface $entityManager
@@ -45,102 +44,87 @@ class Dumper
     }
 
     /**
-     * @return mixed
+     * @return ClassMetadataInfo
      */
-    public function getDumpDirectory()
+    public function getClassMetadataInfo()
     {
-        return $this->dumpDirectory;
+        return $this->classMetadataInfo;
     }
 
     /**
-     * @param mixed $dumpDirectory
+     * @param ClassMetadataInfo $classMetadataInfo
      */
-    public function setDumpDirectory($dumpDirectory)
+    public function setClassMetadataInfo($classMetadataInfo)
     {
-        $this->dumpDirectory = $dumpDirectory;
+        $this->classMetadataInfo = $classMetadataInfo;
     }
 
     /**
-     * @param string $entityName
-     * @param bool $associations
+     * @return boolean
+     */
+    public function isAssociation()
+    {
+        return $this->association;
+    }
+
+    /**
+     * @param boolean $association
+     */
+    public function setAssociation($association)
+    {
+        $this->association = $association;
+    }
+
+    /**
+     * @param string $dumpDirectory
      *
      * @return bool
      */
-    public function dumpDataToYamlFile($entityName, $associations = FALSE)
+    public function dumpToYaml($dumpDirectory)
     {
-        /** @type ClassMetadataInfo $classMetadataInfo */
-        $classMetadataInfo = $this->entityManager->getMetadataFactory()->getMetadataFor($entityName);
-
         $dumpData = array(
-            $classMetadataInfo->getName() => $this->getData($entityName, $associations)
+            $this->classMetadataInfo->getName() => $this->getData()
         );
 
-        $table = $classMetadataInfo->getTableName();
+        $tableName = $this->classMetadataInfo->getTableName();
 
-        $filePath = "{$this->dumpDirectory}/{$table}.yml";
+        $filePath = "{$dumpDirectory}/{$tableName}.yml";
 
         return $this->saveYamlFile($filePath, $dumpData);
     }
 
     /**
-     * @param      $entityName
-     * @param bool $associations
+     * get data for all entities
      *
      * @return array
      */
-    public function getData($entityName, $associations = FALSE)
+    public function getData()
     {
-        /** @type ClassMetadataInfo $classMetadataInfo */
-        $classMetadataInfo = $this->entityManager->getMetadataFactory()->getMetadataFor($entityName);
-
-        $entities = $this->entityManager->getRepository($classMetadataInfo->getName())->findAll();
+        $entities = $this->entityManager->getRepository($this->classMetadataInfo->getName())->findAll();
 
         $tableData = array();
 
         foreach ($entities as $entity) {
-            $tableData += $this->getDataForEntity($classMetadataInfo, $entity, $associations);
+            $tableData += $this->getDataForEntity($entity);
         }
 
         return $tableData;
     }
 
     /**
-     * @param       $filePath
-     * @param array $dumpData
-     *
-     * @return mixed
-     */
-    private function saveYamlFile($filePath, array $dumpData)
-    {
-        $yamlDumper = new YamlDumper();
-
-        $yaml = $yamlDumper->dump($dumpData, 20);
-
-        $yaml = $this->treatYamlData($yaml);
-
-        $fileSystem = new Filesystem();
-
-        $fileSystem->dumpFile($filePath, $yaml);
-
-        return $filePath;
-    }
-
-    /**
-     * @param \Doctrine\ORM\Mapping\ClassMetadataInfo $classMetadataInfo
-     * @param object                                  $entity
-     * @param bool $associations
+     * @param object $entity
      *
      * @return array
      */
-    private function getDataForEntity(ClassMetadataInfo $classMetadataInfo, $entity, $associations = FALSE)
+    private function getDataForEntity($entity)
     {
-        $fixtureEntityIdentifier = $this->getIdentifierForEntity($classMetadataInfo, $entity);
+        $fixtureEntityIdentifier = $this->getIdentifierForEntity($entity, $this->classMetadataInfo);
 
-        $fieldsDataFromRow = $this->getFieldsDataForEntity($entity, $classMetadataInfo);
+        $fieldsDataFromRow = $this->getFieldsDataForEntity($entity);
 
         $associationsDataFromRow = array();
-        if ($associations) {
-            $associationsDataFromRow = $this->getOwningAssociationsDataForEntity($entity, $classMetadataInfo);
+        if ($this->isAssociation()) {
+            $associationsDataFromRow = $this->getOwningAssociationsDataForEntity($entity);
         }
 
         return array(
@@ -149,66 +133,64 @@ class Dumper
     }
 
     /**
-     * @param \Doctrine\ORM\Mapping\ClassMetadataInfo $classMetadataInfo
-     * @param                                         $entity
-     *
-     * @return string
-     */
-    private function getIdentifierForEntity(ClassMetadataInfo $classMetadataInfo, $entity)
-    {
-        $entityName = $classMetadataInfo->getName();
-        $fixtureEntityIdentifier = strtolower(str_replace('\\', '_', $entityName));
-
-        $identifiers = $classMetadataInfo->getIdentifier();
-
-        foreach ($identifiers as $identifier) {
-            $fixtureEntityIdentifier .= '_' . $classMetadataInfo->getFieldValue($entity, $identifier);
-
-        }
-
-        return $fixtureEntityIdentifier;
-    }
-
-    /**
-     * @param object                                  $entity
-     * @param \Doctrine\ORM\Mapping\ClassMetadataInfo $classMetadataInfo
+     * @param object $entity
      *
      * @return array
      */
-    private function getFieldsDataForEntity($entity, ClassMetadataInfo $classMetadataInfo)
+    private function getFieldsDataForEntity($entity)
     {
         $data = array();
 
-        $fieldNames = $classMetadataInfo->getFieldNames();
+        $fieldNames = $this->classMetadataInfo->getFieldNames();
 
         foreach ($fieldNames as $fieldName) {
-            if ($this->isGeneratedIdentity($fieldName, $classMetadataInfo)) {
+            if ($this->isGeneratedIdentity($fieldName, $this->classMetadataInfo)) {
                 continue;
             }
 
-            $fieldValue = $classMetadataInfo->getFieldValue($entity, $fieldName);
-
-            $data [$fieldName] = $this->treatFieldValueByType($fieldValue);
+            $data [$fieldName] = $this->getFieldValueFromEntity($fieldName, $entity);
         }
 
         return $data;
     }
 
     /**
-     * @param object                                  $entity
-     * @param \Doctrine\ORM\Mapping\ClassMetadataInfo $classMetadataInfo
+     * @param string $fieldName
+     * @param object $entity
+     *
+     * @return mixed|string
+     */
+    private function getFieldValueFromEntity($fieldName, $entity)
+    {
+        $fieldValue = $this->classMetadataInfo->getFieldValue($entity, $fieldName);
+
+        /**
+         * DateTime for fzaninotto/Faker format
+         */
+        if ($fieldValue instanceof \DateTime) {
+            $fieldValue = '<dateTimeBetween("' . $fieldValue->format('Y-m-d H:i:s') . '", "' . $fieldValue->format('Y-m-d H:i:s') . '")>';
+        }
+
+        return $fieldValue;
+    }
+
+    /**
+     * @param object $entity
      *
      * @return array
      */
-    private function getOwningAssociationsDataForEntity($entity, ClassMetadataInfo $classMetadataInfo)
+    private function getOwningAssociationsDataForEntity($entity)
     {
         $data = array();
 
-        $associationMappings = $classMetadataInfo->getAssociationMappings();
+        $associationMappings = $this->classMetadataInfo->getAssociationMappings();
 
         foreach ($associationMappings as $associationMapping) {
             if ($associationMapping['isOwningSide'] > 0) {
-                $data[$associationMapping['fieldName']] = $this->getTargetIdentifier($entity, $associationMapping, $classMetadataInfo);
+                $targetAssociationIdentifier = $this->getTargetAssociationIdentifier($entity, $associationMapping);
+                if ($targetAssociationIdentifier) {
+                    $data[$associationMapping['fieldName']] = $targetAssociationIdentifier;
+                }
             }
         }
 
@@ -218,66 +200,21 @@ class Dumper
     /**
      * @param object $entity
      * @param array $associationMapping
-     * @param ClassMetadataInfo $classMetadataInfo
      *
      * @return null|string
      */
-    private function getTargetIdentifier($entity, array $associationMapping, ClassMetadataInfo $classMetadataInfo)
+    private function getTargetAssociationIdentifier($entity, array $associationMapping)
     {
         $targetIdentifier = NULL;
         if ($this->isSingleTargetedAssociation($associationMapping)) {
 
-            $targetIdentifier = $this->getSingleTargetAssociationIdentifier($entity, $associationMapping, $classMetadataInfo);
+            $targetIdentifier = $this->getSingleTargetAssociationIdentifier($entity, $associationMapping);
 
         } elseif ($this->isMultiTargetedAssociation($associationMapping)) {
 
-            $targetIdentifier = $this->getMultiTargetAssociationIdentifier($entity, $associationMapping, $classMetadataInfo);
+            $targetIdentifier = $this->getMultiTargetAssociationIdentifier($entity, $associationMapping);
         }
         return $targetIdentifier;
-    }
-
-    /**
-     * @param string $fieldName
-     * @param \Doctrine\ORM\Mapping\ClassMetadataInfo $classMetadataInfo
-     *
-     * @return bool
-     */
-    private function isGeneratedIdentity($fieldName, ClassMetadataInfo $classMetadataInfo)
-    {
-        return ($classMetadataInfo->isIdGeneratorIdentity() &&
-            $classMetadataInfo->isIdentifier($fieldName));
-    }
-
-    /**
-     * @param $fieldValue
-     *
-     * @return string
-     */
-    private function treatFieldValueByType($fieldValue)
-    {
-        /**
-         * DateTime for fzaninotto/Faker format
-         */
-        if ($fieldValue instanceof \DateTime) {
-            return '<dateTimeBetween("' . $fieldValue->format('Y-m-d H:i:s') . '", "' . $fieldValue->format('Y-m-d H:i:s') . '")>';
-        }
-
-        return $fieldValue;
-    }
-
-    /**
-     * @param string $yamlData
-     *
-     * @return string
-     */
-    private function treatYamlData($yamlData)
-    {
-        /**
-         * strip quotes for associative collection
-         */
-        $yamlData = str_replace(array(": '[ ", " ]'"), array(": [ ", " ]"), $yamlData);
-
-        return $yamlData;
     }
 
     /**
@@ -305,15 +242,14 @@ class Dumper
     /**
      * @param object $entity
      * @param array $associationMapping
-     * @param ClassMetadataInfo $classMetadataInfo
      *
      * @return null|string
      */
-    private function getSingleTargetAssociationIdentifier($entity, array $associationMapping, ClassMetadataInfo $classMetadataInfo)
+    private function getSingleTargetAssociationIdentifier($entity, array $associationMapping)
     {
         $targetIdentifier = null;
 
-        $targetEntity = $classMetadataInfo->getFieldValue($entity, $associationMapping['fieldName']);
+        $targetEntity = $this->classMetadataInfo->getFieldValue($entity, $associationMapping['fieldName']);
 
         if ($targetEntity instanceof $associationMapping['targetEntity']) {
 
@@ -321,7 +257,7 @@ class Dumper
                 ->getMetadataFactory()
                 ->getMetadataFor($associationMapping['targetEntity']);
 
-            $targetIdentifier = '@' . $this->getIdentifierForEntity($targetClassMetadataInfo, $targetEntity);
+            $targetIdentifier = '@' . $this->getIdentifierForEntity($targetEntity, $targetClassMetadataInfo);
         }
         return $targetIdentifier;
     }
@@ -329,15 +265,14 @@ class Dumper
     /**
      * @param object $entity
      * @param array $associationMapping
-     * @param ClassMetadataInfo $classMetadataInfo
      *
      * @return null|string
      */
-    private function getMultiTargetAssociationIdentifier($entity, array $associationMapping, ClassMetadataInfo $classMetadataInfo)
+    private function getMultiTargetAssociationIdentifier($entity, array $associationMapping)
     {
         $targetIdentifier = NULL;
 
-        $targetEntities = $classMetadataInfo->getFieldValue($entity, $associationMapping['fieldName']);
+        $targetEntities = $this->classMetadataInfo->getFieldValue($entity, $associationMapping['fieldName']);
         if (count($targetEntities) > 0) {
 
             $targetClassMetadataInfo = $this->entityManager
@@ -346,12 +281,81 @@ class Dumper
 
             $targetEntityIdentifierCollection = array();
             foreach ($targetEntities as $targetEntity) {
-                $targetEntityIdentifier = $this->getIdentifierForEntity($targetClassMetadataInfo, $targetEntity);
+                $targetEntityIdentifier = $this->getIdentifierForEntity($targetEntity, $targetClassMetadataInfo);
                 $targetEntityIdentifierCollection[] = '@' . $targetEntityIdentifier;
             }
 
             $targetIdentifier = '[ ' . implode(', ', $targetEntityIdentifierCollection) . ' ]';
         }
         return $targetIdentifier;
+    }
+
+    /**
+     * @param                                         $entity
+     * @param \Doctrine\ORM\Mapping\ClassMetadataInfo $classMetadataInfo
+     *
+     * @return string
+     */
+    private function getIdentifierForEntity($entity, ClassMetadataInfo $classMetadataInfo)
+    {
+        $entityName = $classMetadataInfo->getName();
+        $fixtureEntityIdentifier = strtolower(str_replace('\\', '_', $entityName));
+
+        $identifiers = $classMetadataInfo->getIdentifier();
+
+        foreach ($identifiers as $identifier) {
+            $fixtureEntityIdentifier .= '_' . $classMetadataInfo->getFieldValue($entity, $identifier);
+
+        }
+
+        return $fixtureEntityIdentifier;
+    }
+
+    /**
+     * @param string $fieldName
+     * @param \Doctrine\ORM\Mapping\ClassMetadataInfo $classMetadataInfo
+     *
+     * @return bool
+     */
+    private function isGeneratedIdentity($fieldName, ClassMetadataInfo $classMetadataInfo)
+    {
+        return ($classMetadataInfo->isIdGeneratorIdentity() &&
+            $classMetadataInfo->isIdentifier($fieldName));
+    }
+
+    /**
+     * @param       $filePath
+     * @param array $dumpData
+     *
+     * @return mixed
+     */
+    private function saveYamlFile($filePath, array $dumpData)
+    {
+        $yamlDumper = new YamlDumper();
+
+        $yaml = $yamlDumper->dump($dumpData, 20);
+
+        $yaml = $this->treatYamlData($yaml);
+
+        $fileSystem = new Filesystem();
+
+        $fileSystem->dumpFile($filePath, $yaml);
+
+        return $filePath;
+    }
+
+    /**
+     * @param string $yamlData
+     *
+     * @return string
+     */
+    private function treatYamlData($yamlData)
+    {
+        /**
+         * strip quotes for associative collection
+         */
+        $yamlData = str_replace(array(": '[ ", " ]'"), array(": [ ", " ]"), $yamlData);
+
+        return $yamlData;
     }
 }
