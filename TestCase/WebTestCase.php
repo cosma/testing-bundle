@@ -214,7 +214,7 @@ abstract class WebTestCase extends WebTestCaseBase
             throw new \InvalidArgumentException('Array is empty.');
         }
 
-        $fixtures = $this->appendFixturesPath($fixtures);
+        $fixtures = $this->appendCustomFixturesPath($fixtures);
 
         return $this->loadFixture($fixtures, $dropDatabaseBefore);
     }
@@ -402,12 +402,12 @@ abstract class WebTestCase extends WebTestCaseBase
      *
      * @return array
      */
-    private function appendFixturesPath(array $fixtures)
+    private function appendCustomFixturesPath(array $fixtures)
     {
 
         $fixturePaths = array();
         foreach ($fixtures as $tableFixture) {
-            $fixturePaths[] = static::getCurrentBundle()->getPath() . '/' . $tableFixture;
+            $fixturePaths[] = static::getCurrentBundle()->getPath() . '/' . $tableFixture.'.yml';
         }
 
         return $fixturePaths;
