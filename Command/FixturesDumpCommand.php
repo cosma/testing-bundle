@@ -16,6 +16,7 @@ namespace Cosma\Bundle\TestingBundle\Command;
 use Cosma\Bundle\TestingBundle\Fixture\Dumper;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -74,11 +75,27 @@ class FixturesDumpCommand extends ContainerAwareCommand
                 'a',
                 InputOption::VALUE_NONE,
                 'If set, the the relations between entities will be populated'
+            )
+            ->setHelp(<<<EOT
+The <info>cosma_testing:fixtures:dump</info> command dump data into file fixtures from your database:
+
+  <info>./app/console cosma_testing:fixtures:dump "/path/to/dump/directory"</info>
+
+By default, the fixtures for all the entities managed by Doctrine will be saved to the specified dump directory.
+You can also optionally specify the exact entity as the second argument:
+
+  <info>./app/console cosma_testing:fixtures:dump "/path/to/dump/directory" "BundleName:EntityName"</info>
+
+If you want to include in the fixtures all the associations of the entity, you can use the <info>--associations</info> or <info>-a</info> option:
+
+  <info>./app/console cosma_testing:fixtures:dump --associations "/path/to/dump/directory" "BundleName:EntityName"</info>
+
+EOT
             );
     }
 
     /**
-     * @param InputInterface  $input
+     * @param InputInterface $input
      * @param OutputInterface $output
      *
      * @return void
@@ -86,27 +103,25 @@ class FixturesDumpCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->output = $output;
-
-        $this->entityManager = $this->getContainer()->get('doctrine')->getManager();
-
-        $this->dumper = $this->getContainer()->get('cosma_testing.fixture_dumper');
-
         $dumpDirectory = $input->getArgument('dumpDirectory');
         $entity = $input->getArgument('entity');
 
         $associations = FALSE;
-
         if ($input->getOption('associations')) {
             $associations = TRUE;
         }
-
 
         if (!is_writable($dumpDirectory)) {
             throw new \Exception("Dump directory {$dumpDirectory} is not writable");
         }
 
+        $this->output = $output;
+
+        $this->entityManager = $this->getContainer()->get('doctrine')->getManager();
+
+        $this->dumper = $this->getContainer()->get('cosma_testing.fixture_dumper');
         $this->dumper->setDumpDirectory($dumpDirectory);
+
 
         $this->output->writeln(PHP_EOL);
 
@@ -114,11 +129,12 @@ class FixturesDumpCommand extends ContainerAwareCommand
             $this->output->writeln("[" . date('c') . "] export fixtures in {$dumpDirectory} for all entities");
             $output->writeln(PHP_EOL);
 
-            $classMetadataCollection = $this->entityManager->getMetadataFactory()->getAllMetadata();
+            $classMetadataInfoCollection = $this->entityManager->getMetadataFactory()->getAllMetadata();
 
-            /** @type ClassMetadata $classMetadata */
-            foreach ($classMetadataCollection as $classMetadata) {
-                $this->dumpEntityFile($classMetadata->getName(), $associations);
+            /** @type ClassMetadataInfo $classMetadataInfo */
+            foreach ($classMetadataInfoCollection as $classMetadataInfo) {
+
+                $this->dumpEntityFile($classMetadataInfo->getName(), $associations);
             }
         } else {
             $this->dumpEntityFile($entity, $associations);
@@ -129,7 +145,7 @@ class FixturesDumpCommand extends ContainerAwareCommand
     }
 
     /**
-     * @param string     $entity
+     * @param string $entity
      *
      * @param bool $associations
      */
@@ -137,7 +153,7 @@ class FixturesDumpCommand extends ContainerAwareCommand
     {
         $this->output->writeln("[" . date('c') . "] dumping {$entity} ...");
 
-        $file = $this->dumper->dumpEntityTableToFile($entity, $associations);
+        $file = $this->dumper->dumpDataToYamlFile($entity, $associations);
         $this->output->writeln("[" . date('c') . "] successfully dumped fixture for entity {$entity} in {$file}");
 
         $this->output->writeln(PHP_EOL);
