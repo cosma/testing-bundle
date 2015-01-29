@@ -76,24 +76,6 @@ class Dumper
     }
 
     /**
-     * @param string $dumpDirectory
-     *
-     * @return bool
-     */
-    public function dumpToYaml($dumpDirectory)
-    {
-        $dumpData = array(
-            $this->classMetadataInfo->getName() => $this->getData()
-        );
-
-        $tableName = $this->classMetadataInfo->getTableName();
-
-        $filePath = "{$dumpDirectory}/{$tableName}.yml";
-
-        return $this->saveYamlFile($filePath, $dumpData);
-    }
-
-    /**
      * get data for all entities
      *
      * @return array
@@ -109,6 +91,24 @@ class Dumper
         }
 
         return $tableData;
+    }
+
+    /**
+     * @param string $dumpDirectory
+     *
+     * @return bool
+     */
+    public function dumpToYaml($dumpDirectory)
+    {
+        $dumpData = array(
+            $this->classMetadataInfo->getName() => $this->getData()
+        );
+
+        $tableName = $this->classMetadataInfo->getTableName();
+
+        $filePath = "{$dumpDirectory}/{$tableName}.yml";
+
+        return $this->saveYamlFile($filePath, $dumpData);
     }
 
     /**

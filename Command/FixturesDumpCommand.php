@@ -35,11 +35,6 @@ class FixturesDumpCommand extends ContainerAwareCommand
     private $dumper;
 
     /**
-     * @var EntityManagerInterface
-     */
-    private $entityManager;
-
-    /**
      * Configure name, description and arguments of this command.
      */
 
@@ -67,7 +62,7 @@ class FixturesDumpCommand extends ContainerAwareCommand
                 'entity',
                 InputArgument::OPTIONAL,
                 'Run command just for this specific entity',
-                '*'
+                NULL
             )
             ->addOption(
                 'associations',
@@ -91,6 +86,8 @@ If you want to include in the fixtures all the associations of the entity, you c
 
 EOT
             );
+
+        $this->dumper = $this->getContainer()->get('cosma_testing.fixture_dumper');
     }
 
     /**
@@ -100,7 +97,7 @@ EOT
      * @return void
      * @throws \Exception
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    public function execute(InputInterface $input, OutputInterface $output)
     {
         $dumpDirectory = $input->getArgument('dumpDirectory');
         $entity = $input->getArgument('entity');
@@ -110,34 +107,30 @@ EOT
             $associations = TRUE;
         }
 
-        if (!is_writable($dumpDirectory)) {
-            throw new \Exception("Dump directory {$dumpDirectory} is not writable");
-        }
-
         $this->output = $output;
 
-        $this->entityManager = $this->getContainer()->get('doctrine')->getManager();
+        /** @type EntityManagerInterface $entityManager */
+        $entityManager = $this->getContainer()->get('doctrine')->getManager();
 
-        $this->dumper = $this->getContainer()->get('cosma_testing.fixture_dumper');
+
         $this->dumper->setAssociation($associations);
 
 
         $this->output->writeln(PHP_EOL);
 
-        if ('*' == $entity) {
+        if ($entity) {$classMetadataInfo = $entityManager->getMetadataFactory()->getMetadataFor($entity);
+            $this->dumpFile($classMetadataInfo, $dumpDirectory);
+
+        } else {
             $this->output->writeln("[" . date('c') . "] export fixtures in {$dumpDirectory} for all entities");
             $this->output->writeln(PHP_EOL);
 
-            $classMetadataInfoCollection = $this->entityManager->getMetadataFactory()->getAllMetadata();
+            $classMetadataInfoCollection = $entityManager->getMetadataFactory()->getAllMetadata();
 
             /** @type ClassMetadataInfo $classMetadataInfo */
             foreach ($classMetadataInfoCollection as $classMetadataInfo) {
                 $this->dumpFile($classMetadataInfo, $dumpDirectory);
             }
-        } else {
-            $classMetadataInfo = $this->entityManager->getMetadataFactory()->getMetadataFor($entity);
-            $this->dumpFile($classMetadataInfo, $dumpDirectory);
-
         }
 
         $this->output->writeln("[" . date('c') . "] finished");
