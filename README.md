@@ -498,7 +498,7 @@ You can easily dump Database data to Yaml fixture files with the command cosma_t
         
     $app/console cosma_testing:fixtures:dump [-a|--associations] dumpDirectory [entity]
     
-    $app/console cosma_testing:fixtures:dump [-a|--associations] "path/to/dump/directory" BundleName:Entity
+    $app/console cosma_testing:fixtures:dump -a "path/to/dump/directory" BundleName:Entity
 ```
 
 
