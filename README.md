@@ -31,7 +31,7 @@ This bundle offers loading Fixtures from .yml ,  dropping and recreating the ORM
 ## Installation
 
 ```bash
-$ php composer.phar require cosma/testing-bundle
+    $ php composer.phar require cosma/testing-bundle
 ```
 Follow the 'dev-master' branch for latest dev version. But i recommend to use more stable version tags if available.
 
@@ -487,29 +487,30 @@ Nelmio\Entity\Group:
         users: [@user1, @user4, @user7]      
 ```
 
-#### Dump Fixture Files
-You can easily dump Database data to Yaml fixture files with ths command:
+#### Importing/Exporting Fixture Files
 
-
+You can easily dump Database data to Yaml fixture files with the command cosma_testing:fixtures:dump
 
 ```bash
-
-
     # Argument :: dump directory - required
     # Argument :: entity  - if not specified will save all entities
     # Option :: --associations / -a - saves the associations between entities, too
-         
-    app/console cosma_testing:fixtures:dump [-a|--associations] dumpDirectory [entity]
+        
+    $app/console cosma_testing:fixtures:dump [-a|--associations] dumpDirectory [entity]
     
-    
-    
-    # a better example
-    
-    app/console cosma_testing:fixtures:dump [-a|--associations] "path/to/dump/directory" BundleName:Entity
-    
-    
-    
+    $app/console cosma_testing:fixtures:dump [-a|--associations] "path/to/dump/directory" BundleName:Entity
+```
 
+
+You can easily import Yaml fixture to Database with command h4cc_alice_fixtures:load:files
+
+```bash
+    # Argument :: list of files to import : required
+    # Option :: --type / - t : Type of loader. Can be "yaml" or "php" : yaml default
+    # Option :: --drop / -d : drop and create schema before loading
+    # Option :: --no-persist / - np :  persist loaded entities in database
+         
+    $app/console h4cc_alice_fixtures:load:files [--drop] /path/to/fixtureFileOne.yml  /path/to/fixtureFileTwo.yml
 ```
 
 
