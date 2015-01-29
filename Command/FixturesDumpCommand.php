@@ -86,8 +86,6 @@ If you want to include in the fixtures all the associations of the entity, you c
 
 EOT
             );
-
-        $this->dumper = $this->getContainer()->get('cosma_testing.fixture_dumper');
     }
 
     /**
@@ -108,6 +106,8 @@ EOT
         }
 
         $this->output = $output;
+
+        $this->dumper = $this->getContainer()->get('cosma_testing.fixture_dumper');
 
         /** @type EntityManagerInterface $entityManager */
         $entityManager = $this->getContainer()->get('doctrine')->getManager();
