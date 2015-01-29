@@ -1114,8 +1114,8 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
         $entities = $loadTestFixturesMethod->invoke(
             $webTestCase,
             array(
-                'Some/Custom/Path/Directory/SomeEntity.yml',
-                'Some/Custom/Path/Directory/AnotherExampleEntity.yml'
+                'Some/Custom/Path/Directory/SomeEntity',
+                'Some/Custom/Path/Directory/AnotherExampleEntity'
             )
         );
 

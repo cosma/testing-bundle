@@ -487,6 +487,32 @@ Nelmio\Entity\Group:
         users: [@user1, @user4, @user7]      
 ```
 
+#### Dump Fixture Files
+You can easily dump Database data to Yaml fixture files with ths command:
+
+
+
+```bash
+
+
+    # Argument :: dump directory - required
+    # Argument :: entity  - if not specified will save all entities
+    # Option :: --associations / -a - saves the associations between entities, too
+         
+    app/console cosma_testing:fixtures:dump [-a|--associations] dumpDirectory [entity]
+    
+    
+    
+    # a better example
+    
+    app/console cosma_testing:fixtures:dump [-a|--associations] "path/to/dump/directory" BundleName:Entity
+    
+    
+    
+
+```
+
+
 
 ### Adding own Providers for Faker
 
