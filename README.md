@@ -493,7 +493,7 @@ You can easily dump Database data to Yaml fixture files with the command cosma_t
 
 ```bash
     # Argument :: dump directory - required
-    # Argument :: entity  - if not specified will save all entities
+    # Argument :: entity  - if not specified will save all entities : default *
     # Option :: --associations / -a - saves the associations between entities, too
         
     $app/console cosma_testing:fixtures:dump [-a|--associations] dumpDirectory [entity]
