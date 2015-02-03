@@ -108,8 +108,6 @@ class DumperTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetData_WithAssociation()
     {
-        $this->markTestSkipped('for the moment');
-
         $firstDummyEntity = new DummyEntity();
         $firstDummyEntity->setId(1);
         $firstDummyEntity->setName('first dummy entity');
@@ -143,10 +141,18 @@ class DumperTest extends \PHPUnit_Framework_TestCase
             ->method('findAll')
             ->will($this->returnValue(array($firstDummyEntity, $secondDummyEntity)));
 
+        $entityManager = $this->getMockBuilder('Doctrine\ORM\EntityManager')
+            ->disableOriginalConstructor()
+            ->setMethods(array('getRepository'))
+            ->getMock();
+        $entityManager->expects($this->once())
+            ->method('getRepository')
+            ->with('Cosma\Bundle\TestingBundle\Tests\Fixture\DummyEntity')
+            ->will($this->returnValue($entityRepository));
 
         $classMetaDataInfo = $this->getMockBuilder('\Doctrine\ORM\Mapping\ClassMetadataInfo')
             ->disableOriginalConstructor()
-            ->setMethods(array('getName', 'getIdentifier', 'getFieldNames', 'getFieldValue', 'getAssociationMappings'))
+            ->setMethods(array('getName', 'getIdentifier', 'getFieldNames', 'getFieldValue'))
             ->getMock();
         $classMetaDataInfo->expects($this->exactly(3))
             ->method('getName')
@@ -157,35 +163,12 @@ class DumperTest extends \PHPUnit_Framework_TestCase
         $classMetaDataInfo->expects($this->exactly(2))
             ->method('getFieldNames')
             ->will($this->returnValue(array('id', 'name')));
-        $classMetaDataInfo->expects($this->once())
+//        $classMetaDataInfo->expects($this->once())
+//            ->method('getAssociationMappings')
+//            ->will($this->returnValue(array('anotherEntities')));
+        $classMetaDataInfo->expects($this->any())
             ->method('getFieldValue')
-            ->will($this->returnValue(array()));
-        $classMetaDataInfo->expects($this->once())
-            ->method('getAssociationMappings')
-            ->will($this->returnValue(array()));
-
-
-        $metaDataFactory = $this->getMockBuilder('\Doctrine\Common\Persistence\Mapping\ClassMetadataFactory')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getMetadataFor'))
-            ->getMockForAbstractClass();
-        $metaDataFactory->expects($this->once())
-            ->method('getMetadataFor')
-            ->with('Cosma\Bundle\TestingBundle\Tests\Fixture\AnotherDummyEntity')
-            ->will($this->returnValue($classMetaDataInfo));
-
-
-        $entityManager = $this->getMockBuilder('Doctrine\ORM\EntityManager')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getRepository', 'getMetadataFactory'))
-            ->getMock();
-        $entityManager->expects($this->once())
-            ->method('getRepository')
-            ->with('Cosma\Bundle\TestingBundle\Tests\Fixture\DummyEntity')
-            ->will($this->returnValue($entityRepository));
-        $entityManager->expects($this->once())
-            ->method('getMetadataFactory')
-            ->will($this->returnValue($metaDataFactory));
+            ->will($this->returnValue(123));
 
 
 
