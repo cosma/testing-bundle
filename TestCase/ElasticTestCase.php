@@ -44,6 +44,14 @@ abstract class ElasticTestCase extends WebTestCase
     }
 
     /**
+     * @return void
+     */
+    protected function tearDown()
+    {
+        parent::tearDown();
+    }
+
+    /**
      * @return Client
      */
     protected function getElasticClient()

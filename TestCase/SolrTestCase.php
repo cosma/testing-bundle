@@ -32,6 +32,14 @@ abstract class SolrTestCase extends WebTestCase
     }
 
     /**
+     * @return void
+     */
+    protected function tearDown()
+    {
+        parent::tearDown();
+    }
+
+    /**
      * @return \Solarium\QueryType\Update\Result
      */
     private function resetSolrCore()

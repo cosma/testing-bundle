@@ -72,6 +72,15 @@ abstract class WebTestCase extends WebTestCaseBase
     }
 
     /**
+     * @return void
+     */
+    protected function tearDown()
+    {
+        parent::tearDown();
+        \Mockery::close();
+    }
+
+    /**
      * @param array $server
      *
      * @return Client

@@ -2,6 +2,7 @@ Testing Bundle
 ================
 
 An extension of [h4cc/AliceFixturesBundle](https://github.com/h4cc/AliceFixturesBundle) , a Symfony2 bundle for flexible usage of  [nelmio/alice](https://github.com/nelmio/alice)  fixtures integrated with very powerful data generator  [fzaninotto/Faker](https://github.com/fzaninotto/Faker).
+This bundle integrates [mockery/mockery](https://github.com/padraic/mockery) library, too.
 
 
 [![Build Status](https://drone.io/bitbucket.org/cosma/testing-bundle/status.png)](https://drone.io/bitbucket.org/cosma/testing-bundle/latest)
@@ -513,6 +514,28 @@ You can easily import Yaml fixture to Database with command h4cc_alice_fixtures:
     $   php app/console h4cc_alice_fixtures:load:files [--drop] /path/to/fixtureFileOne.yml  /path/to/fixtureFileTwo.yml
 ```
 
+
+
+### Mockery
+
+[Mockery](https://github.com/padraic/mockery) is a simple yet flexible PHP mock object framework for use in unit testing
+
+```php
+use Cosma\Bundle\TestingBundle\TestCase\SimpleTestCase;
+       
+class SomeUnitTest extends SimpleTestCase
+{
+    public function testGetsAverageTemperatureFromThreeServiceReadings()
+    {
+        $service = \Mockery::mock('service');
+        $service->shouldReceive('readTemp')->times(3)->andReturn(10, 12, 14);
+
+        $temperature = new Temperature($service);
+
+        $this->assertEquals(12, $temperature->average());
+    }
+}    
+```
 
 
 ### Adding own Providers for Faker

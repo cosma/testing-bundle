@@ -38,6 +38,14 @@ abstract class CommandTestCase extends WebTestCase
     }
 
     /**
+     * @return void
+     */
+    protected function tearDown()
+    {
+        parent::tearDown();
+    }
+
+    /**
      * Runs a command and returns it output
      *
      * @param string $command
