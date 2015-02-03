@@ -17,6 +17,11 @@ use Doctrine\ORM\EntityNotFoundException;
 
 abstract class SimpleTestCase extends \PHPUnit_Framework_TestCase
 {
+    public function tearDown()
+    {
+        \Mockery::close();
+    }
+
     /**
      * @param $entityNamespaceClass
      * @param $id

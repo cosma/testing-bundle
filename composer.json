@@ -17,10 +17,11 @@
         "h4cc/alice-fixtures-bundle": "0.3.1",
         "phpunit/phpunit": "~4.3",
         "doctrine/orm": "~2.2,>=2.2.3",
-        "symfony/framework-bundle": "2.5.*",
+        "symfony/framework-bundle": "2.6.*",
         "solarium/solarium": "3.*",
         "ruflin/elastica": "1.3.*",
-        "facebook/webdriver": "0.5.*"
+        "facebook/webdriver": "0.5.*",
+        "mockery/mockery": "*"
     },
     "require-dev": {
         "symfony/browser-kit": "2.6.*"
