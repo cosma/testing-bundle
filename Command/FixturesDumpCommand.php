@@ -14,7 +14,6 @@
 namespace Cosma\Bundle\TestingBundle\Command;
 
 use Cosma\Bundle\TestingBundle\Fixture\Dumper;
-use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -109,7 +108,7 @@ EOT
 
         $this->dumper = $this->getContainer()->get('cosma_testing.fixture_dumper');
 
-        /** @type EntityManagerInterface $entityManager */
+        /** @type \Doctrine\ORM\EntityManagerInterface $entityManager */
         $entityManager = $this->getContainer()->get('doctrine')->getManager();
 
 
