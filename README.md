@@ -1,15 +1,16 @@
 Testing Bundle
 ================
 
-An extension of [h4cc/AliceFixturesBundle](https://github.com/h4cc/AliceFixturesBundle) , a Symfony2 bundle for flexible usage of  [nelmio/alice](https://github.com/nelmio/alice)  fixtures integrated with very powerful data generator  [fzaninotto/Faker](https://github.com/fzaninotto/Faker).
-This bundle integrates [mockery/mockery](https://github.com/padraic/mockery) library, too.
-
-Should I integrate this https://github.com/Codeception/AspectMock  ?
-
 
 [![Circle CI](https://circleci.com/gh/cosma/testing-bundle.svg?style=svg)](https://circleci.com/gh/cosma/testing-bundle)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/7697e84e-fd7f-47ae-97cf-66a266c9b4c0/mini.png)](https://insight.sensiolabs.com/projects/7697e84e-fd7f-47ae-97cf-66a266c9b4c0)
 
+
+
+An extension of [h4cc/AliceFixturesBundle](https://github.com/h4cc/AliceFixturesBundle) , a Symfony2 bundle for flexible usage of  [nelmio/alice](https://github.com/nelmio/alice)  fixtures integrated with very powerful data generator  [fzaninotto/Faker](https://github.com/fzaninotto/Faker).
+This bundle integrates [mockery/mockery](https://github.com/padraic/mockery) library, too.
+
+Soon to integrate -  https://github.com/Codeception/AspectMock  ?
 
 
 Supports following test cases:
