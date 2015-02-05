@@ -1,0 +1,16 @@
+machine:
+  timezone:
+    Europe/Berlin
+  php:
+    version: 5.4.9
+
+dependencies:
+  pre:
+    - sudo composer self-update
+    - composer install --prefer-source
+
+test:
+  override:
+    - vendor/phpunit/phpunit/phpunit --coverage-text --coverage-html=Tests/coverage Tests
+
+
