@@ -4,7 +4,7 @@ Testing Bundle
 An extension of [h4cc/AliceFixturesBundle](https://github.com/h4cc/AliceFixturesBundle) , a Symfony2 bundle for flexible usage of  [nelmio/alice](https://github.com/nelmio/alice)  fixtures integrated with very powerful data generator  [fzaninotto/Faker](https://github.com/fzaninotto/Faker).
 This bundle integrates [mockery/mockery](https://github.com/padraic/mockery) library, too.
 
-should i integarte this https://github.com/Codeception/AspectMock  ?
+Should I integrate this https://github.com/Codeception/AspectMock  ?
 
 
 [![Build Status](https://drone.io/bitbucket.org/cosma/testing-bundle/status.png)](https://drone.io/bitbucket.org/cosma/testing-bundle/latest)
