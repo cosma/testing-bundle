@@ -3,13 +3,13 @@
     "type": "symfony-bundle",
     "description": "Testing Bundle",
     "keywords": ["test", "unit test", "acceptance test", "functional test", "phpunit"],
-    "homepage": "https://bitbucket.org/cosma/testing-bundle",
+    "homepage": "http://github.com/cosma/testing-bundle",
     "license": "MIT",
     "authors": [
         {
             "name": "Cosmin Voicu",
             "email": "cosmin.voicu@gmail.com",
-            "homepage": "https://bitbucket.org/cosma"
+            "homepage": "http://github.com/cosma"
         }
     ],
     "require": {
