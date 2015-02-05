@@ -7,7 +7,7 @@ This bundle integrates [mockery/mockery](https://github.com/padraic/mockery) lib
 Should I integrate this https://github.com/Codeception/AspectMock  ?
 
 
-[![Build Status](https://drone.io/bitbucket.org/cosma/testing-bundle/status.png)](https://drone.io/bitbucket.org/cosma/testing-bundle/latest)
+[![Circle CI](https://circleci.com/gh/cosma/testing-bundle.svg?style=svg)](https://circleci.com/gh/cosma/testing-bundle)
 [![SensioLabsInsight](https://insight.sensiolabs.com/projects/7697e84e-fd7f-47ae-97cf-66a266c9b4c0/mini.png)](https://insight.sensiolabs.com/projects/7697e84e-fd7f-47ae-97cf-66a266c9b4c0)
 
 

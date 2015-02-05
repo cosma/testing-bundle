@@ -5,9 +5,11 @@ machine:
     version: 5.4.9
 
 dependencies:
+  cache_directories:
+    - "vendor"
   pre:
     - sudo composer self-update
-    - composer install --prefer-source
+    - composer install --prefer-source --no-interaction
 
 test:
   override:
