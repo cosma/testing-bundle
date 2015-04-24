@@ -33,7 +33,7 @@ This bundle offers loading Fixtures from .yml ,  dropping and recreating the ORM
 ## Installation
 
 ```bash
-    $   php composer.phar require cosma/testing-bundle 1.0.*
+    $   php composer.phar require cosma/testing-bundle '1.0.*'
 ```
 Follow the 'dev-master' branch for latest dev version. But i recommend to use more stable version tags if available.
 
