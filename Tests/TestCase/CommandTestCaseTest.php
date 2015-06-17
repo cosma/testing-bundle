@@ -119,7 +119,7 @@ class CommandTestCaseTest extends \PHPUnit_Framework_TestCase
         $setUpMethod->setAccessible(TRUE);
         $result = $setUpMethod->invoke($commandTestCase);
 
-        $this->assertInstanceOf('Symfony\Bundle\FrameworkBundle\Console\Applications', $result, 'Must return an instance of Application Console');
+        $this->assertInstanceOf('Symfony\Bundle\FrameworkBundle\Console\Application', $result, 'Must return an instance of Application Console');
     }
 }
 
