@@ -15,6 +15,7 @@ namespace Cosma\Bundle\TestingBundle\TestCase;
 
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\StringInput;
+use Symfony\Component\Console\Application as App2;
 use Symfony\Component\Console\Output\StreamOutput;
 
 abstract class CommandTestCase extends WebTestCase
@@ -69,5 +70,13 @@ abstract class CommandTestCase extends WebTestCase
         fclose($temporaryFile);
 
         return $output;
+    }
+
+    /**
+     * @return Application
+     */
+    protected function getApplication()
+    {
+        return $this->application;
     }
 }

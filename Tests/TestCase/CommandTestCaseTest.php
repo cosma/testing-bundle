@@ -89,6 +89,38 @@ class CommandTestCaseTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEmpty($result, 'Command is not working properly');
     }
+
+    /**
+     * @see CommandTestCase::getApplication
+     */
+    public function testGetApplication()
+    {
+        $commandTestCase = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\CommandTestCase')
+            ->disableOriginalConstructor()
+            ->getMockForAbstractClass();
+
+        $reflectionClassMocked = new \ReflectionClass($commandTestCase);
+        $reflectionClass = $reflectionClassMocked->getParentClass();
+
+        $classProperty = $reflectionClass->getProperty('class');
+        $classProperty->setAccessible(TRUE);
+        $classProperty->setValue($commandTestCase, 'Cosma\Bundle\TestingBundle\Tests\AppKernel');
+
+        $application = $this->getMockBuilder('Symfony\Bundle\FrameworkBundle\Console\Application')
+            ->disableOriginalConstructor()
+            ->setMethods(array())
+            ->getMock();
+
+        $applicationProperty = $reflectionClass->getProperty('application');
+        $applicationProperty->setAccessible(TRUE);
+        $applicationProperty->setValue($commandTestCase, $application);
+
+        $setUpMethod = $reflectionClass->getMethod('getApplication');
+        $setUpMethod->setAccessible(TRUE);
+        $result = $setUpMethod->invoke($commandTestCase);
+
+        $this->assertInstanceOf('Symfony\Bundle\FrameworkBundle\Console\Applications', $result, 'Must return an instance of Application Console');
+    }
 }
 
 
