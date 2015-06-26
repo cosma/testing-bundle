@@ -21,7 +21,12 @@ use h4cc\AliceFixturesBundle\ORM\DoctrineORMSchemaTool;
 class SchemaTool extends DoctrineORMSchemaTool
 {
     const DOCTRINE_CLEANING_TRUNCATE = 'truncate';
-    const DOCTRINE_CLEANING_DROP = 'drop';
+    const DOCTRINE_CLEANING_DROP     = 'drop';
+
+    /**
+     * @type string
+     */
+    private $doctrineMigrationsTable = null;
 
     /**
      * create only missing tables.
@@ -33,7 +38,7 @@ class SchemaTool extends DoctrineORMSchemaTool
         $connection = $this->entityManager->getConnection();
         $tableNames = $connection->getSchemaManager()->listTableNames();
 
-        $missingTablesMetaData = array();
+        $missingTablesMetaData = [];
 
         /** @var ClassMetadata $classMetadata */
         foreach ($this->entityManager->getMetadataFactory()->getAllMetadata() as $classMetadata) {
@@ -42,7 +47,7 @@ class SchemaTool extends DoctrineORMSchemaTool
             }
         }
 
-        if(count($missingTablesMetaData)> 0){
+        if (count($missingTablesMetaData) > 0) {
             $this->doctrineSchemaTool->createSchema($missingTablesMetaData);
         }
     }
@@ -60,6 +65,9 @@ class SchemaTool extends DoctrineORMSchemaTool
 
             /** @var Table $table */
             foreach ($connection->getSchemaManager()->listTableNames() as $tableName) {
+                if ($this->doctrineMigrationsTable == $tableName) {
+                    continue;
+                }
 
                 $truncateSql = "TRUNCATE `{$tableName}`";
                 $connection->exec($truncateSql);
@@ -71,5 +79,25 @@ class SchemaTool extends DoctrineORMSchemaTool
             $connection->rollback();
             throw $e;
         }
+    }
+
+    /**
+     * @return string
+     */
+    public function getDoctrineMigrationsTable()
+    {
+        return $this->doctrineMigrationsTable;
+    }
+
+    /**
+     * @param string $doctrineMigrationsTable
+     *
+     * @return $this
+     */
+    public function setDoctrineMigrationsTable($doctrineMigrationsTable)
+    {
+        $this->doctrineMigrationsTable = $doctrineMigrationsTable;
+
+        return $this;
     }
 }

@@ -15,7 +15,6 @@ namespace Cosma\Bundle\TestingBundle\TestCase;
 
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\StringInput;
-use Symfony\Component\Console\Application as App2;
 use Symfony\Component\Console\Output\StreamOutput;
 
 abstract class CommandTestCase extends WebTestCase
