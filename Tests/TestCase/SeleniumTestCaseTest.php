@@ -16,6 +16,7 @@ namespace Cosma\Bundle\TestingBundle\Tests\TestCase;
 
 use Cosma\Bundle\TestingBundle\TestCase\SeleniumTestCase;
 use Elastica\Client;
+use Facebook\WebDriver\Exception\WebDriverCurlException;
 
 class SeleniumTestCaseTest extends \PHPUnit_Framework_TestCase
 {
@@ -24,7 +25,7 @@ class SeleniumTestCaseTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetUp()
     {
-        $webDriver = $this->getMockBuilder('\RemoteWebDriver')
+        $webDriver = $this->getMockBuilder('Facebook\WebDriver\Remote\RemoteWebDriver')
             ->disableOriginalConstructor()
             ->setMethods(array('execute'))
             ->getMockForAbstractClass();
@@ -68,7 +69,7 @@ class SeleniumTestCaseTest extends \PHPUnit_Framework_TestCase
      */
     public function testTearDown()
     {
-        $webDriver = $this->getMockBuilder('\RemoteWebDriver')
+        $webDriver = $this->getMockBuilder('Facebook\WebDriver\Remote\RemoteWebDriver')
             ->disableOriginalConstructor()
             ->setMethods(array('execute'))
             ->getMockForAbstractClass();
@@ -113,7 +114,7 @@ class SeleniumTestCaseTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetWebDriver()
     {
-        $webDriver = $this->getMockBuilder('\RemoteWebDriver')
+        $webDriver = $this->getMockBuilder('Facebook\WebDriver\Remote\RemoteWebDriver')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -133,13 +134,13 @@ class SeleniumTestCaseTest extends \PHPUnit_Framework_TestCase
 
         $webDriver = $reflectionMethod->invoke($seleniumTestCase);
 
-        $this->assertInstanceOf('\RemoteWebDriver', $webDriver);
+        $this->assertInstanceOf('Facebook\WebDriver\Remote\RemoteWebDriver', $webDriver);
     }
 
     /**
      * @see SeleniumTestCase::getWebDriver
      *
-     * @expectedException \WebDriverCurlException
+     * @expectedException \Facebook\WebDriver\Exception\WebDriverCurlException
      */
     public function testGetWebDriver_NUll()
     {
@@ -178,7 +179,7 @@ class SeleniumTestCaseTest extends \PHPUnit_Framework_TestCase
 
         $webDriver = $reflectionMethod->invoke($seleniumTestCase);
 
-        $this->assertInstanceOf('\RemoteWebDriver', $webDriver);
+        $this->assertInstanceOf('Facebook\WebDriver\Remote\RemoteWebDriver', $webDriver);
     }
 
     /**
@@ -186,7 +187,7 @@ class SeleniumTestCaseTest extends \PHPUnit_Framework_TestCase
      */
     public function testOpen()
     {
-        $webDriver = $this->getMockBuilder('\RemoteWebDriver')
+        $webDriver = $this->getMockBuilder('Facebook\WebDriver\Remote\RemoteWebDriver')
             ->disableOriginalConstructor()
             ->setMethods(array( 'execute', 'get'))
             ->getMockForAbstractClass();
@@ -235,7 +236,7 @@ class SeleniumTestCaseTest extends \PHPUnit_Framework_TestCase
         $webDriver = $seleniumTestCase->open('/site.html');
 
         $this->assertInstanceOf(
-            '\RemoteWebDriver',
+            'Facebook\WebDriver\Remote\RemoteWebDriver',
             $webDriver,
             'must return a RemoteWebDriver object'
         );
@@ -246,7 +247,7 @@ class SeleniumTestCaseTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetDomain()
     {
-        $webDriver = $this->getMockBuilder('\RemoteWebDriver')
+        $webDriver = $this->getMockBuilder('Facebook\WebDriver\Remote\RemoteWebDriver')
             ->disableOriginalConstructor()
             ->getMockForAbstractClass();
 

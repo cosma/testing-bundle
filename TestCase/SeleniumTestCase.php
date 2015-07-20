@@ -13,10 +13,13 @@
 
 namespace Cosma\Bundle\TestingBundle\TestCase;
 
+use Facebook\WebDriver\Remote\DesiredCapabilities;
+use Facebook\WebDriver\Remote\RemoteWebDriver;
+
 abstract class SeleniumTestCase extends WebTestCase
 {
     /**
-     * @var \RemoteWebDriver
+     * @var RemoteWebDriver
      */
     private $webDriver;
 
@@ -34,14 +37,14 @@ abstract class SeleniumTestCase extends WebTestCase
     }
 
     /**
-     * @return \RemoteWebDriver
+     * @return RemoteWebDriver
      */
     protected function getWebDriver()
     {
         if (NULL === $this->webDriver) {
-            $this->webDriver = \RemoteWebDriver::create(
+            $this->webDriver = RemoteWebDriver::create(
                 static::$kernel->getContainer()->getParameter('cosma_testing.selenium.server'),
-                \DesiredCapabilities::firefox()
+                DesiredCapabilities::chrome()
             );
         }
 
@@ -51,7 +54,7 @@ abstract class SeleniumTestCase extends WebTestCase
     /**
      * @param $url
      *
-     * @return \RemoteWebDriver
+     * @return RemoteWebDriver
      */
     public function open($url)
     {
