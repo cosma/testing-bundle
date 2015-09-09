@@ -172,6 +172,28 @@ abstract class WebTestCase extends WebTestCaseBase
         return $entityObject;
     }
 
+
+
+    /**
+     * @param array $fixtures
+     * @param       $dropDatabaseBefore
+     *
+     * @return array
+     */
+    protected function loadFixtures(array $fixtures, $dropDatabaseBefore = true)
+    {
+        $fixtureManager = static::getFixtureManager();
+        if ($dropDatabaseBefore) {
+            $fixtureManager->persist(array(), true);
+        }
+
+        $objects = $fixtureManager->loadFiles($fixtures);
+
+        $fixtureManager->persist($objects);
+
+        return $objects;
+    }
+
     /**
      * @param array $fixtures
      * @param bool  $dropDatabaseBefore
@@ -187,7 +209,7 @@ abstract class WebTestCase extends WebTestCaseBase
 
         $fixtures = $this->appendTableFixturesPath($fixtures);
 
-        return $this->loadFixture($fixtures, $dropDatabaseBefore);
+        return $this->loadFixtures($fixtures, $dropDatabaseBefore);
     }
 
     /**
@@ -207,7 +229,7 @@ abstract class WebTestCase extends WebTestCaseBase
         $testClassPath = $this->getTestClassPath($debugTrace);
         $fixtures = $this->appendTestFixturesPath($fixtures, $testClassPath);
 
-        return $this->loadFixture($fixtures, $dropDatabaseBefore);
+        return $this->loadFixtures($fixtures, $dropDatabaseBefore);
     }
 
     /**
@@ -225,7 +247,7 @@ abstract class WebTestCase extends WebTestCaseBase
 
         $fixtures = $this->appendCustomFixturesPath($fixtures);
 
-        return $this->loadFixture($fixtures, $dropDatabaseBefore);
+        return $this->loadFixtures($fixtures, $dropDatabaseBefore);
     }
 
     /**
@@ -420,25 +442,5 @@ abstract class WebTestCase extends WebTestCaseBase
         }
 
         return $fixturePaths;
-    }
-
-    /**
-     * @param array $fixtures
-     * @param       $dropDatabaseBefore
-     *
-     * @return array
-     */
-    private function loadFixture(array $fixtures, $dropDatabaseBefore)
-    {
-        $fixtureManager = static::getFixtureManager();
-        if ($dropDatabaseBefore) {
-            $fixtureManager->persist(array(), TRUE);
-        }
-
-        $objects = $fixtureManager->loadFiles($fixtures);
-
-        $fixtureManager->persist($objects);
-
-        return $objects;
     }
 }
