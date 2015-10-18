@@ -13,6 +13,7 @@
 
 namespace Cosma\Bundle\TestingBundle\TestCase;
 
+use Cosma\Bundle\TestingBundle\TestCase\Traits\WebTestTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase as WebTestCaseSymfony;
 
 abstract class WebTestCase extends WebTestCaseSymfony
