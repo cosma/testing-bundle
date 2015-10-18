@@ -13,9 +13,8 @@
 
 namespace Cosma\Bundle\TestingBundle\TestCase;
 
-use Doctrine\ORM\EntityNotFoundException;
-
-abstract class SimpleTestCase extends \PHPUnit_Framework_TestCase
+class DbTestCase
 {
-    use SimpleTestTrait;
+    use DbTestTrait;
+    
 }

@@ -14,14 +14,11 @@
     ],
     "require": {
         "php": ">=5.4.0",
-        "hautelook/alice-bundle": "1.0.*@dev",
-        "phpunit/phpunit": "4.8.*",
+        "hautelook/alice-bundle": "1.0.*",
+        "phpunit/phpunit": "5.0.*",
         "doctrine/orm": "~2.2,>=2.2.3",
         "symfony/framework-bundle": "2.7.*",
-        "solarium/solarium": "3.4.*",
-        "ruflin/elastica": "2.2.*",
-        "facebook/webdriver": "1.0.*",
-        "mockery/mockery": "*"
+        "mockery/mockery": "0.9.*"
     },
     "require-dev": {
         "symfony/browser-kit": "2.7.*"
@@ -33,7 +30,7 @@
     "minimum-stability": "stable",
     "extra": {
         "branch-alias": {
-            "dev-master": "1.2-dev"
+            "dev-master": "1.2.x-dev"
         }
     }
 }
