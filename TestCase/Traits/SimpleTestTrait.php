@@ -11,7 +11,7 @@
  * Time: 18:23
  */
 
-namespace Cosma\Bundle\TestingBundle\TestCase;
+namespace Cosma\Bundle\TestingBundle\TestCase\Traits;
 
 use Doctrine\ORM\EntityNotFoundException;
 

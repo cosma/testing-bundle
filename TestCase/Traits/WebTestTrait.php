@@ -11,7 +11,7 @@
  * Time: 18:24
  */
 
-namespace Cosma\Bundle\TestingBundle\TestCase;
+namespace Cosma\Bundle\TestingBundle\TestCase\Traits;
 
 use Doctrine\Common\Persistence\Mapping\ClassMetadataFactory;
 use Doctrine\ORM\Mapping\ClassMetadata;
