@@ -15,13 +15,8 @@ namespace Cosma\Bundle\TestingBundle\TestCase;
 
 use Cosma\Bundle\TestingBundle\TestCase\Traits\SimpleTestTrait;
 use Cosma\Bundle\TestingBundle\TestCase\Traits\WebTestTrait;
-use Doctrine\Common\Persistence\Mapping\ClassMetadataFactory;
-use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\EntityNotFoundException;
 use Symfony\Bundle\FrameworkBundle\Client;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase as WebTestCaseBase;
-use Doctrine\ORM\EntityManager;
-use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 
 abstract class WebTestCase extends WebTestCaseBase
 {
@@ -75,26 +70,4 @@ abstract class WebTestCase extends WebTestCaseBase
 
         return $client;
     }
-
-
-
-    /**
-     * @param array $debugTrace
-     *
-     * @return mixed
-     */
-    protected function getTestClassPath(array $debugTrace)
-    {
-        if (isset($debugTrace[0]['file'])) {
-            $testPath = strpos($debugTrace[0]['file'], "Tests/", 1);
-            $filePath = substr($debugTrace[0]['file'], $testPath + 6);
-            $testClassPath = str_replace('.php', '', $filePath);
-        } else {
-            $testClassPath = '';
-        }
-
-        return $testClassPath;
-    }
-
-
 }
