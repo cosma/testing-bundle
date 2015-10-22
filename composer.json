@@ -15,7 +15,7 @@
     "require": {
         "php": ">=5.4.0",
         "hautelook/alice-bundle": "1.0.*",
-        "phpunit/phpunit": "~4.3",
+        "phpunit/phpunit": "5.0.*",
         "doctrine/orm": "~2.2,>=2.2.3",
         "symfony/framework-bundle": "2.7.*",
         "mockery/mockery": "0.9.*"
