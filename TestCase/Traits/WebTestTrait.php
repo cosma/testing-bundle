@@ -23,21 +23,6 @@ use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 trait WebTestTrait
 {
     /**
-     * @var BundleInterface
-     */
-    private static $currentBundle;
-
-    /**
-     * @var FixtureManager
-     */
-    private static $fixtureManager;
-
-    /**
-     * @var string
-     */
-    private static $fixturePath;
-
-    /**
      * @return void
      */
     public static function setUpBeforeClass()
@@ -54,9 +39,6 @@ trait WebTestTrait
      */
     public static function tearDownAfterClass()
     {
-        self::$currentBundle = NULL;
-        self::$fixtureManager = NULL;
-        self::$fixturePath = NULL;
 
         static::ensureKernelShutdown();
     }
@@ -93,160 +75,7 @@ trait WebTestTrait
         return $client;
     }
 
-    /**
-     * @return EntityManager
-     */
-    protected function getEntityManager()
-    {
-        return static::$kernel->getContainer()->get('doctrine')->getManager();
-    }
 
-    /**
-     * @param $entityName
-     *
-     * @return \Doctrine\ORM\EntityRepository
-     */
-    protected function getEntityRepository($entityName)
-    {
-        if (FALSE !== strpos($entityName, ':')) {
-            $entityDescription = explode(':', $entityName);
-
-            $bundleName = $entityDescription[0];
-            $entityName = $entityDescription[1];
-
-        }else{
-            $bundleName = static::getCurrentBundle()->getName();
-        }
-
-        return $this->getEntityManager()->getRepository($bundleName . ':' . $entityName);
-    }
-
-    /**
-     * @param $entity
-     * @param $id
-     *
-     * @return \PHPUnit_Framework_MockObject_MockObject
-     * @throws EntityNotFoundException
-     */
-    protected function getMockedEntityWithId($entity, $id)
-    {
-        $entityClass = $this->getFullPathEntity($entity);
-
-        if (!class_exists($entityClass)) {
-            throw new EntityNotFoundException();
-        }
-
-        $entityModel = $this->getMock($entityClass, array('getId'));
-        $entityModel
-            ->expects($this->any())
-            ->method('getId')
-            ->will($this->returnValue($id));
-
-        return $entityModel;
-    }
-
-    /**
-     * @param $entity
-     * @param $id
-     *
-     * @return mixed
-     * @throws EntityNotFoundException
-     */
-    protected function getEntityWithId($entity, $id)
-    {
-        $entityClass = $this->getFullPathEntity($entity);
-
-        if (!class_exists($entityClass)) {
-            throw new EntityNotFoundException();
-        }
-
-        $entityObject = new $entityClass;
-
-        $reflectionObject = new \ReflectionObject($entityObject);
-        $reflectionProperty = $reflectionObject->getProperty('id');
-        $reflectionProperty->setAccessible(TRUE);
-        $reflectionProperty->setValue($entityObject, $id);
-
-        return $entityObject;
-    }
-
-
-
-    /**
-     * @param array $fixtures
-     * @param       $dropDatabaseBefore
-     *
-     * @return array
-     */
-    protected function loadFixtures(array $fixtures, $dropDatabaseBefore = true)
-    {
-        $fixtureManager = static::getFixtureManager();
-        if ($dropDatabaseBefore) {
-            $fixtureManager->persist(array(), true);
-        }
-
-        $objects = $fixtureManager->loadFiles($fixtures);
-
-        $fixtureManager->persist($objects);
-
-        return $objects;
-    }
-
-    /**
-     * @param array $fixtures
-     * @param bool  $dropDatabaseBefore
-     *
-     * @return array
-     * @throws \InvalidArgumentException
-     */
-    protected function loadTableFixtures(array $fixtures, $dropDatabaseBefore = TRUE)
-    {
-        if (0 == count($fixtures)) {
-            throw new \InvalidArgumentException('Array is empty.');
-        }
-
-        $fixtures = $this->appendTableFixturesPath($fixtures);
-
-        return $this->loadFixtures($fixtures, $dropDatabaseBefore);
-    }
-
-    /**
-     * @param array $fixtures
-     * @param bool  $dropDatabaseBefore
-     *
-     * @return array
-     * @throws \InvalidArgumentException
-     */
-    protected function loadTestFixtures(array $fixtures, $dropDatabaseBefore = TRUE)
-    {
-        if (0 == count($fixtures)) {
-            throw new \InvalidArgumentException('Array is empty.');
-        }
-
-        $debugTrace = debug_backtrace();
-        $testClassPath = $this->getTestClassPath($debugTrace);
-        $fixtures = $this->appendTestFixturesPath($fixtures, $testClassPath);
-
-        return $this->loadFixtures($fixtures, $dropDatabaseBefore);
-    }
-
-    /**
-     * @param array $fixtures
-     * @param bool  $dropDatabaseBefore
-     *
-     * @return array
-     * @throws \InvalidArgumentException
-     */
-    protected function loadCustomFixtures(array $fixtures, $dropDatabaseBefore = TRUE)
-    {
-        if (0 == count($fixtures)) {
-            throw new \InvalidArgumentException('Array is empty.');
-        }
-
-        $fixtures = $this->appendCustomFixturesPath($fixtures);
-
-        return $this->loadFixtures($fixtures, $dropDatabaseBefore);
-    }
 
     /**
      * @param array $debugTrace

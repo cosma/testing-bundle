@@ -19,4 +19,13 @@ use Doctrine\ORM\EntityNotFoundException;
 abstract class SimpleTestCase extends \PHPUnit_Framework_TestCase
 {
     use SimpleTestTrait;
+
+    /**
+     * @return void
+     */
+    protected function tearDown()
+    {
+        parent::tearDown();
+        \Mockery::close();
+    }
 }

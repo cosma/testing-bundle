@@ -18,15 +18,6 @@ use Doctrine\ORM\EntityNotFoundException;
 trait SimpleTestTrait
 {
     /**
-     * @return void
-     */
-    protected function tearDown()
-    {
-        parent::tearDown();
-        \Mockery::close();
-    }
-
-    /**
      * @param $entityNamespaceClass
      * @param $id
      *
