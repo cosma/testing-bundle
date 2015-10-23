@@ -18,6 +18,17 @@ use Doctrine\ORM\EntityNotFoundException;
 trait SimpleTestTrait
 {
     /**
+     * @return void
+     */
+    protected function tearDown()
+    {
+        echo "\nSimpleTestTrait::tearDown\n";
+
+        parent::tearDown();
+        \Mockery::close();
+    }
+
+    /**
      * @param $entityNamespaceClass
      * @param $id
      *
@@ -61,5 +72,22 @@ trait SimpleTestTrait
 
         return $entityObject;
     }
-    
+
+    /**
+     * @return mixed|string
+     */
+    protected function getTestClassPath()
+    {
+        $debugTrace = debug_backtrace();
+
+        if (isset($debugTrace[0]['file'])) {
+            $testPath = strpos($debugTrace[0]['file'], "Tests/", 1);
+            $filePath = substr($debugTrace[0]['file'], $testPath + 6);
+            $testClassPath = str_replace('.php', '', $filePath);
+        } else {
+            $testClassPath = '';
+        }
+
+        return $testClassPath;
+    }
 }

@@ -13,15 +13,51 @@
 
 namespace Cosma\Bundle\TestingBundle\TestCase\Traits;
 
-use Doctrine\Common\Persistence\Mapping\ClassMetadataFactory;
-use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\EntityNotFoundException;
 use Symfony\Bundle\FrameworkBundle\Client;
-use Doctrine\ORM\EntityManager;
-use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 
 trait WebTestTrait
 {
+    /**
+     * @return void
+     */
+    public static function setUpBeforeClass()
+    {
+        echo "\nWebTestTrait::setUpBeforeClass\n";
+
+        static::bootKernel();
+    }
+
+    /**
+     * Clean up Kernel usage in this test.
+     */
+    public static function tearDownAfterClass()
+    {
+        echo "\nWebTestTrait::tearDownAfterClass\n";
+
+        static::ensureKernelShutdown();
+    }
+
+    /**
+     * @return void
+     */
+    protected function setUp()
+    {
+        echo "\nWebTestTrait::setUp\n";
+
+        static::bootKernel();
+    }
+
+    /**
+     * @return void
+     */
+    protected function tearDown()
+    {
+        echo "\nWebTestTrait::tearDown\n";
+
+        parent::tearDown();
+        \Mockery::close();
+    }
+
     /**
      * @param array $server
      *
@@ -36,24 +72,4 @@ trait WebTestTrait
 
         return $client;
     }
-
-    /**
-     * @return mixed|string
-     */
-    protected function getTestClassPath()
-    {
-        $debugTrace = debug_backtrace();
-
-        if (isset($debugTrace[0]['file'])) {
-            $testPath = strpos($debugTrace[0]['file'], "Tests/", 1);
-            $filePath = substr($debugTrace[0]['file'], $testPath + 6);
-            $testClassPath = str_replace('.php', '', $filePath);
-        } else {
-            $testClassPath = '';
-        }
-
-        return $testClassPath;
-    }
-
-
 }
