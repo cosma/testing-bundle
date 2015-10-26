@@ -48,17 +48,6 @@ trait WebTestTrait
     }
 
     /**
-     * @return void
-     */
-    protected function tearDown()
-    {
-        echo "\nWebTestTrait::tearDown\n";
-
-        parent::tearDown();
-        \Mockery::close();
-    }
-
-    /**
      * @param array $server
      *
      * @return Client
