@@ -323,7 +323,7 @@ abstract class WebTestCase extends WebTestCaseBase
     {
         if (NULL === self::$fixturePath) {
             $fixturePath = static::getCurrentBundle()->getPath() . '/' .
-                static::$kernel->getContainer()->getParameter('cosma_testing.fixture_path');
+                static::$kernel->getContainer()->getParameter('cosma_testing.fixture_directory');
 
             self::$fixturePath = $fixturePath;
         }
@@ -417,7 +417,7 @@ abstract class WebTestCase extends WebTestCaseBase
     private function appendTestFixturesPath(array $fixtures, $testClassPath)
     {
         $fixturePath = static::getFixturePath() . '/';
-        $fixturePath .= static::$kernel->getContainer()->getParameter('cosma_testing.fixture_test_directory') . '/';
+        $fixturePath .= static::$kernel->getContainer()->getParameter('cosma_testing.tests_directory') . '/';
         $fixturePath .= $testClassPath;
 
         $fixturePaths = array();

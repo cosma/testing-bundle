@@ -40,16 +40,12 @@ class CosmaTestingExtension extends Extension
 
         $container = $this->setDoctrineCleaningStrategy($container, $config);
 
-        if(isset($config['fixture_path'])){
-            $container->setParameter('cosma_testing.fixture_path', $config['fixture_path']);
+        if(isset($config['fixture_directory'])){
+            $container->setParameter('cosma_testing.fixture_directory', $config['fixture_directory']);
         }
 
-        if(isset($config['fixture_table_directory'])){
-            $container->setParameter('cosma_testing.fixture_table_directory', $config['fixture_table_directory']);
-        }
-
-        if(isset($config['fixture_test_directory'])){
-            $container->setParameter('cosma_testing.fixture_test_directory', $config['fixture_test_directory']);
+        if(isset($config['tests_directory'])){
+            $container->setParameter('cosma_testing.tests_directory', $config['tests_directory']);
         }
 
         if(isset($config['solarium']['host'])){

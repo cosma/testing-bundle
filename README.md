@@ -69,9 +69,8 @@ This sets a new relative path to the fixture directory in your bundle.
 # app/config/config_test.yml
 
 cosma_testing:
-    fixture_path: Fixture
-    fixture_table_directory: Table
-    fixture_test_directory: Test
+    fixture_directory: Fixture
+    tests_directory: Tests
     doctrine:
         cleaning_strategy: truncate # drop - to drop database
     solarium:

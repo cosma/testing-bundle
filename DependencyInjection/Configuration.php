@@ -35,9 +35,8 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->scalarNode('fixture_path')->defaultValue('Fixture')->end()
-                ->scalarNode('fixture_table_directory')->defaultValue('Table')->end()
-                ->scalarNode('fixture_test_directory')->defaultValue('Test')->end()
+                ->scalarNode('fixture_directory')->defaultValue('Fixture')->end()
+                ->scalarNode('tests_directory')->defaultValue('Tests')->end()
                 ->arrayNode('doctrine')
                     ->canBeUnset()
                     ->children()

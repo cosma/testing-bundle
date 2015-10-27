@@ -53,9 +53,8 @@ class CosmaTestingExtensionTest extends \PHPUnit_Framework_TestCase
         $container = $this->getContainerWithLoadedExtension($config);
 
         $parameters = array(
-            'cosma_testing.fixture_path',
-            'cosma_testing.fixture_table_directory',
-            'cosma_testing.fixture_test_directory',
+            'cosma_testing.fixture_directory',
+            'cosma_testing.tests_directory',
             'cosma_testing.doctrine.cleaning_strategy',
             'cosma_testing.solarium.host',
             'cosma_testing.solarium.port',
@@ -107,9 +106,8 @@ class CosmaTestingExtensionTest extends \PHPUnit_Framework_TestCase
         $container = $this->getContainerWithLoadedExtension($config);
 
         $parameters = array(
-            'cosma_testing.fixture_path',
-            'cosma_testing.fixture_table_directory',
-            'cosma_testing.fixture_test_directory',
+            'cosma_testing.fixture_directory',
+            'cosma_testing.tests_directory',
             'cosma_testing.doctrine.cleaning_strategy',
             'cosma_testing.solarium.host',
             'cosma_testing.solarium.port',
