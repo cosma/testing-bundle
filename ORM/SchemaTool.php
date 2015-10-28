@@ -16,9 +16,9 @@ namespace Cosma\Bundle\TestingBundle\ORM;
 
 use Doctrine\DBAL\Schema\Table;
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
-use h4cc\AliceFixturesBundle\ORM\DoctrineORMSchemaTool;
+use \Doctrine\ORM\Tools\SchemaTool as SchemaToolBase;
 
-class SchemaTool extends DoctrineORMSchemaTool
+class SchemaTool extends SchemaToolBase
 {
     const DOCTRINE_CLEANING_TRUNCATE = 'truncate';
     const DOCTRINE_CLEANING_DROP     = 'drop';
@@ -28,58 +28,75 @@ class SchemaTool extends DoctrineORMSchemaTool
      */
     private $doctrineMigrationsTable = null;
 
-    /**
-     * create only missing tables.
-     *
-     * {@inheritDoc}
-     */
-    public function createSchema()
-    {
-        $connection = $this->entityManager->getConnection();
-        $tableNames = $connection->getSchemaManager()->listTableNames();
+//    /**
+//     * create only missing tables.
+//     *
+//     * {@inheritDoc}
+//     */
+//    public function createSchema()
+//    {
+//        $connection = $this->entityManager->getConnection();
+//        $tableNames = $connection->getSchemaManager()->listTableNames();
+//
+//        $missingTablesMetaData = [];
+//
+//        /** @var ClassMetadata $classMetadata */
+//        foreach ($this->entityManager->getMetadataFactory()->getAllMetadata() as $classMetadata) {
+//            if (!in_array($classMetadata->table['name'], $tableNames)) {
+//                $missingTablesMetaData[] = $classMetadata;
+//            }
+//        }
+//
+//        if (count($missingTablesMetaData) > 0) {
+//            $this->doctrineSchemaTool->createSchema($missingTablesMetaData);
+//        }
+//    }
 
-        $missingTablesMetaData = [];
 
-        /** @var ClassMetadata $classMetadata */
-        foreach ($this->entityManager->getMetadataFactory()->getAllMetadata() as $classMetadata) {
-            if (!in_array($classMetadata->table['name'], $tableNames)) {
-                $missingTablesMetaData[] = $classMetadata;
-            }
-        }
+//    /**
+//     * Drops all elements in the database of the current connection.
+//     *
+//     * @return void
+//     */
+//    public function dropDatabase()
+//    {
+//        $dropSchemaSql = $this->getDropDatabaseSQL();
+//        $conn = $this->em->getConnection();
+//
+//        foreach ($dropSchemaSql as $sql) {
+//            $conn->executeQuery($sql);
+//        }
+//    }
 
-        if (count($missingTablesMetaData) > 0) {
-            $this->doctrineSchemaTool->createSchema($missingTablesMetaData);
-        }
-    }
 
-    /**
-     * truncate instead of drop.
-     */
-    public function dropSchema()
-    {
-        $connection = $this->entityManager->getConnection();
-
-        $connection->beginTransaction();
-        try {
-            $connection->query('SET FOREIGN_KEY_CHECKS=0');
-
-            /** @var Table $table */
-            foreach ($connection->getSchemaManager()->listTableNames() as $tableName) {
-                if ($this->doctrineMigrationsTable == $tableName) {
-                    continue;
-                }
-
-                $truncateSql = "TRUNCATE `{$tableName}`";
-                $connection->exec($truncateSql);
-            }
-
-            $connection->query('SET FOREIGN_KEY_CHECKS=1');
-            $connection->commit();
-        } catch (\Exception $e) {
-            $connection->rollback();
-            throw $e;
-        }
-    }
+//    /**
+//     * truncate instead of drop.
+//     */
+//    public function dropSchema()
+//    {
+//        $connection = $this->entityManager->getConnection();
+//
+//        $connection->beginTransaction();
+//        try {
+//            $connection->query('SET FOREIGN_KEY_CHECKS=0');
+//
+//            /** @var Table $table */
+//            foreach ($connection->getSchemaManager()->listTableNames() as $tableName) {
+//                if ($this->doctrineMigrationsTable == $tableName) {
+//                    continue;
+//                }
+//
+//                $truncateSql = "TRUNCATE `{$tableName}`";
+//                $connection->exec($truncateSql);
+//            }
+//
+//            $connection->query('SET FOREIGN_KEY_CHECKS=1');
+//            $connection->commit();
+//        } catch (\Exception $e) {
+//            $connection->rollback();
+//            throw $e;
+//        }
+//    }
 
     /**
      * @return string

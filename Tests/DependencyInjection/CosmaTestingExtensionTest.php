@@ -26,7 +26,7 @@ class CosmaTestingExtensionTest extends \PHPUnit_Framework_TestCase
     public function testLoad_ConfigParameters()
     {
         $config = array(
-            'fixture_path' => 'Some/Fixture/Directory',
+            'fixture_directory' => 'Some/Fixture/Directory',
             'doctrine' => array(
                 'cleaning_strategy' => 'drop'
             ),
@@ -82,7 +82,7 @@ class CosmaTestingExtensionTest extends \PHPUnit_Framework_TestCase
     public function testLoad_ConfigParameters_DefaultCleaning()
     {
         $config = array(
-            'fixture_path' => 'Some/Fixture/Directory',
+            'fixture_directory' => 'Some/Fixture/Directory',
             'solarium' => array(
                 'host' => '127.0.0.1',
                 'port' => 8080,
@@ -137,7 +137,7 @@ class CosmaTestingExtensionTest extends \PHPUnit_Framework_TestCase
     public function testLoad_ConfigParameters_Exception()
     {
         $config = array(
-            'fixture_path' => 'Some/Fixture/Directory',
+            'fixture_directory' => 'Some/Fixture/Directory',
             'doctrine'     => array(
                 'cleaning_strategy' => 'qwerty'
             ),
@@ -173,7 +173,7 @@ class CosmaTestingExtensionTest extends \PHPUnit_Framework_TestCase
 
         $extension = new CosmaTestingExtension();
 
-        $this->assertEquals('cosma_testing', $extension->getAlias(), 'Bundle ALias is wrong');
+        $this->assertEquals('cosma_testing', $extension->getAlias(), 'Bundle Alias is wrong');
     }
 
     protected function getContainerWithLoadedExtension(array $config = array())

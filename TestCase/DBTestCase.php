@@ -13,12 +13,10 @@
 
 namespace Cosma\Bundle\TestingBundle\TestCase;
 
-use Cosma\Bundle\TestingBundle\TestCase\Traits\SimpleTestTrait;
-use Cosma\Bundle\TestingBundle\TestCase\Traits\WebTestTrait;
-use Symfony\Bundle\FrameworkBundle\Test\WebTestCase as WebTestCaseBase;
+use Cosma\Bundle\TestingBundle\TestCase\Traits\DBTestTrait;
 
-abstract class WebTestCase extends WebTestCaseBase
+class DBTestCase extends WebTestCase
 {
-    use SimpleTestTrait;
-    use WebTestTrait;
+    use DBTestTrait;
+    
 }

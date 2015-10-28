@@ -14,7 +14,7 @@
 namespace Cosma\Bundle\TestingBundle\Tests\ORM;
 
 
-use Cosma\Bundle\TestingBundle\ORM\SchemaTool;
+use Cosma\Bundle\TestingBundle\ORM\DoctrineORMSchemaTool;
 
 class SchemaToolTest extends \PHPUnit_Framework_TestCase
 {
@@ -75,7 +75,7 @@ class SchemaToolTest extends \PHPUnit_Framework_TestCase
             ->with(array($metaDataOne, $metaDataTwo))
             ->will($this->returnValue(null));
 
-        /** @var SchemaTool $mockedSchemaTool */
+        /** @var DoctrineORMSchemaTool $mockedSchemaTool */
         $mockedSchemaTool = $this->getMockBuilder('\Cosma\Bundle\TestingBundle\ORM\SchemaTool')
             ->disableOriginalConstructor()
             ->setMethods(array('dropSchema'))
@@ -129,7 +129,7 @@ class SchemaToolTest extends \PHPUnit_Framework_TestCase
             ->method('getConnection')
             ->will($this->returnValue($connection));
 
-        /** @var SchemaTool $mockedSchemaTool */
+        /** @var DoctrineORMSchemaTool $mockedSchemaTool */
         $mockedSchemaTool = $this->getMockBuilder('\Cosma\Bundle\TestingBundle\ORM\SchemaTool')
             ->disableOriginalConstructor()
             ->setMethods(array('createSchema'))
@@ -177,7 +177,7 @@ class SchemaToolTest extends \PHPUnit_Framework_TestCase
                       ->method('getConnection')
                       ->will($this->returnValue($connection));
 
-        /** @var SchemaTool $mockedSchemaTool */
+        /** @var DoctrineORMSchemaTool $mockedSchemaTool */
         $mockedSchemaTool = $this->getMockBuilder('\Cosma\Bundle\TestingBundle\ORM\SchemaTool')
                                  ->disableOriginalConstructor()
                                  ->setMethods(array('createSchema'))
@@ -235,7 +235,7 @@ class SchemaToolTest extends \PHPUnit_Framework_TestCase
             ->method('getConnection')
             ->will($this->returnValue($connection));
 
-        /** @var SchemaTool $mockedSchemaTool */
+        /** @var DoctrineORMSchemaTool $mockedSchemaTool */
         $mockedSchemaTool = $this->getMockBuilder('\Cosma\Bundle\TestingBundle\ORM\SchemaTool')
             ->disableOriginalConstructor()
             ->setMethods(array('createSchema'))
