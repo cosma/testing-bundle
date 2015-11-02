@@ -15,12 +15,17 @@
 namespace Cosma\Bundle\TestingBundle\ORM;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use \Doctrine\ORM\Tools\SchemaTool as DoctrineSchemaTool;
-use \h4cc\AliceFixturesBundle\ORM\DoctrineORMSchemaTool as DoctrineORMSchemaToolBase;
+use Cosma\Bundle\TestingBundle\ORM\SchemaTool as DoctrineSchemaTool;
+use h4cc\AliceFixturesBundle\ORM\DoctrineORMSchemaTool as DoctrineORMSchemaToolBase;
 
 
 class DoctrineORMSchemaTool extends DoctrineORMSchemaToolBase
 {
+
+    const DOCTRINE_CLEANING_TRUNCATE = 'truncate';
+    const DOCTRINE_CLEANING_DROP     = 'drop';
+
+
     /**
      * {@inheritDoc}
      */
@@ -29,9 +34,10 @@ class DoctrineORMSchemaTool extends DoctrineORMSchemaToolBase
         $this->foreachObjectManagers(function(ObjectManager $objectManager) {
             $metadata = $objectManager->getMetadataFactory()->getAllMetadata();
 
+            print_r($metadata);
+
             $schemaTool = new DoctrineSchemaTool($objectManager);
-            //$schemaTool->dropDatabase();
-            $schemaTool->updateSchema($metadata);
+            $schemaTool->truncateTables($metadata);
 
 
         });

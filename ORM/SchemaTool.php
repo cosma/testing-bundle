@@ -15,13 +15,10 @@
 namespace Cosma\Bundle\TestingBundle\ORM;
 
 use Doctrine\DBAL\Schema\Table;
-use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use \Doctrine\ORM\Tools\SchemaTool as SchemaToolBase;
 
 class SchemaTool extends SchemaToolBase
 {
-    const DOCTRINE_CLEANING_TRUNCATE = 'truncate';
-    const DOCTRINE_CLEANING_DROP     = 'drop';
 
     /**
      * @type string
@@ -69,12 +66,12 @@ class SchemaTool extends SchemaToolBase
 //    }
 
 
-//    /**
-//     * truncate instead of drop.
-//     */
-//    public function dropSchema()
-//    {
-//        $connection = $this->entityManager->getConnection();
+    /**
+     * truncate instead of drop.
+     */
+    public function truncateTables(array $classes)
+    {
+//        $connection = $this->em->getConnection();
 //
 //        $connection->beginTransaction();
 //        try {
@@ -96,7 +93,7 @@ class SchemaTool extends SchemaToolBase
 //            $connection->rollback();
 //            throw $e;
 //        }
-//    }
+    }
 
     /**
      * @return string
