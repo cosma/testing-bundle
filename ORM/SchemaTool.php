@@ -25,13 +25,16 @@ class SchemaTool extends SchemaToolBase
      */
     private $doctrineMigrationsTable = null;
 
-//    /**
-//     * create only missing tables.
-//     *
-//     * {@inheritDoc}
-//     */
-//    public function createSchema()
-//    {
+    /**
+     * create only missing tables.
+     *
+     * {@inheritDoc}
+     */
+    public function createSchema(array $classes)
+    {
+        echo "createSchema method";
+
+        parent::createSchema($classes);
 //        $connection = $this->entityManager->getConnection();
 //        $tableNames = $connection->getSchemaManager()->listTableNames();
 //
@@ -47,7 +50,7 @@ class SchemaTool extends SchemaToolBase
 //        if (count($missingTablesMetaData) > 0) {
 //            $this->doctrineSchemaTool->createSchema($missingTablesMetaData);
 //        }
-//    }
+    }
 
 
 //    /**
@@ -65,12 +68,13 @@ class SchemaTool extends SchemaToolBase
 //        }
 //    }
 
-
     /**
      * truncate instead of drop.
      */
     public function truncateTables(array $classes)
     {
+        echo "truncateTables method";
+
 //        $connection = $this->em->getConnection();
 //
 //        $connection->beginTransaction();

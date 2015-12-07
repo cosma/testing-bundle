@@ -14,7 +14,7 @@
 namespace Cosma\Bundle\TestingBundle\TestCase\Traits;
 
 use Doctrine\ORM\EntityManager;
-use Hautelook\AliceBundle\Alice\DataFixtures\Loader;
+use h4cc\AliceFixturesBundle\Fixtures\FixtureManager;
 
 trait DBTestTrait
 {
@@ -35,6 +35,18 @@ trait DBTestTrait
     protected function getEntityRepository($entityName)
     {
         return $this->getEntityManager()->getRepository($entityName);
+    }
+
+    /**
+     * @return FixtureManager
+     */
+    private static function getFixtureManager()
+    {
+        if (NULL === self::$fixtureManager) {
+            self::$fixtureManager = static::$kernel->getContainer()->get('h4cc_alice_fixtures.manager');
+        }
+
+        return self::$fixtureManager;
     }
 
     /**
@@ -69,17 +81,7 @@ trait DBTestTrait
 
 
 
-    /**
-     * @return FixtureManager
-     */
-    private static function getFixtureManager()
-    {
-        if (NULL === self::$fixtureManager) {
-            self::$fixtureManager = static::$kernel->getContainer()->get('h4cc_alice_fixtures.manager');
-        }
 
-        return self::$fixtureManager;
-    }
 
 
     
