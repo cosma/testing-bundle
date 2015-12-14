@@ -18,5 +18,4 @@ use Cosma\Bundle\TestingBundle\TestCase\Traits\DBTestTrait;
 class DBTestCase extends WebTestCase
 {
     use DBTestTrait;
-    
 }
