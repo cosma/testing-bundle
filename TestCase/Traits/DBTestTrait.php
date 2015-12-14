@@ -18,7 +18,6 @@ use h4cc\AliceFixturesBundle\Fixtures\FixtureManager;
 
 trait DBTestTrait
 {
-
     /**
      * @return EntityManager
      */
