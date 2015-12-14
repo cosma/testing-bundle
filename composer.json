@@ -17,14 +17,14 @@
         "h4cc/alice-fixtures-bundle": "0.5.*",
         "phpunit/phpunit": "5.1.*",
         "doctrine/orm": "~2.2,>=2.2.3",
-        "symfony/framework-bundle": "3.0.*",
+        "symfony/framework-bundle": "2.8.*",
         "solarium/solarium": "3.4.*",
         "ruflin/elastica": "1.4.*",
         "facebook/webdriver": "1.1.*",
         "mockery/mockery": "0.9.*"
     },
     "require-dev": {
-        "symfony/browser-kit": "3.0.*"
+        "symfony/browser-kit": "2.8.*"
     },
     "autoload": {
         "psr-4": { "Cosma\\Bundle\\TestingBundle\\": "" }
