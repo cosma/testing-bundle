@@ -20,7 +20,7 @@
         "symfony/framework-bundle": "3.0.*",
         "solarium/solarium": "3.4.*",
         "ruflin/elastica": "1.4.*",
-        "facebook/webdriver": "1.0.*",
+        "facebook/webdriver": "1.1.*",
         "mockery/mockery": "0.9.*"
     },
     "require-dev": {
