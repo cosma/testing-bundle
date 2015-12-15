@@ -8,7 +8,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Date: 11/07/14
+ * Date: 15/12/15
  * Time: 23:33
  */
 
@@ -16,10 +16,10 @@ namespace Cosma\Bundle\TestingBundle\ORM;
 
 use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\ORM\Mapping\Table;
+use Doctrine\DBAL\Connection;
+use \Doctrine\DBAL\Schema\Table;
 use Doctrine\ORM\Tools\SchemaTool as DoctrineSchemaTool;
 use h4cc\AliceFixturesBundle\ORM\DoctrineORMSchemaTool as DoctrineORMSchemaToolBase;
-
 
 class DoctrineORMSchemaTool extends DoctrineORMSchemaToolBase
 {
@@ -31,26 +31,27 @@ class DoctrineORMSchemaTool extends DoctrineORMSchemaToolBase
      */
     private $doctrineMigrationsTable = null;
 
-
     /**
      * {@inheritDoc}
      */
     public function dropSchema()
     {
-        $this->foreachObjectManagers(function(ObjectManager $objectManager) {
-            $metadata = $objectManager->getMetadataFactory()->getAllMetadata();
+        $this->foreachObjectManagers(function () {
+
+            /** @type Connection $connection */
             $connection = $this->managerRegistry->getConnection();
 
             $connection->beginTransaction();
             try {
                 $connection->query('SET FOREIGN_KEY_CHECKS=0');
                 /** @var Table $table */
-                foreach ($connection->getSchemaManager()->listTableNames() as $tableName) {
-                    if ($this->doctrineMigrationsTable == $tableName) {
+                foreach ($connection->getSchemaManager()->listTables() as $table) {
+                    if ($this->doctrineMigrationsTable == $table->getName()) {
                         continue;
                     }
-                    $truncateSql = "TRUNCATE `{$tableName}`";
-                    $connection->exec($truncateSql);
+
+                    $sql = "TRUNCATE `{$table->getName()}`";
+                    $connection->exec($sql);
                 }
                 $connection->query('SET FOREIGN_KEY_CHECKS=1');
                 $connection->commit();
@@ -66,11 +67,13 @@ class DoctrineORMSchemaTool extends DoctrineORMSchemaToolBase
      */
     public function createSchema()
     {
-        $this->foreachObjectManagers(function(ObjectManager $objectManager) {
-            $metadata = $objectManager->getMetadataFactory()->getAllMetadata();
+        $this->foreachObjectManagers(function (ObjectManager $objectManager) {
 
+            /** @type Connection $connection */
             $connection = $this->managerRegistry->getConnection();
+
             $tableNames = $connection->getSchemaManager()->listTableNames();
+
             $missingTablesMetaData = [];
             /** @var ClassMetadata $classMetadata */
             foreach ($objectManager->getMetadataFactory()->getAllMetadata() as $classMetadata) {
