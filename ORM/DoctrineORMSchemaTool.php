@@ -14,16 +14,22 @@
 
 namespace Cosma\Bundle\TestingBundle\ORM;
 
+use Doctrine\Common\Persistence\Mapping\ClassMetadata;
 use Doctrine\Common\Persistence\ObjectManager;
-use Cosma\Bundle\TestingBundle\ORM\SchemaTool as DoctrineSchemaTool;
+use Doctrine\ORM\Mapping\Table;
+use Doctrine\ORM\Tools\SchemaTool as DoctrineSchemaTool;
 use h4cc\AliceFixturesBundle\ORM\DoctrineORMSchemaTool as DoctrineORMSchemaToolBase;
 
 
 class DoctrineORMSchemaTool extends DoctrineORMSchemaToolBase
 {
-
     const DOCTRINE_CLEANING_TRUNCATE = 'truncate';
     const DOCTRINE_CLEANING_DROP     = 'drop';
+
+    /**
+     * @type string
+     */
+    private $doctrineMigrationsTable = null;
 
 
     /**
@@ -33,13 +39,25 @@ class DoctrineORMSchemaTool extends DoctrineORMSchemaToolBase
     {
         $this->foreachObjectManagers(function(ObjectManager $objectManager) {
             $metadata = $objectManager->getMetadataFactory()->getAllMetadata();
+            $connection = $this->managerRegistry->getConnection();
 
-            print_r($metadata);
-
-            $schemaTool = new DoctrineSchemaTool($objectManager);
-            $schemaTool->truncateTables($metadata);
-
-
+            $connection->beginTransaction();
+            try {
+                $connection->query('SET FOREIGN_KEY_CHECKS=0');
+                /** @var Table $table */
+                foreach ($connection->getSchemaManager()->listTableNames() as $tableName) {
+                    if ($this->doctrineMigrationsTable == $tableName) {
+                        continue;
+                    }
+                    $truncateSql = "TRUNCATE `{$tableName}`";
+                    $connection->exec($truncateSql);
+                }
+                $connection->query('SET FOREIGN_KEY_CHECKS=1');
+                $connection->commit();
+            } catch (\Exception $e) {
+                $connection->rollback();
+                throw $e;
+            }
         });
     }
 
@@ -51,13 +69,44 @@ class DoctrineORMSchemaTool extends DoctrineORMSchemaToolBase
         $this->foreachObjectManagers(function(ObjectManager $objectManager) {
             $metadata = $objectManager->getMetadataFactory()->getAllMetadata();
 
-            $schemaTool = new DoctrineSchemaTool($objectManager);
-            $schemaTool->createSchema($metadata);
+            $connection = $this->managerRegistry->getConnection();
+            $tableNames = $connection->getSchemaManager()->listTableNames();
+            $missingTablesMetaData = [];
+            /** @var ClassMetadata $classMetadata */
+            foreach ($objectManager->getMetadataFactory()->getAllMetadata() as $classMetadata) {
+                if (!in_array($classMetadata->table['name'], $tableNames)) {
+                    $missingTablesMetaData[] = $classMetadata;
+                }
+            }
+            if (count($missingTablesMetaData) > 0) {
+                $schemaTool = new DoctrineSchemaTool($objectManager);
+                $schemaTool->createSchema($missingTablesMetaData);
+            }
         });
     }
 
     private function foreachObjectManagers($callback)
     {
         array_map($callback, $this->managerRegistry->getManagers());
+    }
+
+    /**
+     * @return string
+     */
+    public function getDoctrineMigrationsTable()
+    {
+        return $this->doctrineMigrationsTable;
+    }
+
+    /**
+     * @param string $doctrineMigrationsTable
+     *
+     * @return $this
+     */
+    public function setDoctrineMigrationsTable($doctrineMigrationsTable)
+    {
+        $this->doctrineMigrationsTable = $doctrineMigrationsTable;
+
+        return $this;
     }
 }

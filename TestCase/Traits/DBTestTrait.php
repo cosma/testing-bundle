@@ -19,6 +19,31 @@ use h4cc\AliceFixturesBundle\Fixtures\FixtureManager;
 trait DBTestTrait
 {
     /**
+     * @var FixtureManager
+     */
+    private static $fixtureManager;
+
+    /**
+     * @return void
+     */
+    public static function setUpBeforeClass()
+    {
+        parent::setUpBeforeClass();
+
+        static::getFixtureManager();
+    }
+
+    /**
+     * Clean up Kernel usage in this test.
+     */
+    public static function tearDownAfterClass()
+    {
+        self::$fixtureManager = null;
+
+        parent::tearDownAfterClass();
+    }
+
+    /**
      * @return EntityManager
      */
     protected function getEntityManager()
@@ -41,7 +66,7 @@ trait DBTestTrait
      */
     private static function getFixtureManager()
     {
-        if (NULL === self::$fixtureManager) {
+        if (null === self::$fixtureManager) {
             self::$fixtureManager = static::$kernel->getContainer()->get('h4cc_alice_fixtures.manager');
         }
 
@@ -56,32 +81,13 @@ trait DBTestTrait
      */
     protected function loadFixtures(array $fixtures, $dropDatabaseBefore = true)
     {
-        //hautelook_alice.alice.fixtures.loader
-        //$this->get
+        $fixtureManager = static::getFixtureManager();
+        if ($dropDatabaseBefore) {
+            $fixtureManager->persist([], true);
+        }
+        $objects = $fixtureManager->loadFiles($fixtures);
+        $fixtureManager->persist($objects);
 
-        /** @type Loader $loader */
-        //$loader = static::$kernel->getContainer('hautelook_alice.alice.fixtures.loader');
-
-        //$loader->load(, $fixtures);
-
-
-
-//        $fixtureManager = static::getFixtureManager();
-//        if ($dropDatabaseBefore) {
-//            $fixtureManager->persist(array(), true);
-//        }
-//
-//        $objects = $fixtureManager->loadFiles($fixtures);
-//
-//        $fixtureManager->persist($objects);
-//
-//        return $objects;
+        return $objects;
     }
-
-
-
-
-
-
-    
 }
