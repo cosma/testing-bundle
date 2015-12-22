@@ -45,13 +45,6 @@ class CommandTestCaseTest extends \PHPUnit_Framework_TestCase
         $kernel = $kernelProperty->getValue();
 
         $this->assertInstanceOf('Cosma\Bundle\TestingBundle\Tests\AppKernel', $kernel, 'set up is wrong');
-
-        $applicationProperty = $reflectionClassMocked->getParentClass()->getProperty('application');
-        $applicationProperty->setAccessible(true);
-        $applicationProperty->getValue($commandTestCase);
-
-        $reflectionMethod = $reflectionClass->getMethod('tearDownAfterClass');
-        $reflectionMethod->invoke($commandTestCase);
     }
 
     /**
