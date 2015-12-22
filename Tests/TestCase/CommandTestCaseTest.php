@@ -25,29 +25,29 @@ class CommandTestCaseTest extends \PHPUnit_Framework_TestCase
     public function testSetUp()
     {
         $commandTestCase = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\CommandTestCase')
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+                                ->disableOriginalConstructor()
+                                ->getMockForAbstractClass()
+        ;
 
         $reflectionClassMocked = new \ReflectionClass($commandTestCase);
-        $reflectionClass = $reflectionClassMocked->getParentClass()->getParentClass();
+        $reflectionClass       = $reflectionClassMocked->getParentClass()->getParentClass();
 
         $classProperty = $reflectionClass->getProperty('class');
-        $classProperty->setAccessible(TRUE);
+        $classProperty->setAccessible(true);
         $classProperty->setValue($commandTestCase, 'Cosma\Bundle\TestingBundle\Tests\AppKernel');
 
-
         $setUpMethod = $reflectionClass->getMethod('setUp');
-        $setUpMethod->setAccessible(TRUE);
+        $setUpMethod->setAccessible(true);
         $setUpMethod->invoke($commandTestCase);
 
         $kernelProperty = $reflectionClass->getProperty('kernel');
-        $kernelProperty->setAccessible(TRUE);
+        $kernelProperty->setAccessible(true);
         $kernel = $kernelProperty->getValue();
 
         $this->assertInstanceOf('Cosma\Bundle\TestingBundle\Tests\AppKernel', $kernel, 'set up is wrong');
 
         $applicationProperty = $reflectionClassMocked->getParentClass()->getProperty('application');
-        $applicationProperty->setAccessible(TRUE);
+        $applicationProperty->setAccessible(true);
         $applicationProperty->getValue($commandTestCase);
 
         $reflectionMethod = $reflectionClass->getMethod('tearDownAfterClass');
@@ -60,31 +60,34 @@ class CommandTestCaseTest extends \PHPUnit_Framework_TestCase
     public function testExecuteCommand()
     {
         $commandTestCase = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\CommandTestCase')
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+                                ->disableOriginalConstructor()
+                                ->getMockForAbstractClass()
+        ;
 
         $reflectionClassMocked = new \ReflectionClass($commandTestCase);
-        $reflectionClass = $reflectionClassMocked->getParentClass();
+        $reflectionClass       = $reflectionClassMocked->getParentClass();
 
         $classProperty = $reflectionClass->getProperty('class');
-        $classProperty->setAccessible(TRUE);
+        $classProperty->setAccessible(true);
         $classProperty->setValue($commandTestCase, 'Cosma\Bundle\TestingBundle\Tests\AppKernel');
 
         $application = $this->getMockBuilder('Symfony\Bundle\FrameworkBundle\Console\Application')
-            ->disableOriginalConstructor()
-            ->setMethods(array('run'))
-            ->getMock();
+                            ->disableOriginalConstructor()
+                            ->setMethods(['run'])
+                            ->getMock()
+        ;
         $application->expects($this->once())
-            ->method('run')
-            ->with(new StringInput("bundle:command firstArgument --first-option"))
-            ->will($this->returnValue(0));
+                    ->method('run')
+                    ->with(new StringInput("bundle:command firstArgument --first-option"))
+                    ->will($this->returnValue(0))
+        ;
 
         $applicationProperty = $reflectionClass->getProperty('application');
-        $applicationProperty->setAccessible(TRUE);
+        $applicationProperty->setAccessible(true);
         $applicationProperty->setValue($commandTestCase, $application);
 
         $setUpMethod = $reflectionClass->getMethod('executeCommand');
-        $setUpMethod->setAccessible(TRUE);
+        $setUpMethod->setAccessible(true);
         $result = $setUpMethod->invoke($commandTestCase, "bundle:command firstArgument --first-option");
 
         $this->assertEmpty($result, 'Command is not working properly');
@@ -96,30 +99,33 @@ class CommandTestCaseTest extends \PHPUnit_Framework_TestCase
     public function testGetApplication()
     {
         $commandTestCase = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\CommandTestCase')
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+                                ->disableOriginalConstructor()
+                                ->getMockForAbstractClass()
+        ;
 
         $reflectionClassMocked = new \ReflectionClass($commandTestCase);
-        $reflectionClass = $reflectionClassMocked->getParentClass();
+        $reflectionClass       = $reflectionClassMocked->getParentClass();
 
         $classProperty = $reflectionClass->getProperty('class');
-        $classProperty->setAccessible(TRUE);
+        $classProperty->setAccessible(true);
         $classProperty->setValue($commandTestCase, 'Cosma\Bundle\TestingBundle\Tests\AppKernel');
 
         $application = $this->getMockBuilder('Symfony\Bundle\FrameworkBundle\Console\Application')
-            ->disableOriginalConstructor()
-            ->setMethods(array())
-            ->getMock();
+                            ->disableOriginalConstructor()
+                            ->setMethods([])
+                            ->getMock()
+        ;
 
         $applicationProperty = $reflectionClass->getProperty('application');
-        $applicationProperty->setAccessible(TRUE);
+        $applicationProperty->setAccessible(true);
         $applicationProperty->setValue($commandTestCase, $application);
 
         $setUpMethod = $reflectionClass->getMethod('getApplication');
-        $setUpMethod->setAccessible(TRUE);
+        $setUpMethod->setAccessible(true);
         $result = $setUpMethod->invoke($commandTestCase);
 
-        $this->assertInstanceOf('Symfony\Bundle\FrameworkBundle\Console\Application', $result, 'Must return an instance of Application Console');
+        $this->assertInstanceOf('Symfony\Bundle\FrameworkBundle\Console\Application', $result,
+                                'Must return an instance of Application Console');
     }
 }
 

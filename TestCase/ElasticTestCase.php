@@ -56,17 +56,17 @@ abstract class ElasticTestCase extends WebTestCase
      */
     protected function getElasticClient()
     {
-        if(null === self::$elasticClient){
-            $config = array(
-                'host' => static::$kernel->getContainer()->getParameter('cosma_testing.elastica.host'),
-                'port' => static::$kernel->getContainer()->getParameter('cosma_testing.elastica.port'),
-                'path' => static::$kernel->getContainer()->getParameter('cosma_testing.elastica.path'),
+        if (null === self::$elasticClient) {
+            $config              = [
+                'host'    => static::$kernel->getContainer()->getParameter('cosma_testing.elastica.host'),
+                'port'    => static::$kernel->getContainer()->getParameter('cosma_testing.elastica.port'),
+                'path'    => static::$kernel->getContainer()->getParameter('cosma_testing.elastica.path'),
                 'timeout' => static::$kernel->getContainer()->getParameter('cosma_testing.elastica.timeout')
-            );
+            ];
             self::$elasticClient = new Client($config);
         }
-        return self::$elasticClient;
 
+        return self::$elasticClient;
     }
 
     /**
@@ -74,10 +74,11 @@ abstract class ElasticTestCase extends WebTestCase
      */
     protected function getElasticIndex()
     {
-        if(null === self::$elasticIndex){
-            $indexName = static::$kernel->getContainer()->getParameter('cosma_testing.elastica.index');
+        if (null === self::$elasticIndex) {
+            $indexName          = static::$kernel->getContainer()->getParameter('cosma_testing.elastica.index');
             self::$elasticIndex = $this->getElasticClient()->getIndex($indexName);
         }
+
         return self::$elasticIndex;
     }
 
@@ -86,10 +87,11 @@ abstract class ElasticTestCase extends WebTestCase
      */
     protected function getElasticType()
     {
-        if(null === self::$elasticType){
-            $typeName = static::$kernel->getContainer()->getParameter('cosma_testing.elastica.type');
+        if (null === self::$elasticType) {
+            $typeName          = static::$kernel->getContainer()->getParameter('cosma_testing.elastica.type');
             self::$elasticType = $this->getElasticIndex()->getType($typeName);
         }
+
         return self::$elasticType;
     }
 
@@ -98,7 +100,7 @@ abstract class ElasticTestCase extends WebTestCase
      */
     private function recreateIndex()
     {
-        if($this->getElasticIndex()->exists()){
+        if ($this->getElasticIndex()->exists()) {
             $this->getElasticIndex()->delete();
         }
         $this->getElasticIndex()->create();

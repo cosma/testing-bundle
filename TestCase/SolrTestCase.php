@@ -46,12 +46,12 @@ abstract class SolrTestCase extends WebTestCase
     {
         /**  @var SolariumClient $solariumClient */
         $solariumClient = $this->getSolariumClient();
-        $update     = $solariumClient->createUpdate();
+        $update         = $solariumClient->createUpdate();
 
         $update->addDeleteQuery('*:*');
         $update->addCommit();
-        return $solariumClient->update($update);
 
+        return $solariumClient->update($update);
     }
 
     /**
@@ -59,21 +59,22 @@ abstract class SolrTestCase extends WebTestCase
      */
     protected function getSolariumClient()
     {
-        if(null === self::$solariumClient){
-            $config = array(
-                'endpoint' => array(
-                    'localhostTesting' => array(
-                        'host' => static::$kernel->getContainer()->getParameter('cosma_testing.solarium.host'),
-                        'port' => static::$kernel->getContainer()->getParameter('cosma_testing.solarium.port'),
-                        'path' => static::$kernel->getContainer()->getParameter('cosma_testing.solarium.path'),
-                        'core' => static::$kernel->getContainer()->getParameter('cosma_testing.solarium.core'),
+        if (null === self::$solariumClient) {
+            $config               = [
+                'endpoint' => [
+                    'localhostTesting' => [
+                        'host'    => static::$kernel->getContainer()->getParameter('cosma_testing.solarium.host'),
+                        'port'    => static::$kernel->getContainer()->getParameter('cosma_testing.solarium.port'),
+                        'path'    => static::$kernel->getContainer()->getParameter('cosma_testing.solarium.path'),
+                        'core'    => static::$kernel->getContainer()->getParameter('cosma_testing.solarium.core'),
                         'timeout' => static::$kernel->getContainer()->getParameter('cosma_testing.solarium.timeout')
-                    )
+                    ]
 
-                )
-            );
+                ]
+            ];
             self::$solariumClient = new SolariumClient($config);
         }
+
         return self::$solariumClient;
     }
 }

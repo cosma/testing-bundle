@@ -37,32 +37,38 @@ class ElasticTestCaseTest extends \PHPUnit_Framework_TestCase
     public function testSetUp()
     {
         $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\KernelInterface')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getContainer'))
-            ->getMockForAbstractClass();
+                       ->disableOriginalConstructor()
+                       ->setMethods(['getContainer'])
+                       ->getMockForAbstractClass()
+        ;
 
         $elasticIndex = $this->getMockBuilder('Elastica\Index')
-            ->disableOriginalConstructor()
-            ->setMethods(array('exists', 'create', 'delete'))
-            ->getMock();
+                             ->disableOriginalConstructor()
+                             ->setMethods(['exists', 'create', 'delete'])
+                             ->getMock()
+        ;
         $elasticIndex->expects($this->once())
-            ->method('exists')
-            ->will($this->returnValue(true));
+                     ->method('exists')
+                     ->will($this->returnValue(true))
+        ;
         $elasticIndex->expects($this->once())
-            ->method('delete')
-            ->will($this->returnValue(true));
+                     ->method('delete')
+                     ->will($this->returnValue(true))
+        ;
         $elasticIndex->expects($this->once())
-            ->method('create')
-            ->will($this->returnValue(true));
+                     ->method('create')
+                     ->will($this->returnValue(true))
+        ;
 
         $elasticTestCase = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\ElasticTestCase')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getElasticIndex'))
-            ->getMockForAbstractClass();
+                                ->disableOriginalConstructor()
+                                ->setMethods(['getElasticIndex'])
+                                ->getMockForAbstractClass()
+        ;
         $elasticTestCase->expects($this->exactly(3))
-            ->method('getElasticIndex')
-            ->will($this->returnValue($elasticIndex));
-
+                        ->method('getElasticIndex')
+                        ->will($this->returnValue($elasticIndex))
+        ;
 
         $reflectionClassMocked = new \ReflectionClass($elasticTestCase);
         $reflectionClass       = $reflectionClassMocked->getParentClass();
@@ -87,34 +93,39 @@ class ElasticTestCaseTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetElasticClient()
     {
-        $valueMap = array(
-            array('cosma_testing.elastica.host', '127.0.0.1'),
-            array('cosma_testing.elastica.port', '8080'),
-            array('cosma_testing.elastica.path', '/'),
-            array('cosma_testing.elastica.timeout', '5'),
-            array('cosma_testing.elastica.index', 'test'),
-            array('cosma_testing.elastica.type', 'test')
-        );
+        $valueMap = [
+            ['cosma_testing.elastica.host', '127.0.0.1'],
+            ['cosma_testing.elastica.port', '8080'],
+            ['cosma_testing.elastica.path', '/'],
+            ['cosma_testing.elastica.timeout', '5'],
+            ['cosma_testing.elastica.index', 'test'],
+            ['cosma_testing.elastica.type', 'test']
+        ];
 
         $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerInterface')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getParameter'))
-            ->getMockForAbstractClass();
+                          ->disableOriginalConstructor()
+                          ->setMethods(['getParameter'])
+                          ->getMockForAbstractClass()
+        ;
         $container->expects($this->exactly(4))
-            ->method('getParameter')
-            ->will($this->returnValueMap($valueMap));
+                  ->method('getParameter')
+                  ->will($this->returnValueMap($valueMap))
+        ;
 
         $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\KernelInterface')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getContainer'))
-            ->getMockForAbstractClass();
+                       ->disableOriginalConstructor()
+                       ->setMethods(['getContainer'])
+                       ->getMockForAbstractClass()
+        ;
         $kernel->expects($this->exactly(4))
-            ->method('getContainer')
-            ->will($this->returnValue($container));
+               ->method('getContainer')
+               ->will($this->returnValue($container))
+        ;
 
         $elasticTestCase = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\ElasticTestCase')
-            ->disableAutoload()
-            ->getMockForAbstractClass();
+                                ->disableAutoload()
+                                ->getMockForAbstractClass()
+        ;
 
         $reflectionClassMocked = new \ReflectionClass($elasticTestCase);
         $reflectionClass       = $reflectionClassMocked->getParentClass();
@@ -137,7 +148,6 @@ class ElasticTestCaseTest extends \PHPUnit_Framework_TestCase
 
         $reflectionMethod = $reflectionClass->getMethod('tearDownAfterClass');
         $reflectionMethod->invoke($elasticTestCase);
-
     }
 
     /**
@@ -145,34 +155,39 @@ class ElasticTestCaseTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetElasticIndex()
     {
-        $valueMap = array(
-            array('cosma_testing.elastica.host', '127.0.0.1'),
-            array('cosma_testing.elastica.port', '8080'),
-            array('cosma_testing.elastica.path', '/'),
-            array('cosma_testing.elastica.timeout', '5'),
-            array('cosma_testing.elastica.index', 'test'),
-            array('cosma_testing.elastica.type', 'test')
-        );
+        $valueMap = [
+            ['cosma_testing.elastica.host', '127.0.0.1'],
+            ['cosma_testing.elastica.port', '8080'],
+            ['cosma_testing.elastica.path', '/'],
+            ['cosma_testing.elastica.timeout', '5'],
+            ['cosma_testing.elastica.index', 'test'],
+            ['cosma_testing.elastica.type', 'test']
+        ];
 
         $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerInterface')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getParameter'))
-            ->getMockForAbstractClass();
+                          ->disableOriginalConstructor()
+                          ->setMethods(['getParameter'])
+                          ->getMockForAbstractClass()
+        ;
         $container->expects($this->exactly(1))
-            ->method('getParameter')
-            ->will($this->returnValueMap($valueMap));
+                  ->method('getParameter')
+                  ->will($this->returnValueMap($valueMap))
+        ;
 
         $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\KernelInterface')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getContainer'))
-            ->getMockForAbstractClass();
+                       ->disableOriginalConstructor()
+                       ->setMethods(['getContainer'])
+                       ->getMockForAbstractClass()
+        ;
         $kernel->expects($this->exactly(1))
-            ->method('getContainer')
-            ->will($this->returnValue($container));
+               ->method('getContainer')
+               ->will($this->returnValue($container))
+        ;
 
         $elasticTestCase = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\ElasticTestCase')
-            ->disableAutoload()
-            ->getMockForAbstractClass();
+                                ->disableAutoload()
+                                ->getMockForAbstractClass()
+        ;
 
         $reflectionClassMocked = new \ReflectionClass($elasticTestCase);
         $reflectionClass       = $reflectionClassMocked->getParentClass();
@@ -195,7 +210,6 @@ class ElasticTestCaseTest extends \PHPUnit_Framework_TestCase
 
         $reflectionMethod = $reflectionClass->getMethod('tearDownAfterClass');
         $reflectionMethod->invoke($elasticTestCase);
-
     }
 
     /**
@@ -203,34 +217,39 @@ class ElasticTestCaseTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetElasticType()
     {
-        $valueMap = array(
-            array('cosma_testing.elastica.host', '127.0.0.1'),
-            array('cosma_testing.elastica.port', '8080'),
-            array('cosma_testing.elastica.path', '/'),
-            array('cosma_testing.elastica.timeout', '5'),
-            array('cosma_testing.elastica.index', 'test'),
-            array('cosma_testing.elastica.type', 'test')
-        );
+        $valueMap = [
+            ['cosma_testing.elastica.host', '127.0.0.1'],
+            ['cosma_testing.elastica.port', '8080'],
+            ['cosma_testing.elastica.path', '/'],
+            ['cosma_testing.elastica.timeout', '5'],
+            ['cosma_testing.elastica.index', 'test'],
+            ['cosma_testing.elastica.type', 'test']
+        ];
 
         $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerInterface')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getParameter'))
-            ->getMockForAbstractClass();
+                          ->disableOriginalConstructor()
+                          ->setMethods(['getParameter'])
+                          ->getMockForAbstractClass()
+        ;
         $container->expects($this->exactly(1))
-            ->method('getParameter')
-            ->will($this->returnValueMap($valueMap));
+                  ->method('getParameter')
+                  ->will($this->returnValueMap($valueMap))
+        ;
 
         $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\KernelInterface')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getContainer'))
-            ->getMockForAbstractClass();
+                       ->disableOriginalConstructor()
+                       ->setMethods(['getContainer'])
+                       ->getMockForAbstractClass()
+        ;
         $kernel->expects($this->exactly(1))
-            ->method('getContainer')
-            ->will($this->returnValue($container));
+               ->method('getContainer')
+               ->will($this->returnValue($container))
+        ;
 
         $elasticTestCase = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\ElasticTestCase')
-            ->disableAutoload()
-            ->getMockForAbstractClass();
+                                ->disableAutoload()
+                                ->getMockForAbstractClass()
+        ;
 
         $reflectionClassMocked = new \ReflectionClass($elasticTestCase);
         $reflectionClass       = $reflectionClassMocked->getParentClass();
@@ -253,12 +272,12 @@ class ElasticTestCaseTest extends \PHPUnit_Framework_TestCase
 
         $reflectionMethod = $reflectionClass->getMethod('tearDownAfterClass');
         $reflectionMethod->invoke($elasticTestCase);
-
     }
 }
 
 class ElasticTestCaseExample extends ElasticTestCase
-{}
+{
+}
 
 
 

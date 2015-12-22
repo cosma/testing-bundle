@@ -13,7 +13,6 @@
 
 namespace Cosma\Bundle\TestingBundle\Tests;
 
-
 use Cosma\Bundle\TestingBundle\TestingBundle;
 
 class TestingBundleTest extends \PHPUnit_Framework_TestCase

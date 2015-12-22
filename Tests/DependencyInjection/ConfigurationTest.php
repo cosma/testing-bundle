@@ -21,7 +21,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
     public function testGetConfigTreeBuilder()
     {
         $config = new Configuration();
-        $tree = $config->getConfigTreeBuilder();
+        $tree   = $config->getConfigTreeBuilder();
 
         $node = $tree->buildTree();
         $this->assertEquals('cosma_testing', $node->getName());

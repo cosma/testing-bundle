@@ -7,7 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Date: 01/025/15
+ * Date: 21/12/15
  * Time: 23:33
  */
 
@@ -21,7 +21,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class FixturesDumpCommand extends ContainerAwareCommand
+class FixturesExportCommand extends ContainerAwareCommand
 {
     /**
      * @var OutputInterface
@@ -39,18 +39,19 @@ class FixturesDumpCommand extends ContainerAwareCommand
 
     /**
      *
-     * app/console cosma_testing:fixtures:dump [-a|--associations] dumpDirectory [entity]
+     *  app/console cosma_testing:fixtures:dump [-a|--associations] dumpDirectory [entity]
      *
-     * app/console cosma_testing:fixtures:dump [-a|--associations] "path/to/dump/directory" BundleName:Entity
+     *  app/console cosma_testing:fixtures:dump [-a|--associations] "path/to/dump/directory" BundleName:Entity
      *
-     * Argument :: dump directory - required
-     * Argument :: entity  - if not specified will save all entities
-     * Option :: --associations / -a - saves the associations between entities, too
+     *  Argument :: dump directory - required
+     *  Argument :: entity  - if not specified will save all entities
+     *  Option :: --associations / -a - saves the associations between entities, too
      */
     protected function configure()
     {
         $this
-            ->setName('cosma_testing:fixtures:dump')
+            ->setName('cosma_testing:fixtures:export')
+            ->setAliases(['cosma_testing:fixtures:dump'])
             ->setDescription('Export data Table to fixtures command')
             ->addArgument(
                 'dumpDirectory',
@@ -61,7 +62,7 @@ class FixturesDumpCommand extends ContainerAwareCommand
                 'entity',
                 InputArgument::OPTIONAL,
                 'Run command just for this specific entity',
-                NULL
+                null
             )
             ->addOption(
                 'associations',
@@ -84,11 +85,12 @@ If you want to include in the fixtures all the associations of the entity, you c
   <info>./app/console cosma_testing:fixtures:dump --associations "/path/to/dump/directory" "BundleName:EntityName"</info>
 
 EOT
-            );
+            )
+        ;
     }
 
     /**
-     * @param InputInterface $input
+     * @param InputInterface  $input
      * @param OutputInterface $output
      *
      * @return void
@@ -97,11 +99,11 @@ EOT
     public function execute(InputInterface $input, OutputInterface $output)
     {
         $dumpDirectory = $input->getArgument('dumpDirectory');
-        $entity = $input->getArgument('entity');
+        $entity        = $input->getArgument('entity');
 
-        $associations = FALSE;
+        $associations = false;
         if ($input->getOption('associations')) {
-            $associations = TRUE;
+            $associations = true;
         }
 
         $this->output = $output;
@@ -111,15 +113,13 @@ EOT
         /** @type \Doctrine\ORM\EntityManagerInterface $entityManager */
         $entityManager = $this->getContainer()->get('doctrine')->getManager();
 
-
         $this->dumper->setAssociation($associations);
-
 
         $this->output->writeln(PHP_EOL);
 
-        if ($entity) {$classMetadataInfo = $entityManager->getMetadataFactory()->getMetadataFor($entity);
+        if ($entity) {
+            $classMetadataInfo = $entityManager->getMetadataFactory()->getMetadataFor($entity);
             $this->dumpFile($classMetadataInfo, $dumpDirectory);
-
         } else {
             $this->output->writeln("[" . date('c') . "] export fixtures in {$dumpDirectory} for all entities");
             $this->output->writeln(PHP_EOL);
@@ -138,7 +138,7 @@ EOT
 
     /**
      * @param ClassMetadataInfo $classMetadataInfo
-     * @param string $dumpDirectory
+     * @param string            $dumpDirectory
      *
      * return void
      */

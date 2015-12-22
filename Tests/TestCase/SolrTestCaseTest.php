@@ -33,56 +33,65 @@ class SolrTestCaseTest extends \PHPUnit_Framework_TestCase
     public function testSetUp()
     {
         $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\KernelInterface')
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+                       ->disableOriginalConstructor()
+                       ->getMockForAbstractClass()
+        ;
 
         $updateQuery = $this->getMockBuilder('\Solarium\QueryType\Update\Query\Query')
-            ->disableOriginalConstructor()
-            ->setMethods(array('addDeleteQuery', 'addCommit'))
-            ->getMock();
+                            ->disableOriginalConstructor()
+                            ->setMethods(['addDeleteQuery', 'addCommit'])
+                            ->getMock()
+        ;
         $updateQuery->expects($this->once())
-            ->method('addDeleteQuery')
-            ->with('*:*')
-            ->will($this->returnValue(NULL));
+                    ->method('addDeleteQuery')
+                    ->with('*:*')
+                    ->will($this->returnValue(null))
+        ;
         $updateQuery->expects($this->once())
-            ->method('addCommit')
-            ->will($this->returnValue(NULL));
+                    ->method('addCommit')
+                    ->will($this->returnValue(null))
+        ;
 
         $solariumClient = $this->getMockBuilder('Solarium\Core\Client\Client')
-            ->disableOriginalConstructor()
-            ->setMethods(array('createUpdate', 'update'))
-            ->getMock();
+                               ->disableOriginalConstructor()
+                               ->setMethods(['createUpdate', 'update'])
+                               ->getMock()
+        ;
         $solariumClient->expects($this->once())
-            ->method('createUpdate')
-            ->will($this->returnValue($updateQuery));
+                       ->method('createUpdate')
+                       ->will($this->returnValue($updateQuery))
+        ;
         $solariumClient->expects($this->once())
-            ->method('update')
-            ->will($this->returnValue($updateQuery));
+                       ->method('update')
+                       ->will($this->returnValue($updateQuery))
+        ;
 
         $solrTestCase = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\SolrTestCase')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getSolariumClient'))
-            ->getMockForAbstractClass();
+                             ->disableOriginalConstructor()
+                             ->setMethods(['getSolariumClient'])
+                             ->getMockForAbstractClass()
+        ;
         $solrTestCase->expects($this->once())
-            ->method('getSolariumClient')
-            ->will($this->returnValue($solariumClient));
+                     ->method('getSolariumClient')
+                     ->will($this->returnValue($solariumClient))
+        ;
 
         $reflectionClassMocked = new \ReflectionClass($solrTestCase);
-        $reflectionClass = $reflectionClassMocked->getParentClass();
+        $reflectionClass       = $reflectionClassMocked->getParentClass();
 
         $classProperty = $reflectionClass->getProperty('class');
-        $classProperty->setAccessible(TRUE);
+        $classProperty->setAccessible(true);
         $classProperty->setValue($solrTestCase, 'Cosma\Bundle\TestingBundle\Tests\AppKernel');
 
         $kernelProperty = $reflectionClass->getProperty('kernel');
-        $kernelProperty->setAccessible(TRUE);
+        $kernelProperty->setAccessible(true);
         $kernelProperty->setValue($solrTestCase, $kernel);
 
         $resetSolrCoreMethod = $reflectionClass->getMethod('resetSolrCore');
-        $resetSolrCoreMethod->setAccessible(TRUE);
+        $resetSolrCoreMethod->setAccessible(true);
 
         $setUpMethod = $reflectionClass->getMethod('setUp');
-        $setUpMethod->setAccessible(TRUE);
+        $setUpMethod->setAccessible(true);
         $setUpMethod->invoke($solrTestCase);
 
         $reflectionMethod = $reflectionClass->getMethod('tearDownAfterClass');
@@ -94,43 +103,48 @@ class SolrTestCaseTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetSolariumClient()
     {
-        $valueMap = array(
-            array('cosma_testing.solarium.host', '127.0.0.1'),
-            array('cosma_testing.solarium.port', '8080'),
-            array('cosma_testing.solarium.path', '/solr'),
-            array('cosma_testing.solarium.core', 'test'),
-            array('cosma_testing.solarium.timeout', '5')
-        );
+        $valueMap = [
+            ['cosma_testing.solarium.host', '127.0.0.1'],
+            ['cosma_testing.solarium.port', '8080'],
+            ['cosma_testing.solarium.path', '/solr'],
+            ['cosma_testing.solarium.core', 'test'],
+            ['cosma_testing.solarium.timeout', '5']
+        ];
 
         $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerInterface')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getParameter'))
-            ->getMockForAbstractClass();
+                          ->disableOriginalConstructor()
+                          ->setMethods(['getParameter'])
+                          ->getMockForAbstractClass()
+        ;
         $container->expects($this->exactly(5))
-            ->method('getParameter')
-            ->will($this->returnValueMap($valueMap));
+                  ->method('getParameter')
+                  ->will($this->returnValueMap($valueMap))
+        ;
 
         $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\KernelInterface')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getContainer'))
-            ->getMockForAbstractClass();
+                       ->disableOriginalConstructor()
+                       ->setMethods(['getContainer'])
+                       ->getMockForAbstractClass()
+        ;
         $kernel->expects($this->exactly(5))
-            ->method('getContainer')
-            ->will($this->returnValue($container));
+               ->method('getContainer')
+               ->will($this->returnValue($container))
+        ;
 
         $solrTestCase = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\SolrTestCase')
-            ->disableAutoload()
-            ->getMockForAbstractClass();
+                             ->disableAutoload()
+                             ->getMockForAbstractClass()
+        ;
 
         $reflectionClassMocked = new \ReflectionClass($solrTestCase);
-        $reflectionClass = $reflectionClassMocked->getParentClass();
+        $reflectionClass       = $reflectionClassMocked->getParentClass();
 
         $clientProperty = $reflectionClass->getProperty('kernel');
-        $clientProperty->setAccessible(TRUE);
+        $clientProperty->setAccessible(true);
         $clientProperty->setValue($solrTestCase, $kernel);
 
         $reflectionMethod = $reflectionClass->getMethod('getSolariumClient');
-        $reflectionMethod->setAccessible(TRUE);
+        $reflectionMethod->setAccessible(true);
 
         /** @var Client $client */
         $client = $reflectionMethod->invoke($solrTestCase);

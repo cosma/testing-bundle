@@ -36,68 +36,68 @@ class CosmaTestingExtension extends Extension
         $configuration = new Configuration();
         $config        = $this->processConfiguration($configuration, $configs);
 
-        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yml');
 
         $container = $this->setDoctrineCleaningStrategy($container, $config);
 
-        if(isset($config['fixture_directory'])){
+        if (isset($config['fixture_directory'])) {
             $container->setParameter('cosma_testing.fixture_directory', $config['fixture_directory']);
         }
 
-        if(isset($config['tests_directory'])){
+        if (isset($config['tests_directory'])) {
             $container->setParameter('cosma_testing.tests_directory', $config['tests_directory']);
         }
 
-        if(isset($config['solarium']['host'])){
+        if (isset($config['solarium']['host'])) {
             $container->setParameter('cosma_testing.solarium.host', $config['solarium']['host']);
         }
 
-        if(isset($config['solarium']['port'])){
+        if (isset($config['solarium']['port'])) {
             $container->setParameter('cosma_testing.solarium.port', $config['solarium']['port']);
         }
 
-        if(isset($config['solarium']['path'])){
+        if (isset($config['solarium']['path'])) {
             $container->setParameter('cosma_testing.solarium.path', $config['solarium']['path']);
         }
 
-        if(isset($config['solarium']['core'])){
+        if (isset($config['solarium']['core'])) {
             $container->setParameter('cosma_testing.solarium.core', $config['solarium']['core']);
         }
 
-        if(isset($config['solarium']['timeout'])){
+        if (isset($config['solarium']['timeout'])) {
             $container->setParameter('cosma_testing.solarium.timeout', $config['solarium']['timeout']);
         }
 
-        if(isset($config['elastica']['host'])){
+        if (isset($config['elastica']['host'])) {
             $container->setParameter('cosma_testing.elastica.host', $config['elastica']['host']);
         }
 
-        if(isset($config['elastica']['port'])){
+        if (isset($config['elastica']['port'])) {
             $container->setParameter('cosma_testing.elastica.port', $config['elastica']['port']);
         }
 
-        if(isset($config['elastica']['path'])){
+        if (isset($config['elastica']['path'])) {
             $container->setParameter('cosma_testing.elastica.path', $config['elastica']['path']);
         }
 
-        if(isset($config['elastica']['timeout'])){
+        if (isset($config['elastica']['timeout'])) {
             $container->setParameter('cosma_testing.elastica.timeout', $config['elastica']['timeout']);
         }
 
-        if(isset($config['elastica']['index'])){
+        if (isset($config['elastica']['index'])) {
             $container->setParameter('cosma_testing.elastica.index', $config['elastica']['index']);
         }
 
-        if(isset($config['elastica']['type'])) {
+        if (isset($config['elastica']['type'])) {
             $container->setParameter('cosma_testing.elastica.type', $config['elastica']['type']);
         }
 
-        if(isset($config['selenium']['server'])) {
+        if (isset($config['selenium']['server'])) {
             $container->setParameter('cosma_testing.selenium.server', $config['selenium']['server']);
         }
 
-        if(isset($config['selenium']['domain'])) {
+        if (isset($config['selenium']['domain'])) {
             $container->setParameter('cosma_testing.selenium.domain', $config['selenium']['domain']);
         }
     }

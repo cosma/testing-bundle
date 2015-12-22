@@ -25,34 +25,34 @@ class CosmaTestingExtensionTest extends \PHPUnit_Framework_TestCase
      */
     public function testLoad_ConfigParameters()
     {
-        $config = array(
+        $config = [
             'fixture_directory' => 'Some/Fixture/Directory',
-            'doctrine' => array(
+            'doctrine'          => [
                 'cleaning_strategy' => 'drop'
-            ),
-            'solarium' => array(
-                'host' => '127.0.0.1',
-                'port' => 8080,
-                'path' => '/solr',
-                'core' => 'tests',
+            ],
+            'solarium'          => [
+                'host'    => '127.0.0.1',
+                'port'    => 8080,
+                'path'    => '/solr',
+                'core'    => 'tests',
                 'timeout' => 45
-            ),
-            'elastica' => array(
-                'host' => '127.0.0.1',
-                'port' => 9200,
-                'path' => '/',
+            ],
+            'elastica'          => [
+                'host'    => '127.0.0.1',
+                'port'    => 9200,
+                'path'    => '/',
                 'timeout' => 15,
-                'index' => 'tests',
-                'type' => 'tests'
-            ),
-            'selenium' => array(
+                'index'   => 'tests',
+                'type'    => 'tests'
+            ],
+            'selenium'          => [
                 'domain' => '127.0.0.1:4444'
-            )
-        );
+            ]
+        ];
 
         $container = $this->getContainerWithLoadedExtension($config);
 
-        $parameters = array(
+        $parameters = [
             'cosma_testing.fixture_directory',
             'cosma_testing.tests_directory',
             'cosma_testing.doctrine.cleaning_strategy',
@@ -69,7 +69,7 @@ class CosmaTestingExtensionTest extends \PHPUnit_Framework_TestCase
             'cosma_testing.elastica.type',
             'cosma_testing.selenium.server',
             'cosma_testing.selenium.domain'
-        );
+        ];
 
         foreach ($parameters as $parameter) {
             $this->assertTrue($container->hasParameter($parameter), "Container doesn't has the parameter {$parameter}");
@@ -81,31 +81,31 @@ class CosmaTestingExtensionTest extends \PHPUnit_Framework_TestCase
      */
     public function testLoad_ConfigParameters_DefaultCleaning()
     {
-        $config = array(
+        $config = [
             'fixture_directory' => 'Some/Fixture/Directory',
-            'solarium' => array(
-                'host' => '127.0.0.1',
-                'port' => 8080,
-                'path' => '/solr',
-                'core' => 'tests',
+            'solarium'          => [
+                'host'    => '127.0.0.1',
+                'port'    => 8080,
+                'path'    => '/solr',
+                'core'    => 'tests',
                 'timeout' => 45
-            ),
-            'elastica' => array(
-                'host' => '127.0.0.1',
-                'port' => 9200,
-                'path' => '/',
+            ],
+            'elastica'          => [
+                'host'    => '127.0.0.1',
+                'port'    => 9200,
+                'path'    => '/',
                 'timeout' => 15,
-                'index' => 'tests',
-                'type' => 'tests'
-            ),
-            'selenium' => array(
+                'index'   => 'tests',
+                'type'    => 'tests'
+            ],
+            'selenium'          => [
                 'domain' => '127.0.0.1:4444'
-            )
-        );
+            ]
+        ];
 
         $container = $this->getContainerWithLoadedExtension($config);
 
-        $parameters = array(
+        $parameters = [
             'cosma_testing.fixture_directory',
             'cosma_testing.tests_directory',
             'cosma_testing.doctrine.cleaning_strategy',
@@ -122,7 +122,7 @@ class CosmaTestingExtensionTest extends \PHPUnit_Framework_TestCase
             'cosma_testing.elastica.type',
             'cosma_testing.selenium.server',
             'cosma_testing.selenium.domain'
-        );
+        ];
 
         foreach ($parameters as $parameter) {
             $this->assertTrue($container->hasParameter($parameter), "Container doesn't has the parameter {$parameter}");
@@ -136,30 +136,30 @@ class CosmaTestingExtensionTest extends \PHPUnit_Framework_TestCase
      */
     public function testLoad_ConfigParameters_Exception()
     {
-        $config = array(
+        $config = [
             'fixture_directory' => 'Some/Fixture/Directory',
-            'doctrine'     => array(
+            'doctrine'          => [
                 'cleaning_strategy' => 'qwerty'
-            ),
-            'solarium'     => array(
+            ],
+            'solarium'          => [
                 'host'    => '127.0.0.1',
                 'port'    => 8080,
                 'path'    => '/solr',
                 'core'    => 'tests',
                 'timeout' => 45
-            ),
-            'elastica'     => array(
+            ],
+            'elastica'          => [
                 'host'    => '127.0.0.1',
                 'port'    => 9200,
                 'path'    => '/',
                 'timeout' => 15,
                 'index'   => 'tests',
                 'type'    => 'tests'
-            ),
-            'selenium'     => array(
+            ],
+            'selenium'          => [
                 'domain' => '127.0.0.1:4444'
-            )
-        );
+            ]
+        ];
 
         $this->getContainerWithLoadedExtension($config);
     }
@@ -176,12 +176,12 @@ class CosmaTestingExtensionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('cosma_testing', $extension->getAlias(), 'Bundle Alias is wrong');
     }
 
-    protected function getContainerWithLoadedExtension(array $config = array())
+    protected function getContainerWithLoadedExtension(array $config = [])
     {
         $container = new ContainerBuilder();
 
         $extension = new CosmaTestingExtension();
-        $extension->load(array($config), $container);
+        $extension->load([$config], $container);
 
         return $container;
     }

@@ -39,11 +39,12 @@ trait SimpleTestTrait
             throw new EntityNotFoundException();
         }
 
-        $entityModel = $this->getMock($entityNamespaceClass, array('getId'));
+        $entityModel = $this->getMock($entityNamespaceClass, ['getId']);
         $entityModel
             ->expects($this->any())
             ->method('getId')
-            ->will($this->returnValue($id));
+            ->will($this->returnValue($id))
+        ;
 
         return $entityModel;
     }
@@ -79,8 +80,8 @@ trait SimpleTestTrait
         $debugTrace = debug_backtrace();
 
         if (isset($debugTrace[0]['file'])) {
-            $testPath = strpos($debugTrace[0]['file'], "src/", 1);
-            $filePath = substr($debugTrace[0]['file'], $testPath + 4);
+            $testPath      = strpos($debugTrace[0]['file'], "src/", 1);
+            $filePath      = substr($debugTrace[0]['file'], $testPath + 4);
             $testClassPath = str_replace('.php', '', $filePath);
         } else {
             $testClassPath = '';

@@ -19,9 +19,20 @@ use Symfony\Component\HttpKernel\HttpKernel;
 
 class AppKernel extends HttpKernel
 {
-    public function __construct(){}
-    public function boot(){}
-    public function shutdown(){}
-    public function getBundles(){}
+    public function __construct()
+    {
+    }
+
+    public function boot()
+    {
+    }
+
+    public function shutdown()
+    {
+    }
+
+    public function getBundles()
+    {
+    }
 
 }

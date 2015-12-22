@@ -26,41 +26,43 @@ class SeleniumTestCaseTest extends \PHPUnit_Framework_TestCase
     public function testSetUp()
     {
         $webDriver = $this->getMockBuilder('Facebook\WebDriver\Remote\RemoteWebDriver')
-            ->disableOriginalConstructor()
-            ->setMethods(array('execute'))
-            ->getMockForAbstractClass();
+                          ->disableOriginalConstructor()
+                          ->setMethods(['execute'])
+                          ->getMockForAbstractClass()
+        ;
 
         $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\KernelInterface')
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+                       ->disableOriginalConstructor()
+                       ->getMockForAbstractClass()
+        ;
 
         $seleniumTestCase = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\SeleniumTestCase')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getWebDriver'))
-            ->getMockForAbstractClass();
+                                 ->disableOriginalConstructor()
+                                 ->setMethods(['getWebDriver'])
+                                 ->getMockForAbstractClass()
+        ;
         $seleniumTestCase->expects($this->once())
-            ->method('getWebDriver')
-            ->will($this->returnValue($webDriver));
+                         ->method('getWebDriver')
+                         ->will($this->returnValue($webDriver))
+        ;
 
         $reflectionClassMocked = new \ReflectionClass($seleniumTestCase);
         $reflectionClass       = $reflectionClassMocked->getParentClass();
 
-
         $kernelProperty = $reflectionClass->getProperty('kernel');
-        $kernelProperty->setAccessible(TRUE);
+        $kernelProperty->setAccessible(true);
         $kernelProperty->setValue($seleniumTestCase, $kernel);
 
         $classProperty = $reflectionClass->getParentClass()->getProperty('class');
-        $classProperty->setAccessible(TRUE);
+        $classProperty->setAccessible(true);
         $classProperty->setValue($seleniumTestCase, 'Cosma\Bundle\TestingBundle\Tests\AppKernel');
 
-
         $webDriverProperty = $reflectionClass->getProperty('webDriver');
-        $webDriverProperty->setAccessible(TRUE);
+        $webDriverProperty->setAccessible(true);
         $webDriverProperty->setValue($seleniumTestCase, $webDriver);
 
         $setUpMethod = $reflectionClass->getMethod('setUp');
-        $setUpMethod->setAccessible(TRUE);
+        $setUpMethod->setAccessible(true);
         $setUpMethod->invoke($seleniumTestCase);
     }
 
@@ -70,43 +72,43 @@ class SeleniumTestCaseTest extends \PHPUnit_Framework_TestCase
     public function testTearDown()
     {
         $webDriver = $this->getMockBuilder('Facebook\WebDriver\Remote\RemoteWebDriver')
-            ->disableOriginalConstructor()
-            ->setMethods(array('execute'))
-            ->getMockForAbstractClass();
+                          ->disableOriginalConstructor()
+                          ->setMethods(['execute'])
+                          ->getMockForAbstractClass()
+        ;
 
         $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\KernelInterface')
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+                       ->disableOriginalConstructor()
+                       ->getMockForAbstractClass()
+        ;
 
         $seleniumTestCase = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\SeleniumTestCase')
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+                                 ->disableOriginalConstructor()
+                                 ->getMockForAbstractClass()
+        ;
 
         $reflectionClassMocked = new \ReflectionClass($seleniumTestCase);
         $reflectionClass       = $reflectionClassMocked->getParentClass();
 
-
         $kernelProperty = $reflectionClass->getProperty('kernel');
-        $kernelProperty->setAccessible(TRUE);
+        $kernelProperty->setAccessible(true);
         $kernelProperty->setValue($seleniumTestCase, $kernel);
 
         $classProperty = $reflectionClass->getParentClass()->getProperty('class');
-        $classProperty->setAccessible(TRUE);
+        $classProperty->setAccessible(true);
         $classProperty->setValue($seleniumTestCase, 'Cosma\Bundle\TestingBundle\Tests\AppKernel');
 
-
         $webDriverProperty = $reflectionClass->getProperty('webDriver');
-        $webDriverProperty->setAccessible(TRUE);
+        $webDriverProperty->setAccessible(true);
         $webDriverProperty->setValue($seleniumTestCase, $webDriver);
 
         $setUpMethod = $reflectionClass->getMethod('tearDown');
-        $setUpMethod->setAccessible(TRUE);
+        $setUpMethod->setAccessible(true);
         $setUpMethod->invoke($seleniumTestCase);
 
         $afterProperty = $reflectionClass->getProperty('webDriver');
-        $afterProperty->setAccessible(TRUE);
+        $afterProperty->setAccessible(true);
         $this->assertNull($afterProperty->getValue($seleniumTestCase));
-
     }
 
     /**
@@ -115,22 +117,24 @@ class SeleniumTestCaseTest extends \PHPUnit_Framework_TestCase
     public function testGetWebDriver()
     {
         $webDriver = $this->getMockBuilder('Facebook\WebDriver\Remote\RemoteWebDriver')
-            ->disableOriginalConstructor()
-            ->getMock();
+                          ->disableOriginalConstructor()
+                          ->getMock()
+        ;
 
         $seleniumTestCase = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\SeleniumTestCase')
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+                                 ->disableOriginalConstructor()
+                                 ->getMockForAbstractClass()
+        ;
 
         $reflectionClassMocked = new \ReflectionClass($seleniumTestCase);
         $reflectionClass       = $reflectionClassMocked->getParentClass();
 
         $webDriverProperty = $reflectionClass->getProperty('webDriver');
-        $webDriverProperty->setAccessible(TRUE);
+        $webDriverProperty->setAccessible(true);
         $webDriverProperty->setValue($seleniumTestCase, $webDriver);
 
         $reflectionMethod = $reflectionClass->getMethod('getWebDriver');
-        $reflectionMethod->setAccessible(TRUE);
+        $reflectionMethod->setAccessible(true);
 
         $webDriver = $reflectionMethod->invoke($seleniumTestCase);
 
@@ -144,38 +148,43 @@ class SeleniumTestCaseTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetWebDriver_NUll()
     {
-        $valueMap = array(
-            array('cosma_testing.selenium.server', 'http://127.0.0.1:4444/wd/hub')
-        );
+        $valueMap = [
+            ['cosma_testing.selenium.server', 'http://127.0.0.1:4444/wd/hub']
+        ];
 
         $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerInterface')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getParameter'))
-            ->getMockForAbstractClass();
+                          ->disableOriginalConstructor()
+                          ->setMethods(['getParameter'])
+                          ->getMockForAbstractClass()
+        ;
         $container->expects($this->once())
-            ->method('getParameter')
-            ->will($this->returnValueMap($valueMap));
+                  ->method('getParameter')
+                  ->will($this->returnValueMap($valueMap))
+        ;
 
         $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\KernelInterface')
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+                       ->disableOriginalConstructor()
+                       ->getMockForAbstractClass()
+        ;
         $kernel->expects($this->once())
-            ->method('getContainer')
-            ->will($this->returnValue($container));
+               ->method('getContainer')
+               ->will($this->returnValue($container))
+        ;
 
         $seleniumTestCase = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\SeleniumTestCase')
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+                                 ->disableOriginalConstructor()
+                                 ->getMockForAbstractClass()
+        ;
 
         $reflectionClassMocked = new \ReflectionClass($seleniumTestCase);
         $reflectionClass       = $reflectionClassMocked->getParentClass();
 
         $clientProperty = $reflectionClass->getProperty('kernel');
-        $clientProperty->setAccessible(TRUE);
+        $clientProperty->setAccessible(true);
         $clientProperty->setValue($seleniumTestCase, $kernel);
 
         $reflectionMethod = $reflectionClass->getMethod('getWebDriver');
-        $reflectionMethod->setAccessible(TRUE);
+        $reflectionMethod->setAccessible(true);
 
         $webDriver = $reflectionMethod->invoke($seleniumTestCase);
 
@@ -188,50 +197,56 @@ class SeleniumTestCaseTest extends \PHPUnit_Framework_TestCase
     public function testOpen()
     {
         $webDriver = $this->getMockBuilder('Facebook\WebDriver\Remote\RemoteWebDriver')
-            ->disableOriginalConstructor()
-            ->setMethods(array( 'execute', 'get'))
-            ->getMockForAbstractClass();
+                          ->disableOriginalConstructor()
+                          ->setMethods(['execute', 'get'])
+                          ->getMockForAbstractClass()
+        ;
         $webDriver->expects($this->once())
-            ->method('get')
-            ->with('http://wwww.google.ro/site.html')
-            ->will($this->returnSelf());
+                  ->method('get')
+                  ->with('http://wwww.google.ro/site.html')
+                  ->will($this->returnSelf())
+        ;
 
-        $valueMap = array(
-            array('cosma_testing.selenium.domain', 'http://wwww.google.ro')
-        );
+        $valueMap = [
+            ['cosma_testing.selenium.domain', 'http://wwww.google.ro']
+        ];
 
         $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerInterface')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getParameter'))
-            ->getMockForAbstractClass();
+                          ->disableOriginalConstructor()
+                          ->setMethods(['getParameter'])
+                          ->getMockForAbstractClass()
+        ;
         $container->expects($this->once())
-            ->method('getParameter')
-            ->will($this->returnValueMap($valueMap));
+                  ->method('getParameter')
+                  ->will($this->returnValueMap($valueMap))
+        ;
 
         $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\KernelInterface')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getContainer'))
-            ->getMockForAbstractClass();
+                       ->disableOriginalConstructor()
+                       ->setMethods(['getContainer'])
+                       ->getMockForAbstractClass()
+        ;
         $kernel->expects($this->once())
-            ->method('getContainer')
-            ->will($this->returnValue($container));
+               ->method('getContainer')
+               ->will($this->returnValue($container))
+        ;
 
         /** @var SeleniumTestCase $seleniumTestCase */
         $seleniumTestCase = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\SeleniumTestCase')
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+                                 ->disableOriginalConstructor()
+                                 ->getMockForAbstractClass()
+        ;
 
         $reflectionClassMocked = new \ReflectionClass($seleniumTestCase);
         $reflectionClass       = $reflectionClassMocked->getParentClass();
 
         $clientProperty = $reflectionClass->getProperty('kernel');
-        $clientProperty->setAccessible(TRUE);
+        $clientProperty->setAccessible(true);
         $clientProperty->setValue($seleniumTestCase, $kernel);
 
         $webDriverProperty = $reflectionClass->getProperty('webDriver');
-        $webDriverProperty->setAccessible(TRUE);
+        $webDriverProperty->setAccessible(true);
         $webDriverProperty->setValue($seleniumTestCase, $webDriver);
-
 
         $webDriver = $seleniumTestCase->open('/site.html');
 
@@ -248,43 +263,49 @@ class SeleniumTestCaseTest extends \PHPUnit_Framework_TestCase
     public function testGetDomain()
     {
         $webDriver = $this->getMockBuilder('Facebook\WebDriver\Remote\RemoteWebDriver')
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+                          ->disableOriginalConstructor()
+                          ->getMockForAbstractClass()
+        ;
 
-        $valueMap = array(
-            array('cosma_testing.selenium.domain', 'http://wwww.google.ro')
-        );
+        $valueMap = [
+            ['cosma_testing.selenium.domain', 'http://wwww.google.ro']
+        ];
 
         $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerInterface')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getParameter'))
-            ->getMockForAbstractClass();
+                          ->disableOriginalConstructor()
+                          ->setMethods(['getParameter'])
+                          ->getMockForAbstractClass()
+        ;
         $container->expects($this->once())
-            ->method('getParameter')
-            ->will($this->returnValueMap($valueMap));
+                  ->method('getParameter')
+                  ->will($this->returnValueMap($valueMap))
+        ;
 
         $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\KernelInterface')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getContainer'))
-            ->getMockForAbstractClass();
+                       ->disableOriginalConstructor()
+                       ->setMethods(['getContainer'])
+                       ->getMockForAbstractClass()
+        ;
         $kernel->expects($this->once())
-            ->method('getContainer')
-            ->will($this->returnValue($container));
+               ->method('getContainer')
+               ->will($this->returnValue($container))
+        ;
 
         /** @var SeleniumTestCase $seleniumTestCase */
         $seleniumTestCase = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\SeleniumTestCase')
-            ->disableOriginalConstructor()
-            ->getMockForAbstractClass();
+                                 ->disableOriginalConstructor()
+                                 ->getMockForAbstractClass()
+        ;
 
         $reflectionClassMocked = new \ReflectionClass($seleniumTestCase);
         $reflectionClass       = $reflectionClassMocked->getParentClass();
 
         $clientProperty = $reflectionClass->getProperty('kernel');
-        $clientProperty->setAccessible(TRUE);
+        $clientProperty->setAccessible(true);
         $clientProperty->setValue($seleniumTestCase, $kernel);
 
         $webDriverProperty = $reflectionClass->getProperty('webDriver');
-        $webDriverProperty->setAccessible(TRUE);
+        $webDriverProperty->setAccessible(true);
         $webDriverProperty->setValue($seleniumTestCase, $webDriver);
 
         $domain = $seleniumTestCase->getDomain();

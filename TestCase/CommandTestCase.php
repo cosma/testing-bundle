@@ -56,8 +56,8 @@ abstract class CommandTestCase extends WebTestCase
     public function executeCommand($command)
     {
         $temporaryFile = tmpfile();
-        $input = new StringInput($command);
-        $output = new StreamOutput($temporaryFile);
+        $input         = new StringInput($command);
+        $output        = new StreamOutput($temporaryFile);
 
         $this->application->run($input, $output);
 

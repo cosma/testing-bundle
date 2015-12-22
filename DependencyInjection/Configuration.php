@@ -42,10 +42,12 @@ class Configuration implements ConfigurationInterface
                     ->children()
                         ->enumNode('cleaning_strategy')
                             ->defaultValue(DoctrineORMSchemaTool::DOCTRINE_CLEANING_TRUNCATE)
-                            ->values(array(
-                                DoctrineORMSchemaTool::DOCTRINE_CLEANING_TRUNCATE,
-                                DoctrineORMSchemaTool::DOCTRINE_CLEANING_DROP
-                            ))
+                            ->values(
+                                [
+                                    DoctrineORMSchemaTool::DOCTRINE_CLEANING_TRUNCATE,
+                                    DoctrineORMSchemaTool::DOCTRINE_CLEANING_DROP
+                                ]
+                            )
                         ->end()
                     ->end()
                 ->end()

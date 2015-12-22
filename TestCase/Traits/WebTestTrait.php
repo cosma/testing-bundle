@@ -46,7 +46,7 @@ trait WebTestTrait
      *
      * @return Client
      */
-    protected function getClient(array $server = array())
+    protected function getClient(array $server = [])
     {
         /** @var Client $client */
         $client = static::$kernel->getContainer()->get('test.client');

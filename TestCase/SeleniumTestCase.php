@@ -33,7 +33,7 @@ abstract class SeleniumTestCase extends WebTestCase
     {
         parent::tearDown();
         $this->webDriver->close();
-        $this->webDriver = NULL;
+        $this->webDriver = null;
     }
 
     /**
@@ -41,7 +41,7 @@ abstract class SeleniumTestCase extends WebTestCase
      */
     protected function getWebDriver()
     {
-        if (NULL === $this->webDriver) {
+        if (null === $this->webDriver) {
             $this->webDriver = RemoteWebDriver::create(
                 static::$kernel->getContainer()->getParameter('cosma_testing.selenium.server'),
                 DesiredCapabilities::chrome()
