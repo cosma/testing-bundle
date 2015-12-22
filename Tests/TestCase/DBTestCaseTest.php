@@ -23,11 +23,20 @@ use Symfony\Bundle\FrameworkBundle\Client;
 use Cosma\Bundle\TestingBundle\TestCase\WebTestCase;
 use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 
-class WebTestCaseTest extends \PHPUnit_Framework_TestCase
+class DBTestCaseTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @see Cosma\Bundle\TestingBundle\TestCase\WebTestCase
+     */
+    public function testStaticAttributes()
+    {
+        $this->assertClassHasStaticAttribute('currentBundle', 'Cosma\Bundle\TestingBundle\TestCase\WebTestCase');
+        $this->assertClassHasStaticAttribute('fixtureManager', 'Cosma\Bundle\TestingBundle\TestCase\WebTestCase');
+        $this->assertClassHasStaticAttribute('fixturePath', 'Cosma\Bundle\TestingBundle\TestCase\WebTestCase');
+    }
 
     /**
-     * @see Cosma\Bundle\TestingBundle\TestCase\WebTestCase::setUpBeforeClass
+     * @see SolrTestCase::setUpBeforeClass
      */
     public function testSetUpBeforeClass()
     {
@@ -43,6 +52,26 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
         $classProperty->setAccessible(true);
         $classProperty->setValue($webTestCase, 'Cosma\Bundle\TestingBundle\Tests\AppKernel');
 
+        $currentBundle         = $this->getMockBuilder('Symfony\Component\HttpKernel\Bundle\BundleInterface')
+                                      ->disableOriginalConstructor()
+                                      ->getMockForAbstractClass()
+        ;
+        $currentBundleProperty = $reflectionClass->getProperty('currentBundle');
+        $currentBundleProperty->setAccessible(true);
+        $currentBundleProperty->setValue($currentBundle);
+
+        $fixtureManager         = $this->getMockBuilder('h4cc\AliceFixturesBundle\Fixtures\FixtureManagerInterface')
+                                       ->disableOriginalConstructor()
+                                       ->setMethods(['persist', 'loadFiles'])
+                                       ->getMockForAbstractClass()
+        ;
+        $fixtureManagerProperty = $reflectionClass->getProperty('fixtureManager');
+        $fixtureManagerProperty->setAccessible(true);
+        $fixtureManagerProperty->setValue($fixtureManager);
+
+        $fixturePathProperty = $reflectionClass->getProperty('fixturePath');
+        $fixturePathProperty->setAccessible(true);
+        $fixturePathProperty->setValue('Fixture');
 
         $setUpMethod = $reflectionClass->getMethod('setUpBeforeClass');
         $setUpMethod->setAccessible(true);
@@ -59,7 +88,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @see Cosma\Bundle\TestingBundle\TestCase\WebTestCase::setUp
+     * @see SolrTestCase::setUp
      */
     public function testSetUp()
     {
