@@ -22,26 +22,16 @@ trait DBTestTrait
     /**
      * @var FixtureManager
      */
-    private static $fixtureManager;
+    protected $fixtureManager;
 
     /**
      * @return void
      */
-    public static function setUpBeforeClass()
+    protected function setUp()
     {
-        parent::setUpBeforeClass();
+        parent::setUp();
 
-        static::getFixtureManager();
-    }
-
-    /**
-     * Clean up Kernel usage in this test.
-     */
-    public static function tearDownAfterClass()
-    {
-        self::$fixtureManager = null;
-
-        parent::tearDownAfterClass();
+        $this->getFixtureManager();
     }
 
     /**
@@ -49,7 +39,7 @@ trait DBTestTrait
      */
     protected function getEntityManager()
     {
-        return static::$kernel->getContainer()->get('doctrine')->getManager();
+        return $this->getKernel()->getContainer()->get('doctrine')->getManager();
     }
 
     /**
@@ -63,6 +53,14 @@ trait DBTestTrait
     }
 
     /**
+     * void
+     */
+    protected function dropDatabase()
+    {
+        $this->fixtureManager->persist([], true);
+    }
+
+    /**
      * @param array $fixtures
      * @param       $dropDatabaseBefore
      *
@@ -70,15 +68,14 @@ trait DBTestTrait
      */
     protected function loadFixtures(array $fixtures, $dropDatabaseBefore = true)
     {
-        $fixtureManager = static::getFixtureManager();
         if ($dropDatabaseBefore) {
-            $fixtureManager->persist([], true);
+            $this->fixtureManager->persist([], true);
         }
 
         $fixturesFiles = array_map([$this, 'getFixtureFile'], $fixtures);
 
-        $objects = $fixtureManager->loadFiles($fixturesFiles);
-        $fixtureManager->persist($objects);
+        $objects = $this->fixtureManager->loadFiles($fixturesFiles);
+        $this->fixtureManager->persist($objects);
 
         return $objects;
     }
@@ -100,7 +97,7 @@ trait DBTestTrait
 
         $bundlePath = $this->getBundlePath($bundleName);
 
-        $fixtureDirectory = static::$kernel->getContainer()->getParameter('cosma_testing.fixture_directory');
+        $fixtureDirectory = $this->getKernel()->getContainer()->getParameter('cosma_testing.fixture_directory');
 
         $innerBundlePath = implode(DIRECTORY_SEPARATOR, $pathParts);
 
@@ -110,13 +107,13 @@ trait DBTestTrait
     /**
      * @return FixtureManager
      */
-    private static function getFixtureManager()
+    protected function getFixtureManager()
     {
-        if (null === self::$fixtureManager) {
-            self::$fixtureManager = static::$kernel->getContainer()->get('h4cc_alice_fixtures.manager');
+        if (null === $this->fixtureManager) {
+            $this->fixtureManager = $this->getKernel()->getContainer()->get('h4cc_alice_fixtures.manager');
         }
 
-        return self::$fixtureManager;
+        return $this->fixtureManager;
     }
 
     /**
@@ -127,7 +124,7 @@ trait DBTestTrait
      */
     private function getBundlePath($bundleName)
     {
-        $bundles = static::$kernel->getBundles();
+        $bundles = $this->getKernel()->getBundles();
 
         /** @type BundleInterface $bundle */
         foreach ($bundles as $bundle) {

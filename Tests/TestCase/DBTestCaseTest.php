@@ -14,6 +14,8 @@
 
 namespace Cosma\Bundle\TestingBundle\Tests\TestCase;
 
+use Cosma\Bundle\TestingBundle\Tests\AnotherExampleEntity;
+use Cosma\Bundle\TestingBundle\Tests\SomeEntity;
 use Doctrine\DBAL\Exception\InvalidArgumentException;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
@@ -35,57 +37,7 @@ class DBTestCaseTest extends \PHPUnit_Framework_TestCase
         $this->assertClassHasStaticAttribute('fixturePath', 'Cosma\Bundle\TestingBundle\TestCase\WebTestCase');
     }
 
-    /**
-     * @see SolrTestCase::setUpBeforeClass
-     */
-    public function testSetUpBeforeClass()
-    {
-        $webTestCase = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\WebTestCase')
-                            ->disableOriginalConstructor()
-                            ->getMockForAbstractClass()
-        ;
 
-        $reflectionClassMocked = new \ReflectionClass($webTestCase);
-        $reflectionClass       = $reflectionClassMocked->getParentClass();
-
-        $classProperty = $reflectionClass->getProperty('class');
-        $classProperty->setAccessible(true);
-        $classProperty->setValue($webTestCase, 'Cosma\Bundle\TestingBundle\Tests\AppKernel');
-
-        $currentBundle         = $this->getMockBuilder('Symfony\Component\HttpKernel\Bundle\BundleInterface')
-                                      ->disableOriginalConstructor()
-                                      ->getMockForAbstractClass()
-        ;
-        $currentBundleProperty = $reflectionClass->getProperty('currentBundle');
-        $currentBundleProperty->setAccessible(true);
-        $currentBundleProperty->setValue($currentBundle);
-
-        $fixtureManager         = $this->getMockBuilder('h4cc\AliceFixturesBundle\Fixtures\FixtureManagerInterface')
-                                       ->disableOriginalConstructor()
-                                       ->setMethods(['persist', 'loadFiles'])
-                                       ->getMockForAbstractClass()
-        ;
-        $fixtureManagerProperty = $reflectionClass->getProperty('fixtureManager');
-        $fixtureManagerProperty->setAccessible(true);
-        $fixtureManagerProperty->setValue($fixtureManager);
-
-        $fixturePathProperty = $reflectionClass->getProperty('fixturePath');
-        $fixturePathProperty->setAccessible(true);
-        $fixturePathProperty->setValue('Fixture');
-
-        $setUpMethod = $reflectionClass->getMethod('setUpBeforeClass');
-        $setUpMethod->setAccessible(true);
-        $setUpMethod->invoke($webTestCase);
-
-        $kernelProperty = $reflectionClass->getProperty('kernel');
-        $kernelProperty->setAccessible(true);
-        $kernel = $kernelProperty->getValue();
-
-        $this->assertInstanceOf('Cosma\Bundle\TestingBundle\Tests\AppKernel', $kernel, 'set up is wrong');
-
-        $reflectionMethod = $reflectionClass->getMethod('tearDownAfterClass');
-        $reflectionMethod->invoke($webTestCase);
-    }
 
     /**
      * @see SolrTestCase::setUp
@@ -116,50 +68,6 @@ class DBTestCaseTest extends \PHPUnit_Framework_TestCase
 
         $reflectionMethod = $reflectionClass->getMethod('tearDownAfterClass');
         $reflectionMethod->invoke($webTestCase);
-    }
-
-    /**
-     * @see Cosma\Bundle\TestingBundle\TestCase\WebTestCase::tearDownAfterClass
-     */
-    public function testTearDownAfterClass()
-    {
-        $webTestCase = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\WebTestCase')
-                            ->disableOriginalConstructor()
-                            ->getMock()
-        ;
-
-        $reflectionClassMocked = new \ReflectionClass($webTestCase);
-        $reflectionClass       = $reflectionClassMocked->getParentClass();
-
-        $currentBundle = $this->getMockBuilder('Symfony\Component\HttpKernel\Bundle\BundleInterface')
-                              ->disableOriginalConstructor()
-                              ->getMock()
-        ;
-
-        $currentBundleProperty = $reflectionClass->getProperty('currentBundle');
-        $currentBundleProperty->setAccessible(true);
-        $currentBundleProperty->setValue($currentBundle);
-
-        $fixtureManager = $this->getMockBuilder('h4cc\AliceFixturesBundle\Fixtures\FixtureManager')
-                               ->disableOriginalConstructor()
-                               ->setMethods(['recreateSchema'])
-                               ->getMockForAbstractClass()
-        ;
-
-        $fixtureManagerProperty = $reflectionClass->getProperty('fixtureManager');
-        $fixtureManagerProperty->setAccessible(true);
-        $fixtureManagerProperty->setValue($fixtureManager);
-
-        $fixturePathProperty = $reflectionClass->getProperty('fixturePath');
-        $fixturePathProperty->setAccessible(true);
-        $fixturePathProperty->setValue('fixture/path');
-
-        $reflectionMethod = $reflectionClass->getMethod('tearDownAfterClass');
-        $reflectionMethod->invoke(null);
-
-        $this->assertNull($currentBundleProperty->getValue($webTestCase));
-        $this->assertNull($fixtureManagerProperty->getValue($webTestCase));
-        $this->assertNull($fixturePathProperty->getValue($webTestCase));
     }
 
     /**
@@ -1293,72 +1201,6 @@ class DBTestCaseTest extends \PHPUnit_Framework_TestCase
         array_push($objects, $entityFour);
 
         return $objects;
-    }
-}
-
-class WebTestCaseExample extends WebTestCase
-{
-}
-
-class SomeEntity
-{
-    private $id;
-
-    private $name;
-
-    /**
-     * @return mixed
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param string $name
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
-    }
-}
-
-class AnotherExampleEntity
-{
-    private $id;
-
-    private $firstName;
-
-    /**
-     * @return mixed
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFirstName()
-    {
-        return $this->firstName;
-    }
-
-    /**
-     * @param string $name
-     */
-    public function setFirstName($firstName)
-    {
-        $this->firstName = $firstName;
     }
 }
 
