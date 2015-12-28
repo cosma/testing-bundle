@@ -27,7 +27,6 @@ use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 
 class WebTestCaseTest extends \PHPUnit_Framework_TestCase
 {
-
     /**
      * @see Cosma\Bundle\TestingBundle\TestCase\WebTestCase::setUp
      */
@@ -113,8 +112,6 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
             'must return a Client object'
         );
     }
-
-
 
     /**
      * @see Cosma\Bundle\TestingBundle\TestCase\WebTestCase::getMockedEntityWithId
@@ -259,7 +256,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
         $mockedEntity = $reflectionMethod->invoke($webTestCase, 'TestingBundle:AnotherExampleEntity', 12345);
 
         $this->assertEquals(12345, $mockedEntity->getId());
-        $this->assertInstanceOf('Cosma\Bundle\TestingBundle\Tests\TestCase\AnotherExampleEntity', $mockedEntity);
+        $this->assertInstanceOf('Cosma\Bundle\TestingBundle\Tests\AnotherExampleEntity', $mockedEntity);
     }
 
     /**

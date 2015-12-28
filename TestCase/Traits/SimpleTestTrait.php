@@ -27,19 +27,23 @@ trait SimpleTestTrait
     }
 
     /**
-     * @param $entityNamespaceClass
+     * @param $entityName
      * @param $id
      *
      * @return \PHPUnit_Framework_MockObject_MockObject
      * @throws EntityNotFoundException
      */
-    protected function getMockedEntityWithId($entityNamespaceClass, $id)
+    protected function getMockedEntityWithId($entityName, $id)
     {
-        if (!class_exists($entityNamespaceClass)) {
+        if(method_exists($this,'getEntityManager')){
+            $entityName = $this->getEntityManager()->getRepository($entityName)->getClassName();
+        }
+
+        if (!class_exists($entityName)) {
             throw new EntityNotFoundException();
         }
 
-        $entityModel = $this->getMock($entityNamespaceClass, ['getId']);
+        $entityModel = $this->getMock($entityName, ['getId']);
         $entityModel
             ->expects($this->any())
             ->method('getId')
@@ -50,19 +54,23 @@ trait SimpleTestTrait
     }
 
     /**
-     * @param $entityNamespaceClass
+     * @param $entityName
      * @param $id
      *
      * @return mixed
      * @throws EntityNotFoundException
      */
-    protected function getEntityWithId($entityNamespaceClass, $id)
+    protected function getEntityWithId($entityName, $id)
     {
-        if (!class_exists($entityNamespaceClass)) {
+        if(method_exists($this,'getEntityManager')){
+            $entityName = $this->getEntityManager()->getRepository($entityName)->getClassName();
+        }
+
+        if (!class_exists($entityName)) {
             throw new EntityNotFoundException();
         }
 
-        $entityObject = new $entityNamespaceClass;
+        $entityObject = new $entityName;
 
         $reflectionObject   = new \ReflectionObject($entityObject);
         $reflectionProperty = $reflectionObject->getProperty('id');
