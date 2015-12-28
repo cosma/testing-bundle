@@ -31,7 +31,7 @@ trait DBTestTrait
     {
         parent::setUp();
 
-        $this->getFixtureManager();
+        //$this->getFixtureManager();
     }
 
     /**
@@ -39,7 +39,7 @@ trait DBTestTrait
      */
     protected function getEntityManager()
     {
-        return $this->getKernel()->getContainer()->get('doctrine')->getManager();
+        return $this->getContainer()->get('doctrine')->getManager();
     }
 
     /**
@@ -97,7 +97,7 @@ trait DBTestTrait
 
         $bundlePath = $this->getBundlePath($bundleName);
 
-        $fixtureDirectory = $this->getKernel()->getContainer()->getParameter('cosma_testing.fixture_directory');
+        $fixtureDirectory = $this->getContainer()->getParameter('cosma_testing.fixture_directory');
 
         $innerBundlePath = implode(DIRECTORY_SEPARATOR, $pathParts);
 
@@ -110,7 +110,7 @@ trait DBTestTrait
     protected function getFixtureManager()
     {
         if (null === $this->fixtureManager) {
-            $this->fixtureManager = $this->getKernel()->getContainer()->get('h4cc_alice_fixtures.manager');
+            $this->fixtureManager = $this->getContainer()->get('h4cc_alice_fixtures.manager');
         }
 
         return $this->fixtureManager;
