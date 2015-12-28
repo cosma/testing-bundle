@@ -18,6 +18,9 @@ use Cosma\Bundle\TestingBundle\DependencyInjection\Configuration;
 
 class ConfigurationTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @see Configuration::getConfigTreeBuilder
+     */
     public function testGetConfigTreeBuilder()
     {
         $config = new Configuration();

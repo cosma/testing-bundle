@@ -14,6 +14,7 @@
 namespace Cosma\Bundle\TestingBundle\Tests;
 
 use Cosma\Bundle\TestingBundle\TestingBundle;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class TestingBundleTest extends \PHPUnit_Framework_TestCase
 {
@@ -30,4 +31,20 @@ class TestingBundleTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @see TestingBundle::build
+     */
+    public function testBuild()
+    {
+        $containerBuilder = new ContainerBuilder();
+
+        $bundle = new TestingBundle();
+
+        $bundle->build($containerBuilder);
+
+        $this->assertInstanceOf(
+            'Cosma\Bundle\TestingBundle\DependencyInjection\Compiler\DoctrineMigrationsPass',
+            $containerBuilder->getCompilerPassConfig()->getPasses()[1]
+        );
+    }
 }

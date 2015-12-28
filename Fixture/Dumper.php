@@ -44,14 +44,6 @@ class Dumper
     }
 
     /**
-     * @return ClassMetadataInfo
-     */
-    public function getClassMetadataInfo()
-    {
-        return $this->classMetadataInfo;
-    }
-
-    /**
      * @param ClassMetadataInfo $classMetadataInfo
      */
     public function setClassMetadataInfo($classMetadataInfo)
