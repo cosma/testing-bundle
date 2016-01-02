@@ -35,4 +35,8 @@ class AppKernel extends HttpKernel
     {
     }
 
+    public function getContainer()
+    {
+    }
+
 }

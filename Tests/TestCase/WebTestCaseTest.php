@@ -28,8 +28,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
                             ->getMockForAbstractClass()
         ;
 
-        $reflectionClassMocked = new \ReflectionClass($webTestCase);
-        $reflectionClass       = $reflectionClassMocked->getParentClass();
+        $reflectionClass       = new \ReflectionClass($webTestCase);
 
         $classProperty = $reflectionClass->getProperty('class');
         $classProperty->setAccessible(true);
@@ -250,8 +249,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
                     ->will($this->returnValue($entityManager))
         ;
 
-        $reflectionClassMocked = new \ReflectionClass($webTestCase);
-        $reflectionClass       = $reflectionClassMocked->getParentClass();
+        $reflectionClass       = new \ReflectionClass($webTestCase);
 
         $reflectionMethod = $reflectionClass->getMethod('getMockedEntityWithId');
         $reflectionMethod->setAccessible(true);
@@ -339,8 +337,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
                     ->will($this->returnValue($entityManager))
         ;
 
-        $reflectionClassMocked = new \ReflectionClass($webTestCase);
-        $reflectionClass       = $reflectionClassMocked->getParentClass();
+        $reflectionClass       = new \ReflectionClass($webTestCase);
 
         $reflectionMethod = $reflectionClass->getMethod('getEntityWithId');
         $reflectionMethod->setAccessible(true);

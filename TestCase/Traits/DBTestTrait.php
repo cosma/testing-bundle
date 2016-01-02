@@ -15,7 +15,6 @@ namespace Cosma\Bundle\TestingBundle\TestCase\Traits;
 
 use Doctrine\ORM\EntityManager;
 use h4cc\AliceFixturesBundle\Fixtures\FixtureManager;
-use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 
 trait DBTestTrait
 {
@@ -30,8 +29,7 @@ trait DBTestTrait
     protected function setUp()
     {
         parent::setUp();
-
-        //$this->getFixtureManager();
+        $this->getFixtureManager();
     }
 
     /**
@@ -39,7 +37,7 @@ trait DBTestTrait
      */
     protected function getEntityManager()
     {
-        return $this->getContainer()->get('doctrine')->getManager();
+        return $this->getKernel()->getContainer()->get('doctrine.orm.entity_manager');
     }
 
     /**
@@ -58,6 +56,18 @@ trait DBTestTrait
     protected function dropDatabase()
     {
         $this->fixtureManager->persist([], true);
+    }
+
+    /**
+     * @return FixtureManager
+     */
+    protected function getFixtureManager()
+    {
+        if (null === $this->fixtureManager) {
+            $this->fixtureManager = $this->getKernel()->getContainer()->get('h4cc_alice_fixtures.manager');
+        }
+
+        return $this->fixtureManager;
     }
 
     /**
@@ -89,50 +99,18 @@ trait DBTestTrait
     private function getFixtureFile($fixture)
     {
         $pathParts = explode(':', $fixture);
-        if (!is_array($pathParts) && count($pathParts) < 2) {
+        if (!is_array($pathParts) || count($pathParts) < 2) {
             throw new \Exception("You are trying to load a wrong fixture - {$fixture}");
         }
 
         $bundleName = array_shift($pathParts);
 
-        $bundlePath = $this->getBundlePath($bundleName);
+        $bundle = $this->getKernel()->getBundle($bundleName);
 
-        $fixtureDirectory = $this->getContainer()->getParameter('cosma_testing.fixture_directory');
+        $fixtureDirectory = $this->getKernel()->getContainer()->getParameter('cosma_testing.fixture_directory');
 
         $innerBundlePath = implode(DIRECTORY_SEPARATOR, $pathParts);
 
-        return $bundlePath . DIRECTORY_SEPARATOR . $fixtureDirectory . DIRECTORY_SEPARATOR . $innerBundlePath . '.yml';
-    }
-
-    /**
-     * @return FixtureManager
-     */
-    protected function getFixtureManager()
-    {
-        if (null === $this->fixtureManager) {
-            $this->fixtureManager = $this->getContainer()->get('h4cc_alice_fixtures.manager');
-        }
-
-        return $this->fixtureManager;
-    }
-
-    /**
-     * @param $bundleName
-     *
-     * @return string
-     * @throws \Exception
-     */
-    private function getBundlePath($bundleName)
-    {
-        $bundles = $this->getKernel()->getBundles();
-
-        /** @type BundleInterface $bundle */
-        foreach ($bundles as $bundle) {
-            if ($bundleName == $bundle->getName()) {
-                return $bundle->getPath();
-            }
-        }
-
-        throw new \Exception("This bundle {$bundleName} doesn't exists");
+        return $bundle->getPath() . DIRECTORY_SEPARATOR . $fixtureDirectory . DIRECTORY_SEPARATOR . $innerBundlePath . '.yml';
     }
 }
