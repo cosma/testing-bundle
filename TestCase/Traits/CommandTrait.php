@@ -35,6 +35,19 @@ trait CommandTrait
     }
 
     /**
+     * @return Application
+     */
+    protected function getApplication()
+    {
+        if (null === $this->application) {
+            $this->application = new Application($this->getKernel());
+            $this->application->setAutoExit(false);
+        }
+
+        return $this->application;
+    }
+
+    /**
      * Runs a command and returns it output
      *
      * @param string $command
@@ -58,18 +71,5 @@ trait CommandTrait
         fclose($temporaryFile);
 
         return $output;
-    }
-
-    /**
-     * @return Application
-     */
-    protected function getApplication()
-    {
-        if (null === $this->application) {
-            $this->application = new Application($this->getKernel());
-            $this->application->setAutoExit(false);
-        }
-
-        return $this->application;
     }
 }

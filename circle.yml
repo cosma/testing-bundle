@@ -18,6 +18,7 @@ dependencies:
 
 test:
   override:
-    - vendor/phpunit/phpunit/phpunit  --coverage-text Tests
+    - mkdir -p $CIRCLE_TEST_REPORTS/phpunit
+    - vendor/phpunit/phpunit/phpunit --log-junit $CIRCLE_TEST_REPORTS/phpunit/junit.xml --coverage-text Tests
 
 

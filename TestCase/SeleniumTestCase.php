@@ -13,59 +13,9 @@
 
 namespace Cosma\Bundle\TestingBundle\TestCase;
 
-use Facebook\WebDriver\Remote\DesiredCapabilities;
-use Facebook\WebDriver\Remote\RemoteWebDriver;
+use Cosma\Bundle\TestingBundle\TestCase\Traits\SeleniumTrait;
 
 abstract class SeleniumTestCase extends WebTestCase
 {
-    /**
-     * @var RemoteWebDriver
-     */
-    private $webDriver;
-
-    protected function setUp()
-    {
-        parent::setUp();
-        $this->getWebDriver();
-    }
-
-    protected function tearDown()
-    {
-        parent::tearDown();
-        $this->webDriver->close();
-        $this->webDriver = null;
-    }
-
-    /**
-     * @return RemoteWebDriver
-     */
-    protected function getWebDriver()
-    {
-        if (null === $this->webDriver) {
-            $this->webDriver = RemoteWebDriver::create(
-                static::$kernel->getContainer()->getParameter('cosma_testing.selenium.server'),
-                DesiredCapabilities::chrome()
-            );
-        }
-
-        return $this->webDriver;
-    }
-
-    /**
-     * @param $url
-     *
-     * @return RemoteWebDriver
-     */
-    public function open($url)
-    {
-        return $this->getWebDriver()->get($this->getDomain() . $url);
-    }
-
-    /**
-     * @return string
-     */
-    public function getDomain()
-    {
-        return static::$kernel->getContainer()->getParameter('cosma_testing.selenium.domain');
-    }
+    use SeleniumTrait;
 }

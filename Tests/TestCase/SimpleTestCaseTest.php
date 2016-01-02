@@ -15,6 +15,7 @@
 namespace Cosma\Bundle\TestingBundle\Tests\TestCase;
 
 use Cosma\Bundle\TestingBundle\TestCase\SimpleTestCase;
+use Cosma\Bundle\TestingBundle\Tests\ExampleEntity;
 
 class SimpleTestCaseTest extends SimpleTestCase
 {
@@ -55,5 +56,13 @@ class SimpleTestCaseTest extends SimpleTestCase
     public function testGetEntityWithId_Exception()
     {
         $this->getEntityWithId('xxxxxxxx', 12345);
+    }
+
+    /**
+     * @see SimpleTestCase::getTestClassPath
+     */
+    public function testGetTestClassPath()
+    {
+        $this->assertContains('/Tests/TestCase/SimpleTestCaseTest', $this->getTestClassPath());
     }
 }

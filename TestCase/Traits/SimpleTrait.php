@@ -86,14 +86,14 @@ trait SimpleTrait
      */
     protected function getTestClassPath()
     {
+        $testClassPath = false;
+
         $debugTrace = debug_backtrace();
 
         if (isset($debugTrace[0]['file'])) {
             $testPath      = strpos($debugTrace[0]['file'], "src/", 1);
             $filePath      = substr($debugTrace[0]['file'], $testPath + 4);
             $testClassPath = str_replace('.php', '', $filePath);
-        } else {
-            $testClassPath = '';
         }
 
         return $testClassPath;

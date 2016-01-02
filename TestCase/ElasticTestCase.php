@@ -13,8 +13,6 @@
 
 namespace Cosma\Bundle\TestingBundle\TestCase;
 
-
-
 use Cosma\Bundle\TestingBundle\TestCase\Traits\ElasticTrait;
 
 abstract class ElasticTestCase extends WebTestCase

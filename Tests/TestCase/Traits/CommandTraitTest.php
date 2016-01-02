@@ -16,47 +16,28 @@ use Cosma\Bundle\TestingBundle\Tests\AnotherExampleEntity;
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\DependencyInjection\Container;
 
-class DBTraitTest extends \PHPUnit_Framework_TestCase
+class CommandTraitTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @see \Cosma\Bundle\TestingBundle\TestCase\Traits\DBTrait::getEntityManager
+     * @see \Cosma\Bundle\TestingBundle\TestCase\Traits\CommandTrait::getApplication
      */
-    public function testGetEntityManager()
+    public function testGetApplication()
     {
-        $container = new Container();
 
-        $entityManager = $this->prophesize('\Doctrine\ORM\EntityManager');
-
-        $container->set('doctrine.orm.entity_manager', $entityManager->reveal());
-
-        $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\HttpKernelInterface')
-                       ->disableOriginalConstructor()
-                       ->setMethods(['getContainer'])
-                       ->getMockForAbstractClass()
-        ;
-        $kernel->expects($this->once())
-               ->method('getContainer')
-               ->will($this->returnValue($container))
-        ;
-
-        $mockDBTrait = $this->getMockBuilder('\Cosma\Bundle\TestingBundle\TestCase\Traits\DBTrait')
+        $mockDBTrait = $this->getMockBuilder('Symfony\Bundle\FrameworkBundle\Console\Application')
                             ->disableOriginalConstructor()
                             ->setMethods(['getKernel'])
                             ->getMockForTrait()
         ;
-        $mockDBTrait->expects($this->once())
-                    ->method('getKernel')
-                    ->will($this->returnValue($kernel))
-        ;
 
         $reflectionClass = new \ReflectionClass($mockDBTrait);
 
-        $reflectionMethod = $reflectionClass->getMethod('getEntityManager');
+        $reflectionMethod = $reflectionClass->getMethod('getApplication');
         $reflectionMethod->setAccessible(true);
-        $entityManager = $reflectionMethod->invoke($mockDBTrait);
+        $application = $reflectionMethod->invoke($mockDBTrait);
 
-        $this->assertInstanceOf('\Doctrine\ORM\EntityManager', $entityManager);
+        $this->assertInstanceOf('\Doctrine\ORM\EntityManager', $application);
     }
 
     /**
