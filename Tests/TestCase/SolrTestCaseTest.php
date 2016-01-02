@@ -19,13 +19,6 @@ use Solarium\Client;
 
 class SolrTestCaseTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @see SolrTestCase
-     */
-    public function testStaticAttributes()
-    {
-        $this->assertClassHasStaticAttribute('solariumClient', 'Cosma\Bundle\TestingBundle\TestCase\SolrTestCase');
-    }
 
     /**
      * @see SolrTestCase::setUp
@@ -71,7 +64,7 @@ class SolrTestCaseTest extends \PHPUnit_Framework_TestCase
                              ->setMethods(['getSolariumClient'])
                              ->getMockForAbstractClass()
         ;
-        $solrTestCase->expects($this->once())
+        $solrTestCase->expects($this->exactly(2))
                      ->method('getSolariumClient')
                      ->will($this->returnValue($solariumClient))
         ;
@@ -126,7 +119,7 @@ class SolrTestCaseTest extends \PHPUnit_Framework_TestCase
                        ->setMethods(['getContainer'])
                        ->getMockForAbstractClass()
         ;
-        $kernel->expects($this->exactly(5))
+        $kernel->expects($this->exactly(1))
                ->method('getContainer')
                ->will($this->returnValue($container))
         ;

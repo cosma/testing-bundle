@@ -22,16 +22,6 @@ use Elastica\Type;
 class ElasticTestCaseTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @see ElasticTestCase
-     */
-    public function testStaticAttributes()
-    {
-        $this->assertClassHasStaticAttribute('elasticClient', 'Cosma\Bundle\TestingBundle\TestCase\ElasticTestCase');
-        $this->assertClassHasStaticAttribute('elasticIndex', 'Cosma\Bundle\TestingBundle\TestCase\ElasticTestCase');
-        $this->assertClassHasStaticAttribute('elasticType', 'Cosma\Bundle\TestingBundle\TestCase\ElasticTestCase');
-    }
-
-    /**
      * @see ElasticTestCase::setUp
      */
     public function testSetUp()
@@ -117,7 +107,7 @@ class ElasticTestCaseTest extends \PHPUnit_Framework_TestCase
                        ->setMethods(['getContainer'])
                        ->getMockForAbstractClass()
         ;
-        $kernel->expects($this->exactly(4))
+        $kernel->expects($this->exactly(1))
                ->method('getContainer')
                ->will($this->returnValue($container))
         ;
@@ -169,7 +159,7 @@ class ElasticTestCaseTest extends \PHPUnit_Framework_TestCase
                           ->setMethods(['getParameter'])
                           ->getMockForAbstractClass()
         ;
-        $container->expects($this->exactly(1))
+        $container->expects($this->exactly(5))
                   ->method('getParameter')
                   ->will($this->returnValueMap($valueMap))
         ;
@@ -179,7 +169,7 @@ class ElasticTestCaseTest extends \PHPUnit_Framework_TestCase
                        ->setMethods(['getContainer'])
                        ->getMockForAbstractClass()
         ;
-        $kernel->expects($this->exactly(1))
+        $kernel->expects($this->exactly(2))
                ->method('getContainer')
                ->will($this->returnValue($container))
         ;
@@ -211,72 +201,6 @@ class ElasticTestCaseTest extends \PHPUnit_Framework_TestCase
         $reflectionMethod = $reflectionClass->getMethod('tearDownAfterClass');
         $reflectionMethod->invoke($elasticTestCase);
     }
-
-    /**
-     * @see ElasticTestCase::getElasticType
-     */
-    public function testGetElasticType()
-    {
-        $valueMap = [
-            ['cosma_testing.elastica.host', '127.0.0.1'],
-            ['cosma_testing.elastica.port', '8080'],
-            ['cosma_testing.elastica.path', '/'],
-            ['cosma_testing.elastica.timeout', '5'],
-            ['cosma_testing.elastica.index', 'test'],
-            ['cosma_testing.elastica.type', 'test']
-        ];
-
-        $container = $this->getMockBuilder('Symfony\Component\DependencyInjection\ContainerInterface')
-                          ->disableOriginalConstructor()
-                          ->setMethods(['getParameter'])
-                          ->getMockForAbstractClass()
-        ;
-        $container->expects($this->exactly(1))
-                  ->method('getParameter')
-                  ->will($this->returnValueMap($valueMap))
-        ;
-
-        $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\KernelInterface')
-                       ->disableOriginalConstructor()
-                       ->setMethods(['getContainer'])
-                       ->getMockForAbstractClass()
-        ;
-        $kernel->expects($this->exactly(1))
-               ->method('getContainer')
-               ->will($this->returnValue($container))
-        ;
-
-        $elasticTestCase = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\ElasticTestCase')
-                                ->disableAutoload()
-                                ->getMockForAbstractClass()
-        ;
-
-        $reflectionClassMocked = new \ReflectionClass($elasticTestCase);
-        $reflectionClass       = $reflectionClassMocked->getParentClass();
-
-        $clientProperty = $reflectionClass->getProperty('kernel');
-        $clientProperty->setAccessible(true);
-        $clientProperty->setValue($elasticTestCase, $kernel);
-
-        $reflectionMethod = $reflectionClass->getMethod('getElasticType');
-        $reflectionMethod->setAccessible(true);
-
-        /** @var Type $actual */
-        $type = $reflectionMethod->invoke($elasticTestCase);
-
-        $this->assertInstanceOf(
-            'Elastica\Type',
-            $type,
-            'must return a Type object'
-        );
-
-        $reflectionMethod = $reflectionClass->getMethod('tearDownAfterClass');
-        $reflectionMethod->invoke($elasticTestCase);
-    }
-}
-
-class ElasticTestCaseExample extends ElasticTestCase
-{
 }
 
 

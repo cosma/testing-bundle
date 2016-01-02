@@ -24,7 +24,7 @@ class SimpleTestCaseTest extends SimpleTestCase
     public function testGetMockedEntityWithId()
     {
         /** @var ExampleEntity $mockedEntity */
-        $mockedEntity = $this->getMockedEntityWithId('Cosma\Bundle\TestingBundle\Tests\TestCase\ExampleEntity', 12345);
+        $mockedEntity = $this->getMockedEntityWithId('Cosma\Bundle\TestingBundle\Tests\ExampleEntity', 12345);
         $this->assertEquals(12345, $mockedEntity->getId());
     }
 
@@ -43,8 +43,8 @@ class SimpleTestCaseTest extends SimpleTestCase
     public function testGetEntityWithId()
     {
         /** @var ExampleEntity $entity */
-        $entity = $this->getEntityWithId('Cosma\Bundle\TestingBundle\Tests\TestCase\ExampleEntity', 12345);
-        $this->assertInstanceOf('Cosma\Bundle\TestingBundle\Tests\TestCase\ExampleEntity', $entity);
+        $entity = $this->getEntityWithId('Cosma\Bundle\TestingBundle\Tests\ExampleEntity', 12345);
+        $this->assertInstanceOf('Cosma\Bundle\TestingBundle\Tests\ExampleEntity', $entity);
         $this->assertEquals(12345, $entity->getId());
     }
 
@@ -55,36 +55,5 @@ class SimpleTestCaseTest extends SimpleTestCase
     public function testGetEntityWithId_Exception()
     {
         $this->getEntityWithId('xxxxxxxx', 12345);
-    }
-}
-
-class ExampleEntity
-{
-    private $id;
-
-    private $name;
-
-    /**
-     * @return mixed
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param string $name
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
     }
 }
