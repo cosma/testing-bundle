@@ -13,9 +13,9 @@
 
 namespace Cosma\Bundle\TestingBundle\TestCase;
 
-use Cosma\Bundle\TestingBundle\TestCase\Traits\DBTestTrait;
+use Cosma\Bundle\TestingBundle\TestCase\Traits\DBTrait;
 
 class DBTestCase extends WebTestCase
 {
-    use DBTestTrait;
+    use DBTrait;
 }

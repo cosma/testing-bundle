@@ -13,7 +13,7 @@
 
 namespace Cosma\Bundle\TestingBundle\TestCase;
 
-use Cosma\Bundle\TestingBundle\TestCase\Traits\SimpleTestTrait;
+use Cosma\Bundle\TestingBundle\TestCase\Traits\SimpleTrait;
 use Symfony\Bundle\FrameworkBundle\Test\WebTestCase as WebTestCaseBase;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\Client;
@@ -21,11 +21,12 @@ use Symfony\Component\HttpKernel\KernelInterface;
 
 abstract class WebTestCase extends WebTestCaseBase
 {
-    use SimpleTestTrait;
+    use SimpleTrait;
 
     protected function setUp()
     {
         parent::setUp();
+
         static::bootKernel();
     }
 

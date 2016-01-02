@@ -13,69 +13,9 @@
 
 namespace Cosma\Bundle\TestingBundle\TestCase;
 
-use Symfony\Bundle\FrameworkBundle\Console\Application;
-use Symfony\Component\Console\Input\StringInput;
-use Symfony\Component\Console\Output\StreamOutput;
+use Cosma\Bundle\TestingBundle\TestCase\Traits\CommandTrait;
 
 abstract class CommandTestCase extends WebTestCase
 {
-    /**
-     * @type Application
-     */
-    private $application;
-
-    /**
-     * @return void
-     */
-    protected function setUp()
-    {
-        parent::setUp();
-
-        $client = static::createClient();
-
-        $this->application = new Application($client->getKernel());
-        $this->application->setAutoExit(false);
-    }
-
-    /**
-     * @return void
-     */
-    protected function tearDown()
-    {
-        parent::tearDown();
-    }
-
-    /**
-     * Runs a command and returns it output
-     *
-     * @param string $command
-     *
-     * @return string|StreamOutput
-     * @throws \Exception
-     */
-    public function executeCommand($command)
-    {
-        $temporaryFile = tmpfile();
-        $input         = new StringInput($command);
-        $output        = new StreamOutput($temporaryFile);
-
-        $this->application->run($input, $output);
-
-        fseek($temporaryFile, 0);
-        $output = '';
-        while (!feof($temporaryFile)) {
-            $output = fread($temporaryFile, 4096);
-        }
-        fclose($temporaryFile);
-
-        return $output;
-    }
-
-    /**
-     * @return Application
-     */
-    protected function getApplication()
-    {
-        return $this->application;
-    }
+    use CommandTrait;
 }

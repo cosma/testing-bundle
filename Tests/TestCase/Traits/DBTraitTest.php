@@ -17,7 +17,7 @@ use Doctrine\ORM\EntityRepository;
 use SebastianBergmann\GlobalState\Exception;
 use Symfony\Component\DependencyInjection\Container;
 
-class DBTestTraitTest extends \PHPUnit_Framework_TestCase
+class DBTraitTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
@@ -41,7 +41,7 @@ class DBTestTraitTest extends \PHPUnit_Framework_TestCase
                ->will($this->returnValue($container))
         ;
 
-        $mockDBTrait = $this->getMockBuilder('\Cosma\Bundle\TestingBundle\TestCase\Traits\DBTestTrait')
+        $mockDBTrait = $this->getMockBuilder('\Cosma\Bundle\TestingBundle\TestCase\Traits\DBTrait')
                             ->disableOriginalConstructor()
                             ->setMethods(['getKernel'])
                             ->getMockForTrait()
@@ -65,7 +65,7 @@ class DBTestTraitTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetEntityRepository()
     {
-        $mockDBTrait = $this->getMockBuilder('\Cosma\Bundle\TestingBundle\TestCase\Traits\DBTestTrait')
+        $mockDBTrait = $this->getMockBuilder('\Cosma\Bundle\TestingBundle\TestCase\Traits\DBTrait')
                             ->disableOriginalConstructor()
                             ->setMethods(['getEntityManager'])
                             ->getMockForTrait()
@@ -107,7 +107,7 @@ class DBTestTraitTest extends \PHPUnit_Framework_TestCase
                        ->will($this->returnValue(null))
         ;
 
-        $mockDBTrait = $this->getMockBuilder('\Cosma\Bundle\TestingBundle\TestCase\Traits\DBTestTrait')
+        $mockDBTrait = $this->getMockBuilder('\Cosma\Bundle\TestingBundle\TestCase\Traits\DBTrait')
                             ->disableOriginalConstructor()
                             ->getMockForTrait()
         ;
@@ -143,7 +143,7 @@ class DBTestTraitTest extends \PHPUnit_Framework_TestCase
                ->will($this->returnValue($container))
         ;
 
-        $mockDBTrait = $this->getMockBuilder('\Cosma\Bundle\TestingBundle\TestCase\Traits\DBTestTrait')
+        $mockDBTrait = $this->getMockBuilder('\Cosma\Bundle\TestingBundle\TestCase\Traits\DBTrait')
                             ->disableOriginalConstructor()
                             ->setMethods(['getKernel'])
                             ->getMockForTrait()
@@ -223,7 +223,7 @@ class DBTestTraitTest extends \PHPUnit_Framework_TestCase
                ->will($this->returnValue($container))
         ;
 
-        $mockDBTrait = $this->getMockBuilder('\Cosma\Bundle\TestingBundle\TestCase\Traits\DBTestTrait')
+        $mockDBTrait = $this->getMockBuilder('\Cosma\Bundle\TestingBundle\TestCase\Traits\DBTrait')
                             ->disableOriginalConstructor()
                             ->setMethods(['getKernel'])
                             ->getMockForTrait()
@@ -307,7 +307,7 @@ class DBTestTraitTest extends \PHPUnit_Framework_TestCase
                ->will($this->returnValue($container))
         ;
 
-        $mockDBTrait = $this->getMockBuilder('\Cosma\Bundle\TestingBundle\TestCase\Traits\DBTestTrait')
+        $mockDBTrait = $this->getMockBuilder('\Cosma\Bundle\TestingBundle\TestCase\Traits\DBTrait')
                             ->disableOriginalConstructor()
                             ->setMethods(['getKernel'])
                             ->getMockForTrait()
@@ -345,7 +345,7 @@ class DBTestTraitTest extends \PHPUnit_Framework_TestCase
                                ->getMock()
         ;
 
-        $mockDBTrait = $this->getMockBuilder('\Cosma\Bundle\TestingBundle\TestCase\Traits\DBTestTrait')
+        $mockDBTrait = $this->getMockBuilder('\Cosma\Bundle\TestingBundle\TestCase\Traits\DBTrait')
                             ->disableOriginalConstructor()
                             ->setMethods(['getKernel'])
                             ->getMockForTrait()

@@ -13,9 +13,9 @@
 
 namespace Cosma\Bundle\TestingBundle\TestCase;
 
-use Cosma\Bundle\TestingBundle\TestCase\Traits\SimpleTestTrait;
+use Cosma\Bundle\TestingBundle\TestCase\Traits\SimpleTrait;
 
 abstract class SimpleTestCase extends \PHPUnit_Framework_TestCase
 {
-    use SimpleTestTrait;
+    use SimpleTrait;
 }

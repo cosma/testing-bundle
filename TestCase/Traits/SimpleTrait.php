@@ -15,7 +15,7 @@ namespace Cosma\Bundle\TestingBundle\TestCase\Traits;
 
 use Doctrine\ORM\EntityNotFoundException;
 
-trait SimpleTestTrait
+trait SimpleTrait
 {
     /**
      * @return void
@@ -23,6 +23,7 @@ trait SimpleTestTrait
     protected function tearDown()
     {
         parent::tearDown();
+
         \Mockery::close();
     }
 

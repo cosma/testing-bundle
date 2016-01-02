@@ -16,7 +16,7 @@ namespace Cosma\Bundle\TestingBundle\TestCase\Traits;
 use Doctrine\ORM\EntityManager;
 use h4cc\AliceFixturesBundle\Fixtures\FixtureManager;
 
-trait DBTestTrait
+trait DBTrait
 {
     /**
      * @var FixtureManager
@@ -29,6 +29,7 @@ trait DBTestTrait
     protected function setUp()
     {
         parent::setUp();
+
         $this->getFixtureManager();
     }
 
