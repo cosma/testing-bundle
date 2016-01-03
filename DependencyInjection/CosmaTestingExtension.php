@@ -89,10 +89,6 @@ class CosmaTestingExtension extends Extension
             $container->setParameter('cosma_testing.elastica.index', $config['elastica']['index']);
         }
 
-        if (isset($config['elastica']['type'])) {
-            $container->setParameter('cosma_testing.elastica.type', $config['elastica']['type']);
-        }
-
         if (isset($config['selenium']['remote_server_url'])) {
             $container->setParameter('cosma_testing.selenium.remote_server_url', $config['selenium']['remote_server_url']);
         }

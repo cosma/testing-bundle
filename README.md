@@ -33,7 +33,7 @@ This bundle offers loading Fixtures from .yml ,  dropping and recreating the ORM
 ## Installation
 
 ```bash
-    $   php composer.phar require cosma/testing-bundle '1.0.*'
+    $   php composer.phar require cosma/testing-bundle '2.0.*'
 ```
 Follow the 'dev-master' branch for latest dev version. But i recommend to use more stable version tags if available.
 
@@ -85,10 +85,9 @@ cosma_testing:
         path: /
         timeout: 10   
         index: test
-        type: test
     selenium:
-        server: http://127.0.0.1:4444/wd/hub
-        domain: http://www.example.com    
+        remote_server_url: http://127.0.0.1:4444/wd/hub
+        test_domain: example.com    
 ```
 
 
@@ -101,8 +100,8 @@ cosma_testing:
 #### Simple Test Case
 This case is an extension of PHPUnit_Framework_TestCase, with two extra simple methods:
 
-* **getMockedEntityWithId** ($entityNamespaceClass, $id)
-* **getEntityWithId** ($entityNamespaceClass, $id)
+* **getMockedEntityWithId** ($entity, $id)
+* **getEntityWithId** ($entity, $id)
 
 
 ```php
@@ -112,18 +111,13 @@ class SomeUnitTest extends SimpleTestCase
 {
     public function testSomething()
     {
-        // custom namespace mock entity
-        $mockedUserAbsolute = $this->getMockedEntityWithId('Acme\DemoBundle\Entity\User', 12345);
+        $mockedUserFullNamespace = $this->getMockedEntityWithId('Acme\AppBundle\Entity\User', 1);
         
-        // relative namespace mocked entity using the value of configuration parameter entity_namespace
-        $mockedUserRelative = $this->getMockedEntityWithId('User', 1200);
+        $mockedUserBundleNamespace = $this->getMockedEntityWithId('AppBundle:User', 2);
          
-        // custom namespace entity without dropping database
-        $userAbsolute = $this->getEntityWithId('Acme\DemoBundle\Entity\User', 134);
-        
-        // relative namespace entity using the value of configuration parameter entity_namespace
-        // is using the value of configuration parameter entity_namespace
-        $userRelative = $this->getEntityWithId('User', 12); 
+        $userFullNamespace = $this->getEntityWithId('Acme\AppBundle\Entity\User', 3);
+                
+        $userBundleNamespace = $this->getEntityWithId('AppBundle:User', 4); 
     }
 }
 ```

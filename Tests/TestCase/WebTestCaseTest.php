@@ -15,6 +15,7 @@
 namespace Cosma\Bundle\TestingBundle\Tests\TestCase;
 
 use Cosma\Bundle\TestingBundle\Tests\AnotherExampleEntity;
+use Cosma\Bundle\TestingBundle\Tests\ExampleEntity;
 
 class WebTestCaseTest extends \PHPUnit_Framework_TestCase
 {

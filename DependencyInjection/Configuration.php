@@ -69,7 +69,6 @@ class Configuration implements ConfigurationInterface
                     ->scalarNode('path')->defaultValue('/')->end()
                     ->scalarNode('timeout')->defaultValue(5)->end()
                     ->scalarNode('index')->defaultValue('test')->end()
-                    ->scalarNode('type')->defaultValue('test')->end()
                     ->end()
                 ->end()
                 ->arrayNode('selenium')
