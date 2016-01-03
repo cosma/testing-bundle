@@ -106,7 +106,6 @@ This case is an extension of PHPUnit_Framework_TestCase, with two extra simple m
 * **getEntityWithId** ($entity, $id)
 * **getTestClassPath** ()
 
-
 ```php
 use Cosma\Bundle\TestingBundle\TestCase\SimpleTestCase;
  
@@ -127,6 +126,7 @@ class SomeVerySimpleUnitTest extends SimpleTestCase
 }
 ```
  
+ 
 #### Web Test Case
 This case is an extension of Symfony2 WebTestCase -  Symfony\Bundle\FrameworkBundle\Test\WebTestCase
 It has the following methods:
@@ -134,11 +134,6 @@ It has the following methods:
 * **getKernel** ()
 * **getContainer** ()
 * **getClient** (array $server)
- 
-* **getMockedEntityWithId** ($entity, $id)
-* **getEntityWithId** ($entity, $id)
-* **getTestClassPath** ()
-
 
 ```php
 use Cosma\Bundle\TestingBundle\TestCase\WebTestCase;
@@ -152,10 +147,7 @@ class SomeWebFunctionalTest extends WebTestCase
         */
         parent::setUp();
     }
-
-    /**
-     * @see SomeWebFunctional::Something
-     */
+    
     public function testSomething()
     {
         $kernel = $this->getKernel();
@@ -164,19 +156,10 @@ class SomeWebFunctionalTest extends WebTestCase
             
         // Client for functional tests. Emulates a browser
         $client = $this->getClient();
-
-        $mockedUserFullNamespace = $this->getMockedEntityWithId('Acme\AppBundle\Entity\User', 1);
-                
-        $mockedUserBundleNamespace = $this->getMockedEntityWithId('AppBundle:User', 2);
-         
-        $userFullNamespace = $this->getEntityWithId('Acme\AppBundle\Entity\User', 3);
-                
-        $userBundleNamespace = $this->getEntityWithId('AppBundle:User', 4); 
-        
-        $thisTestClassPath = $this->getTestClassPath();
     }
 }
 ```
+
 
 #### DB Test Case
 This case is an extension of Symfony WebTestCase with Database and fixtures support  
@@ -187,14 +170,6 @@ It has the following methods:
 * **getEntityManager** ()
 * **getEntityRepository** ($entity)
 * **getFixtureManager** ()
-
-* **getKernel** ()
-* **getContainer** ()
-* **getClient** (array $server)
-* **getMockedEntityWithId** ($entity, $id)
-* **getEntityWithId** ($entity, $id)
-* **getTestClassPath** ()
-
 
 ```php
 use Cosma\Bundle\TestingBundle\TestCase\WebTestCase;
@@ -239,10 +214,7 @@ class SomeFunctionalWebDBTest extends WebTestCase
                         false
         );
     }
-
-    /**
-     * @see SomeFunctionalWebDB::Something
-     */
+    
     public function testSomething()
     {
         /**
@@ -250,79 +222,38 @@ class SomeFunctionalWebDBTest extends WebTestCase
          */
         $this->loadFixtures(['SomeBundle:SomeDirectory:Author']);
 
-        $kernel = $this->getKernel();
+        $entityManager = $this->getEntityManager();
                 
-        $container = $this->getContainer();
-            
-        // Client for functional tests. Emulates a browser
-        $client = $this->getClient();
-
-        $mockedUserFullNamespace = $this->getMockedEntityWithId('Acme\AppBundle\Entity\User', 1);
-                
-        $mockedUserBundleNamespace = $this->getMockedEntityWithId('AppBundle:User', 2);
-         
-        $userFullNamespace = $this->getEntityWithId('Acme\AppBundle\Entity\User', 3);
-                
-        $userBundleNamespace = $this->getEntityWithId('AppBundle:User', 4); 
+        $entityRepository = $this->getEntityRepository('AppBundle:User');
         
-        $thisTestClassPath = $this->getTestClassPath();
+        $fixtureManager = $this->getFixtureManager();
     }
 }
 ```
-
-
 
 #### Solr Test Case
 This case is an extension of WebTestCase, from current bundle, with extra Solr support
 It has the following methods:
 
 * **getSolariumClient** ()
-
-* **loadTableFixtures** (array $fixtures, $dropDatabaseBefore = true)
-* **loadTestFixtures** (array $fixtures, $dropDatabaseBefore = true)
-* **loadCustomFixtures** (array $fixtures, $dropDatabaseBefore = true)
-* **getClient** ()
-* **getContainer** ()
-* **getEntityManager** ()
-* **getEntityRepository** ()
-
-* **getMockedEntityWithId** ($entityNamespaceClass, $id)
-* **getEntityWithId** ($entityNamespaceClass, $id)
-
-
+ 
 ```php
 use Cosma\Bundle\TestingBundle\TestCase\SolrTestCase;
 
 class SomeSolrTest extends SolrTestCase
 {
-
     public function setUp()
     {
         /**
-         * Boot the Symfony kernel
-         */
+        * Required call that boots the Symfony kernel and truncate default test Solr core
+        */
         parent::setUp();
-        
-        $this->loadTableFixtures(array('User', 'Group'));
     }
 
     public function testIndex()
     {
-        $client = $this->getClient();
-
-        $crawler = $client->request('GET', '/get/data/from/solr');
-
-        $this->assertGreaterThan(
-            0,
-            $crawler->filter('html:contains("Hello Solr")')->count()
-        );
-    }
-
-    private function loadSolrData()
-    {
-
         $solariumClient = $this->getSolariumClient();
-
+        
         /**
          * get an update query instance
          */
@@ -347,7 +278,7 @@ class SomeSolrTest extends SolrTestCase
         /**
          * add the documents and a commit command to the update query
          */
-        $update->addDocuments(array($documentOne, $documentTwo));
+        $update->addDocuments([$documentOne, $documentTwo]);
         $update->addCommit();
 
         /**
@@ -364,20 +295,8 @@ class SomeSolrTest extends SolrTestCase
 This case is an extension of WebTestCase, from current bundle, with extra ElasticSearch support
 It has the following methods:
 
-* **getElasticType** ()
 * **getElasticIndex** ()
 * **getElasticClient** ()
-
-* **loadTableFixtures** (array $fixtures, $dropDatabaseBefore = true)
-* **loadTestFixtures** (array $fixtures, $dropDatabaseBefore = true)
-* **loadCustomFixtures** (array $fixtures, $dropDatabaseBefore = true)
-* **getClient** ()
-* **getContainer** ()
-* **getEntityManager** ()
-* **getEntityRepository** ()
-
-* **getMockedEntityWithId** ($entityNamespaceClass, $id)
-* **getEntityWithId** ($entityNamespaceClass, $id)
 
 
 ```php
@@ -386,36 +305,50 @@ class SomeElasticTest extends ElasticTestCase
     public function setUp()
     {
         /**
-         * Boot the Symfony kernel
-         */
+        * Required call that boots the Symfony kernel and recreates default test elastic index
+        */
         parent::setUp();
-
-        $this->loadTableFixtures(array('User', 'Group'));
     }
 
-    /**
-     * @see SomeElasticController::indexAction
-     */
-    public function testIndex()
+    public function testSomethingElastic()
     {
-        $client = $this->getClient();
-
-        $crawler = $client->request('GET', '/get/data/from/es');
-
-        $this->assertGreaterThan(
-            0,
-            $crawler->filter('html:contains("Hello Elastic")')->count()
-        );
-    }
-
-    private function loadElasticSearchData()
-    {
-        /**
-         * Boot the Symfony kernel
-         */
-        parent::setUp();
-
-        $elasticType = $this->getElasticType();
+        $elasticIndex = $this->getElasticIndex();
+        
+        $elasticClient = $this->getElasticClient();
+        
+        $anotherElasticIndex = $elasticaClient->getIndex('another_index');
+        
+        //Create a type
+        $elasticType = $elasticIndex->getType('tweet');
+        
+        
+        // Define mapping
+        $mapping = new \Elastica\Type\Mapping();
+        $mapping->setType($elasticaType);
+        $mapping->setParam('index_analyzer', 'indexAnalyzer');
+        $mapping->setParam('search_analyzer', 'searchAnalyzer');
+        
+        // Define boost field
+        $mapping->setParam('_boost', array('name' => '_boost', 'null_value' => 1.0));
+        
+        // Set mapping
+        $mapping->setProperties(array(
+            'id'      => array('type' => 'integer', 'include_in_all' => FALSE),
+            'user'    => array(
+                'type' => 'object',
+                'properties' => array(
+                    'name'      => array('type' => 'string', 'include_in_all' => TRUE),
+                    'fullName'  => array('type' => 'string', 'include_in_all' => TRUE)
+                ),
+            ),
+            'msg'     => array('type' => 'string', 'include_in_all' => TRUE),
+            'tstamp'  => array('type' => 'date', 'include_in_all' => FALSE),
+            'location'=> array('type' => 'geo_point', 'include_in_all' => FALSE),
+            '_boost'  => array('type' => 'float', 'include_in_all' => FALSE)
+        ));
+        
+        // Send mapping to type
+        $mapping->send();
 
 
         /**
@@ -470,25 +403,14 @@ class SomeElasticTest extends ElasticTestCase
 ```
 
 
-
 #### Selenium Test Case
-This case is an extension of WebTestCase, from current bundle, with extra Selenium support
+This case is an extension of WebTestCase, with extra Selenium support
 It has the following methods:
 
+* **getRemoteWebDriver** ()
+* **getTestDomain** ()
 * **open** ($url)
-* **getDomain** ()
-
-* **loadTableFixtures** (array $fixtures, $dropDatabaseBefore = true)
-* **loadTestFixtures** (array $fixtures, $dropDatabaseBefore = true)
-* **loadCustomFixtures** (array $fixtures, $dropDatabaseBefore = true)
-* **getClient** ()
-* **getContainer** ()
-* **getEntityManager** ()
-* **getEntityRepository** ()
-
-* **getMockedEntityWithId** ($entityNamespaceClass, $id)
-* **getEntityWithId** ($entityNamespaceClass, $id)
-
+* **openSecure** ($url)
 
 ```php
 use Cosma\Bundle\TestingBundle\TestCase\SeleniumTestCase;
@@ -499,11 +421,9 @@ class SomeSeleniumTest extends SeleniumTestCase
     public function setUp()
     {
         /**
-         * Boot the Symfony kernel
-         */
+        * Required call that boots the Symfony kernel and initialize selenium remote web driver
+        */
         parent::setUp();
-
-        $this->loadTableFixtures(array('User', 'Group'));
     }
 
     /**
@@ -511,8 +431,17 @@ class SomeSeleniumTest extends SeleniumTestCase
      */
     public function testGoogleTitle()
     {
-        $webDriver = $this->open('http://google.de');
-        $this->assertContains('Google', $webDriver->getTitle());
+    
+        $remoteWebDriver = $this->getRemoteWebDriver();
+        $domain = $this->getTestDomain();
+    
+        // open http url http://testdomain/somepage.html 
+        $webDriver = $this->open('/somepage.html');
+        $this->assertContains('Some Title', $webDriver->getTitle());
+        
+        // open https url https://testdomain/securePage.html 
+        $webDriver = $this->openSecure('/securePage.html');
+        $this->assertContains('Some Title', $webDriver->getTitle());
     }
 }
 ```
@@ -624,13 +553,9 @@ services:
 ```
 
 
-
-
 ### Run Tests ###
 
 vendor/phpunit/phpunit/phpunit -c phpunit.xml.dist --coverage-text --coverage-html=Tests/coverage Tests
-
-
 
 
 ## License
