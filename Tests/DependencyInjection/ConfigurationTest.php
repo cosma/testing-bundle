@@ -18,20 +18,22 @@ use Cosma\Bundle\TestingBundle\DependencyInjection\Configuration;
 
 class ConfigurationTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @see Configuration::getConfigTreeBuilder
+     */
     public function testGetConfigTreeBuilder()
     {
         $config = new Configuration();
-        $tree = $config->getConfigTreeBuilder();
+        $tree   = $config->getConfigTreeBuilder();
 
         $node = $tree->buildTree();
         $this->assertEquals('cosma_testing', $node->getName());
 
         /** @var \Symfony\Component\Config\Definition\ScalarNode[] $options */
         $options = $node->getChildren();
-        $this->assertCount(7, $options);
-        $this->assertEquals('Fixture', $options['fixture_path']->getDefaultValue());
-        $this->assertEquals('Table', $options['fixture_table_directory']->getDefaultValue());
-        $this->assertEquals('Test', $options['fixture_test_directory']->getDefaultValue());
+        $this->assertCount(6, $options);
+        $this->assertEquals('Fixture', $options['fixture_directory']->getDefaultValue());
+        $this->assertEquals('Tests', $options['tests_directory']->getDefaultValue());
 
         /** @var \Symfony\Component\Config\Definition\ScalarNode[] $doctrineOptions */
         $doctrineOptions = $options['doctrine']->getChildren();
@@ -49,18 +51,17 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
 
         /** @var \Symfony\Component\Config\Definition\ScalarNode[] $elasticaOptions */
         $elasticaOptions = $options['elastica']->getChildren();
-        $this->assertCount(6, $elasticaOptions);
+        $this->assertCount(5, $elasticaOptions);
         $this->assertEquals('127.0.0.1', $elasticaOptions['host']->getDefaultValue());
         $this->assertEquals('9200', $elasticaOptions['port']->getDefaultValue());
         $this->assertEquals('/', $elasticaOptions['path']->getDefaultValue());
         $this->assertEquals('5', $elasticaOptions['timeout']->getDefaultValue());
         $this->assertEquals('test', $elasticaOptions['index']->getDefaultValue());
-        $this->assertEquals('test', $elasticaOptions['type']->getDefaultValue());
 
         /** @var \Symfony\Component\Config\Definition\ScalarNode[] $seleniumOptions */
         $seleniumOptions = $options['selenium']->getChildren();
         $this->assertCount(2, $seleniumOptions);
-        $this->assertEquals('http://127.0.0.1:4444/wd/hub', $seleniumOptions['server']->getDefaultValue());
-        $this->assertEquals('http://127.0.0.1', $seleniumOptions['domain']->getDefaultValue());
+        $this->assertEquals('http://127.0.0.1:4444/wd/hub', $seleniumOptions['remote_server_url']->getDefaultValue());
+        $this->assertEquals('localhost', $seleniumOptions['test_domain']->getDefaultValue());
     }
 }

@@ -1,5 +1,5 @@
 Testing Bundle
-================
+===============
 
 
 [![Circle CI](https://circleci.com/gh/cosma/testing-bundle.svg?style=svg)](https://circleci.com/gh/cosma/testing-bundle)
@@ -9,31 +9,27 @@ Testing Bundle
 
 An extension of [h4cc/AliceFixturesBundle](https://github.com/h4cc/AliceFixturesBundle) , a Symfony2 bundle for flexible usage of  [nelmio/alice](https://github.com/nelmio/alice)  fixtures integrated with very powerful data generator  [fzaninotto/Faker](https://github.com/fzaninotto/Faker).
 This bundle integrates [mockery/mockery](https://github.com/padraic/mockery) library, too.
-
-
-Supports following test cases:
-
-* SimpleTestCase
-* WebTestCase
-* SolrTestCase
-* ElasticTestCase
-* SeleniumTestCase
-
-
-
-
-## Introduction
-
-This bundle works with data fixtures in .yml format, detached from the common Doctrine DataFixtures.
+The Testing Bundle bundle works with data fixtures in .yml format, detached from the common Doctrine DataFixtures.
 There are multiple ways of loading fixture files.
-This bundle offers loading Fixtures from .yml ,  dropping and recreating the ORM Schema.
+The Testing Bundle offers loading Fixtures from .yml ,  dropping and recreating the ORM Schema.
 
 
 
-## Installation
+# Table of Contents
+ - [Installation](#installation)
+ - [Configuration](#configuration)
+ - [Test Cases](#test-cases)
+ - [Fixtures](#fixtures)
+ - [Advanced Usage](#advanced-usage)
+ - [Run Tests](#run-tests)
+ - [License](#license)
+
+
+# Installation
+    
 
 ```bash
-    $   php composer.phar require cosma/testing-bundle '1.0.*'
+    $   php composer.phar require cosma/testing-bundle '2.0.*'
 ```
 Follow the 'dev-master' branch for latest dev version. But i recommend to use more stable version tags if available.
 
@@ -41,8 +37,9 @@ Follow the 'dev-master' branch for latest dev version. But i recommend to use mo
 After that, add the h4ccAliceFixturesBundle and TestingBundle to your Kernel, most likely in the "dev" or "test" environment.
 
 ```php
+# app/AppKernel.php
+
 <?php
-// app/AppKernel.php
 
 public function registerBundles()
 {
@@ -59,8 +56,7 @@ public function registerBundles()
 ```
 
 
-
-## Configuration
+# Configuration
 
 In case you want to change default paths of fixture directory you can configure the testing bundle's fixture_path. 
 This sets a new relative path to the fixture directory in your bundle.
@@ -69,9 +65,8 @@ This sets a new relative path to the fixture directory in your bundle.
 # app/config/config_test.yml
 
 cosma_testing:
-    fixture_path: Fixture
-    fixture_table_directory: Table
-    fixture_test_directory: Test
+    fixture_directory: Fixture
+    tests_directory: Tests
     doctrine:
         cleaning_strategy: truncate # drop - to drop database
     solarium:
@@ -86,191 +81,182 @@ cosma_testing:
         path: /
         timeout: 10   
         index: test
-        type: test
     selenium:
-        server: http://127.0.0.1:4444/wd/hub
-        domain: http://www.example.com    
+        remote_server_url: http://127.0.0.1:4444/wd/hub
+        test_domain: example.com    
 ```
 
 
 
-## Usage
-
-### Test Cases
+# Test Cases
 
 
-#### Simple Test Case
+Supports the following Test Cases:
+
+* [Simple Test Case](#simple-test-case)
+* [Web Test Case](#web-test-case)
+* [DB Test Case](#db-test-case)
+* [Solr Test Case](#solr-test-case)
+* [Elastic Search Test Case](#elastic-search-test-case)
+* [Selenium Test Case](#selenium-test-case)
+* [Composed Test Cases](#composed-test-cases)
+
+
+## Simple Test Case
 This case is an extension of PHPUnit_Framework_TestCase, with two extra simple methods:
 
-* **getMockedEntityWithId** ($entityNamespaceClass, $id)
-* **getEntityWithId** ($entityNamespaceClass, $id)
-
+* **getMockedEntityWithId** ($entity, $id)
+* **getEntityWithId** ($entity, $id)
+* **getTestClassPath** ()
 
 ```php
 use Cosma\Bundle\TestingBundle\TestCase\SimpleTestCase;
  
-class SomeUnitTest extends SimpleTestCase
+class SomeVerySimpleUnitTest extends SimpleTestCase
 {
     public function testSomething()
     {
-        // custom namespace mock entity
-        $mockedUserAbsolute = $this->getMockedEntityWithId('Acme\DemoBundle\Entity\User', 12345);
+        $mockedUserFullNamespace = $this->getMockedEntityWithId('Acme\AppBundle\Entity\User', 1);
         
-        // relative namespace mocked entity using the value of configuration parameter entity_namespace
-        $mockedUserRelative = $this->getMockedEntityWithId('User', 1200);
+        $mockedUserBundleNamespace = $this->getMockedEntityWithId('AppBundle:User', 2);
          
-        // custom namespace entity without dropping database
-        $userAbsolute = $this->getEntityWithId('Acme\DemoBundle\Entity\User', 134);
+        $userFullNamespace = $this->getEntityWithId('Acme\AppBundle\Entity\User', 3);
+                
+        $userBundleNamespace = $this->getEntityWithId('AppBundle:User', 4); 
         
-        // relative namespace entity using the value of configuration parameter entity_namespace
-        // is using the value of configuration parameter entity_namespace
-        $userRelative = $this->getEntityWithId('User', 12); 
+        $thisTestClassPath = $this->getTestClassPath(); 
     }
 }
 ```
  
-
-
-#### Web Test Case
-This case is an extension of Symfony WebTestCase, the functional test case in Symfony2 
+ 
+## Web Test Case
+This case is an extension of Symfony2 WebTestCase -  Symfony\Bundle\FrameworkBundle\Test\WebTestCase
 It has the following methods:
 
-* **loadTableFixtures** (array $fixtures, $dropDatabaseBefore = true)
-* **loadTestFixtures** (array $fixtures, $dropDatabaseBefore = true)
-* **loadCustomFixtures** (array $fixtures, $dropDatabaseBefore = true)
-* **getClient** ()
+* **getKernel** ()
 * **getContainer** ()
-* **getEntityManager** ()
-* **getEntityRepository** ()
-
-* **getMockedEntityWithId** ($entityNamespaceClass, $id)
-* **getEntityWithId** ($entityNamespaceClass, $id)
-
-
-
+* **getClient** (array $server)
 
 ```php
 use Cosma\Bundle\TestingBundle\TestCase\WebTestCase;
 
-class SomeFunctionalTest extends WebTestCase
+class SomeWebFunctionalTest extends WebTestCase
 {
     public function setUp()
     {
         /**
-         * Boot the Symfony kernel
-         */
+        * Required call that boots the Symfony kernel
+        */
         parent::setUp();
-
-        /**
-         * Fixtures loaded the table directory where mostly resides data for DB tables
-         * Data from one table is in one file.
-         */
-        $this->loadTableFixtures(array('User', 'Group'));
-
-        /**
-         * Fixtures from test specific directory path.
-         * Every test has its own file.
-         */
-        $this->loadTestFixtures(array('Car', 'Series'), false );
-
-        /**
-         *  Custom path fixture with
-         *  No database dropping(default behaviour)
-         */
-        $this->loadCustomFixtures(array('/var/www/Acme/BundleDemo/Fixture/Colleague'), false);
-
     }
+    
+    public function testSomething()
+    {
+        $kernel = $this->getKernel();
+        
+        $container = $this->getContainer();
+            
+        // Client for functional tests. Emulates a browser
+        $client = $this->getClient();
+    }
+}
+```
 
-    /**
-     * @see SomeFunctional::Something
-     */
+
+## DB Test Case
+This case is an extension of Symfony WebTestCase with Database and fixtures support  
+It has the following methods:
+
+* **dropDatabase** ()
+* **loadFixtures** (array $fixtures, $dropDatabaseBefore = true)
+* **getEntityManager** ()
+* **getEntityRepository** ($entity)
+* **getFixtureManager** ()
+
+```php
+use Cosma\Bundle\TestingBundle\TestCase\DBTestCase;
+
+class SomeFunctionalWebDBTest extends WebTestCase
+{
+    public function setUp()
+    {
+        /**
+        * Required call that boots the Symfony kernel
+        */
+        parent::setUp();
+        
+        /**
+        * drops database tables before every test. 
+        * has two strategies set by parameter cosma_testing.doctrine.cleaning_strategy:
+        * 1. truncate (default,  faster)
+        * 2. drop     (actual drop, slower)
+        */
+        $this->dropDatabase();
+
+        /**
+         * 1. Truncates the tables user and group(default behaviour)
+         * 2. Loads two fixtures files located in src/AppBundle/Fixture/Table/User.yml and src/AnotherBundle/Fixture/Table/Group.yml
+         * 
+         */
+        $this->loadFixtures(
+                        [
+                            'AppBundle:Table:User', 
+                            'AnotherBundle:Table:Group'
+                        ]
+        );
+
+        /**
+         * Loads a fixtures file located in src/SomeBundle/Fixture/SomeDirectory/Book.yml
+         * Doesn't truncate the table 
+         */
+        $this->loadFixtures(
+                        [
+                            'SomeBundle:SomeDirectory:Book'
+                        ],
+                        false
+        );
+    }
+    
     public function testSomething()
     {
         /**
          * Fixtures can be load inside a test, too.
          */
-        $this->loadTableFixtures(array('Favorite', 'Music'));
+        $this->loadFixtures(['SomeBundle:SomeDirectory:Author']);
 
-
-        $mockedUserAbsolute = $this->getMockedEntityWithId('Acme\DemoBundle\Entity\User', 11);
-
-        $mockedUserRelative = $this->getMockedEntityWithId('User', 1200);
-
-        $userAbsolute = $this->getEntityWithId('Acme\DemoBundle\Entity\User', 134);
-
-        $userRelative = $this->getEntityWithId('User', 12);
-
-        /**
-         *  Client for functional tests. Emulates a browser
-         */
-        $client = $this->getClient();
-
-        /**
-         *  EntityManager - Doctrine
-         */
-        $entityManager = $this->getEntityManger();
-
-        /**
-         *  EntityRepository for User
-         */
-        $userRepository = $this->getEntityRepository('User');
+        $entityManager = $this->getEntityManager();
+                
+        $entityRepository = $this->getEntityRepository('AppBundle:User');
+        
+        $fixtureManager = $this->getFixtureManager();
     }
 }
 ```
 
-
-
-#### Solr Test Case
+## Solr Test Case
 This case is an extension of WebTestCase, from current bundle, with extra Solr support
 It has the following methods:
 
 * **getSolariumClient** ()
-
-* **loadTableFixtures** (array $fixtures, $dropDatabaseBefore = true)
-* **loadTestFixtures** (array $fixtures, $dropDatabaseBefore = true)
-* **loadCustomFixtures** (array $fixtures, $dropDatabaseBefore = true)
-* **getClient** ()
-* **getContainer** ()
-* **getEntityManager** ()
-* **getEntityRepository** ()
-
-* **getMockedEntityWithId** ($entityNamespaceClass, $id)
-* **getEntityWithId** ($entityNamespaceClass, $id)
-
-
+ 
 ```php
 use Cosma\Bundle\TestingBundle\TestCase\SolrTestCase;
 
 class SomeSolrTest extends SolrTestCase
 {
-
     public function setUp()
     {
         /**
-         * Boot the Symfony kernel
-         */
+        * Required call that boots the Symfony kernel and truncate default test Solr core
+        */
         parent::setUp();
-        
-        $this->loadTableFixtures(array('User', 'Group'));
     }
 
     public function testIndex()
     {
-        $client = $this->getClient();
-
-        $crawler = $client->request('GET', '/get/data/from/solr');
-
-        $this->assertGreaterThan(
-            0,
-            $crawler->filter('html:contains("Hello Solr")')->count()
-        );
-    }
-
-    private function loadSolrData()
-    {
-
         $solariumClient = $this->getSolariumClient();
-
+        
         /**
          * get an update query instance
          */
@@ -295,7 +281,7 @@ class SomeSolrTest extends SolrTestCase
         /**
          * add the documents and a commit command to the update query
          */
-        $update->addDocuments(array($documentOne, $documentTwo));
+        $update->addDocuments([$documentOne, $documentTwo]);
         $update->addCommit();
 
         /**
@@ -308,24 +294,12 @@ class SomeSolrTest extends SolrTestCase
 
 
 
-#### ElasticSearch Test Case
+## Elastic Search Test Case
 This case is an extension of WebTestCase, from current bundle, with extra ElasticSearch support
 It has the following methods:
 
-* **getElasticType** ()
 * **getElasticIndex** ()
 * **getElasticClient** ()
-
-* **loadTableFixtures** (array $fixtures, $dropDatabaseBefore = true)
-* **loadTestFixtures** (array $fixtures, $dropDatabaseBefore = true)
-* **loadCustomFixtures** (array $fixtures, $dropDatabaseBefore = true)
-* **getClient** ()
-* **getContainer** ()
-* **getEntityManager** ()
-* **getEntityRepository** ()
-
-* **getMockedEntityWithId** ($entityNamespaceClass, $id)
-* **getEntityWithId** ($entityNamespaceClass, $id)
 
 
 ```php
@@ -334,36 +308,50 @@ class SomeElasticTest extends ElasticTestCase
     public function setUp()
     {
         /**
-         * Boot the Symfony kernel
-         */
+        * Required call that boots the Symfony kernel and recreates default test elastic index
+        */
         parent::setUp();
-
-        $this->loadTableFixtures(array('User', 'Group'));
     }
 
-    /**
-     * @see SomeElasticController::indexAction
-     */
-    public function testIndex()
+    public function testSomethingElastic()
     {
-        $client = $this->getClient();
-
-        $crawler = $client->request('GET', '/get/data/from/es');
-
-        $this->assertGreaterThan(
-            0,
-            $crawler->filter('html:contains("Hello Elastic")')->count()
-        );
-    }
-
-    private function loadElasticSearchData()
-    {
-        /**
-         * Boot the Symfony kernel
-         */
-        parent::setUp();
-
-        $elasticType = $this->getElasticType();
+        $elasticIndex = $this->getElasticIndex();
+        
+        $elasticClient = $this->getElasticClient();
+        
+        $anotherElasticIndex = $elasticaClient->getIndex('another_index');
+        
+        //Create a type
+        $elasticType = $elasticIndex->getType('tweet');
+        
+        
+        // Define mapping
+        $mapping = new \Elastica\Type\Mapping();
+        $mapping->setType($elasticaType);
+        $mapping->setParam('index_analyzer', 'indexAnalyzer');
+        $mapping->setParam('search_analyzer', 'searchAnalyzer');
+        
+        // Define boost field
+        $mapping->setParam('_boost', array('name' => '_boost', 'null_value' => 1.0));
+        
+        // Set mapping
+        $mapping->setProperties(array(
+            'id'      => array('type' => 'integer', 'include_in_all' => FALSE),
+            'user'    => array(
+                'type' => 'object',
+                'properties' => array(
+                    'name'      => array('type' => 'string', 'include_in_all' => TRUE),
+                    'fullName'  => array('type' => 'string', 'include_in_all' => TRUE)
+                ),
+            ),
+            'msg'     => array('type' => 'string', 'include_in_all' => TRUE),
+            'tstamp'  => array('type' => 'date', 'include_in_all' => FALSE),
+            'location'=> array('type' => 'geo_point', 'include_in_all' => FALSE),
+            '_boost'  => array('type' => 'float', 'include_in_all' => FALSE)
+        ));
+        
+        // Send mapping to type
+        $mapping->send();
 
 
         /**
@@ -418,25 +406,14 @@ class SomeElasticTest extends ElasticTestCase
 ```
 
 
-
-#### Selenium Test Case
-This case is an extension of WebTestCase, from current bundle, with extra Selenium support
+## Selenium Test Case
+This case is an extension of WebTestCase, with extra Selenium support
 It has the following methods:
 
+* **getRemoteWebDriver** ()
+* **getTestDomain** ()
 * **open** ($url)
-* **getDomain** ()
-
-* **loadTableFixtures** (array $fixtures, $dropDatabaseBefore = true)
-* **loadTestFixtures** (array $fixtures, $dropDatabaseBefore = true)
-* **loadCustomFixtures** (array $fixtures, $dropDatabaseBefore = true)
-* **getClient** ()
-* **getContainer** ()
-* **getEntityManager** ()
-* **getEntityRepository** ()
-
-* **getMockedEntityWithId** ($entityNamespaceClass, $id)
-* **getEntityWithId** ($entityNamespaceClass, $id)
-
+* **openSecure** ($url)
 
 ```php
 use Cosma\Bundle\TestingBundle\TestCase\SeleniumTestCase;
@@ -447,11 +424,9 @@ class SomeSeleniumTest extends SeleniumTestCase
     public function setUp()
     {
         /**
-         * Boot the Symfony kernel
-         */
+        * Required call that boots the Symfony kernel and initialize selenium remote web driver
+        */
         parent::setUp();
-
-        $this->loadTableFixtures(array('User', 'Group'));
     }
 
     /**
@@ -459,14 +434,64 @@ class SomeSeleniumTest extends SeleniumTestCase
      */
     public function testGoogleTitle()
     {
-        $webDriver = $this->open('http://google.de');
-        $this->assertContains('Google', $webDriver->getTitle());
+    
+        $remoteWebDriver = $this->getRemoteWebDriver();
+        $domain = $this->getTestDomain();
+    
+        // open http url http://testdomain/somepage.html 
+        $webDriver = $this->open('/somepage.html');
+        $this->assertContains('Some Title', $webDriver->getTitle());
+        
+        // open https url https://testdomain/securePage.html 
+        $webDriver = $this->openSecure('/securePage.html');
+        $this->assertContains('Some Title', $webDriver->getTitle());
     }
 }
 ```
 
 
-### Fixtures
+## Composed Test Cases
+You can build composed Test Cases using the following defined traits under \Cosma\Bundle\TestingBundle\TestCase\Traits:
+Supports following test cases:
+
+* SimpleTrait
+* DBTrait
+* CommandTrait
+* ElasticTrait
+* SeleniumTrait
+* SolrTrait
+
+All composed TestCases can use one or more traits and extends Cosma\Bundle\TestingBundle\TestCase\WebTestCase 
+
+```php
+namespace Acme\AppBundle\Testing\TestCase;
+
+use Cosma\Bundle\TestingBundle\TestCase\WebTestCase;
+use Cosma\Bundle\TestingBundle\TestCase\Traits\DBTrait;
+use Cosma\Bundle\TestingBundle\TestCase\Traits\ElasticTrait;
+use Cosma\Bundle\TestingBundle\TestCase\Traits\SeleniumTrait;
+
+abstract class ComposedTestCase extends WebTestCase
+{
+    /**
+    *   This Test Case combines: DB, Elastic and Selenium Test Cases 
+    */
+    use DBTrait;
+    use ElasticTrait;
+    use SeleniumTrait;
+    
+    public function setUp()
+    {
+        parent::setUp();
+        $this->getFixtureManager();     // from DBTrait
+        $this->recreateIndex();         // from ElasticTrait
+        $this->getRemoteWebDriver();    // from SeleniumTrait
+    }
+}
+```
+
+
+# Fixtures
 
 [Alice](https://github.com/nelmio/alice) fixtures are integrated with [Faker](https://github.com/fzaninotto/Faker).
 
@@ -489,7 +514,7 @@ Nelmio\Entity\Group:
         users: [@user1, @user4, @user7]      
 ```
 
-#### Importing/Exporting Fixture Files
+## Importing/Exporting Fixture Files
 
 You can easily dump Database data to Yaml fixture files with the command cosma_testing:fixtures:dump
 
@@ -498,9 +523,9 @@ You can easily dump Database data to Yaml fixture files with the command cosma_t
     # Argument :: entity  - if not specified will save all entities : default *
     # Option :: --associations / -a - saves the associations between entities, too
         
-    $   php app/console cosma_testing:fixtures:dump [-a|--associations] dumpDirectory [entity]
+    $   php app/console cosma_testing:fixtures:export [-a|--associations] dumpDirectory [entity]
     
-    $   php app/console cosma_testing:fixtures:dump -a "path/to/dump/directory" BundleName:Entity
+    $   php app/console cosma_testing:fixtures:export -a "path/to/dump/directory" BundleName:Entity
 ```
 
 
@@ -512,12 +537,46 @@ You can easily import Yaml fixture to Database with command h4cc_alice_fixtures:
     # Option :: --drop / -d : drop and create schema before loading
     # Option :: --no-persist / - np :  persist loaded entities in database
          
-    $   php app/console h4cc_alice_fixtures:load:files [--drop] /path/to/fixtureFileOne.yml  /path/to/fixtureFileTwo.yml
+    $   php app/console cosma_testing:fixtures:import [--drop] /path/to/fixtureFileOne.yml  /path/to/fixtureFileTwo.yml
 ```
 
 
+# Advanced Usage
 
-### Mockery
+## Adding own Providers for Faker
+
+A provider for Faker can be any class, that has public methods.
+These methods can be used in the fixture files for own testdata or even calculations.
+To register a provider, create a service and tag it.
+
+Example:
+
+```yaml
+services:
+    your.faker.provider:
+        class: YourProviderClass
+        tags:
+            -  { name: h4cc_alice_fixtures.provider }
+```
+
+
+## Adding own Processors for Alice
+
+A alice processor can be used to manipulate a object _before_ and _after_ persisting.
+To register a own processor, create a service and tag it.
+
+Example:
+
+```yaml
+services:
+    your.alice.processor:
+        class: YourProcessorClass
+        tags:
+            -  { name: h4cc_alice_fixtures.processor }
+```
+
+
+## Mockery
 
 [Mockery](https://github.com/padraic/mockery) is a simple yet flexible PHP mock object framework for use in unit testing
 
@@ -539,48 +598,11 @@ class SomeUnitTest extends SimpleTestCase
 ```
 
 
-### Adding own Providers for Faker
-
-A provider for Faker can be any class, that has public methods.
-These methods can be used in the fixture files for own testdata or even calculations.
-To register a provider, create a service and tag it.
-
-Example:
-
-```yaml
-services:
-    your.faker.provider:
-        class: YourProviderClass
-        tags:
-            -  { name: h4cc_alice_fixtures.provider }
-```
-
-
-### Adding own Processors for Alice
-
-A alice processor can be used to manipulate a object _before_ and _after_ persisting.
-To register a own processor, create a service and tag it.
-
-Example:
-
-```yaml
-services:
-    your.alice.processor:
-        class: YourProcessorClass
-        tags:
-            -  { name: h4cc_alice_fixtures.processor }
-```
-
-
-
-
-### Run Tests ###
+# Run Tests
 
 vendor/phpunit/phpunit/phpunit -c phpunit.xml.dist --coverage-text --coverage-html=Tests/coverage Tests
 
 
-
-
-## License
+# License
 
 The bundle is licensed under MIT.

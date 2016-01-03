@@ -14,7 +14,6 @@
 
 namespace Cosma\Bundle\TestingBundle\Tests\Fixture;
 
-
 use Cosma\Bundle\TestingBundle\Fixture\Dumper;
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -50,45 +49,52 @@ class DumperTest extends \PHPUnit_Framework_TestCase
         $firstDummyEntity->setAnotherEntity($thirdAnotherDummyEntity);
         $secondDummyEntity->setAnotherEntity($secondAnotherDummyEntity);
 
-
         $entityRepository = $this->getMockBuilder('\Doctrine\Common\Persistence\ObjectRepository')
-            ->disableOriginalConstructor()
-            ->setMethods(array('findAll'))
-            ->getMockForAbstractClass();
+                                 ->disableOriginalConstructor()
+                                 ->setMethods(['findAll'])
+                                 ->getMockForAbstractClass()
+        ;
         $entityRepository->expects($this->once())
-            ->method('findAll')
-            ->will($this->returnValue(array($firstDummyEntity, $secondDummyEntity)));
+                         ->method('findAll')
+                         ->will($this->returnValue([$firstDummyEntity, $secondDummyEntity]))
+        ;
 
         $entityManager = $this->getMockBuilder('Doctrine\ORM\EntityManager')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getRepository'))
-            ->getMock();
+                              ->disableOriginalConstructor()
+                              ->setMethods(['getRepository'])
+                              ->getMock()
+        ;
         $entityManager->expects($this->once())
-            ->method('getRepository')
-            ->with('Cosma\Bundle\TestingBundle\Tests\Fixture\DummyEntity')
-            ->will($this->returnValue($entityRepository));
+                      ->method('getRepository')
+                      ->with('Cosma\Bundle\TestingBundle\Tests\Fixture\DummyEntity')
+                      ->will($this->returnValue($entityRepository))
+        ;
 
         $classMetaDataInfo = $this->getMockBuilder('\Doctrine\ORM\Mapping\ClassMetadataInfo')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getName', 'getIdentifier', 'getFieldNames', 'getFieldValue'))
-            ->getMock();
+                                  ->disableOriginalConstructor()
+                                  ->setMethods(['getName', 'getIdentifier', 'getFieldNames', 'getFieldValue'])
+                                  ->getMock()
+        ;
         $classMetaDataInfo->expects($this->exactly(3))
-            ->method('getName')
-            ->will($this->returnValue('Cosma\Bundle\TestingBundle\Tests\Fixture\DummyEntity'));
+                          ->method('getName')
+                          ->will($this->returnValue('Cosma\Bundle\TestingBundle\Tests\Fixture\DummyEntity'))
+        ;
         $classMetaDataInfo->expects($this->exactly(2))
-            ->method('getIdentifier')
-            ->will($this->returnValue(array('id')));
+                          ->method('getIdentifier')
+                          ->will($this->returnValue(['id']))
+        ;
         $classMetaDataInfo->expects($this->never())
-            ->method('getAssociationMappings')
-            ->will($this->returnValue(array('anotherEntities')));
+                          ->method('getAssociationMappings')
+                          ->will($this->returnValue(['anotherEntities']))
+        ;
         $classMetaDataInfo->expects($this->exactly(2))
-            ->method('getFieldNames')
-            ->will($this->returnValue(array('id', 'name')));
+                          ->method('getFieldNames')
+                          ->will($this->returnValue(['id', 'name']))
+        ;
         $classMetaDataInfo->expects($this->any())
-            ->method('getFieldValue')
-            ->will($this->returnValue(456));
-
-
+                          ->method('getFieldValue')
+                          ->will($this->returnValue(456))
+        ;
 
         $dumper = new Dumper($entityManager);
 
@@ -97,10 +103,9 @@ class DumperTest extends \PHPUnit_Framework_TestCase
 
         $data = $dumper->getData();
 
-        $expected = array('cosma_bundle_testingbundle_tests_fixture_dummyentity_456' => array( 'id' => 456, 'name' => '456'));
+        $expected = ['cosma_bundle_testingbundle_tests_fixture_dummyentity_456' => ['id' => 456, 'name' => '456']];
 
         $this->assertEquals($expected, $data, 'Dump process is not correct');
-
     }
 
     /**
@@ -132,45 +137,51 @@ class DumperTest extends \PHPUnit_Framework_TestCase
         $firstDummyEntity->setAnotherEntity($thirdAnotherDummyEntity);
         $secondDummyEntity->setAnotherEntity($secondAnotherDummyEntity);
 
-
         $entityRepository = $this->getMockBuilder('\Doctrine\Common\Persistence\ObjectRepository')
-            ->disableOriginalConstructor()
-            ->setMethods(array('findAll'))
-            ->getMockForAbstractClass();
+                                 ->disableOriginalConstructor()
+                                 ->setMethods(['findAll'])
+                                 ->getMockForAbstractClass()
+        ;
         $entityRepository->expects($this->once())
-            ->method('findAll')
-            ->will($this->returnValue(array($firstDummyEntity, $secondDummyEntity)));
+                         ->method('findAll')
+                         ->will($this->returnValue([$firstDummyEntity, $secondDummyEntity]))
+        ;
 
         $entityManager = $this->getMockBuilder('Doctrine\ORM\EntityManager')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getRepository'))
-            ->getMock();
+                              ->disableOriginalConstructor()
+                              ->setMethods(['getRepository'])
+                              ->getMock()
+        ;
         $entityManager->expects($this->once())
-            ->method('getRepository')
-            ->with('Cosma\Bundle\TestingBundle\Tests\Fixture\DummyEntity')
-            ->will($this->returnValue($entityRepository));
+                      ->method('getRepository')
+                      ->with('Cosma\Bundle\TestingBundle\Tests\Fixture\DummyEntity')
+                      ->will($this->returnValue($entityRepository))
+        ;
 
         $classMetaDataInfo = $this->getMockBuilder('\Doctrine\ORM\Mapping\ClassMetadataInfo')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getName', 'getIdentifier', 'getFieldNames', 'getFieldValue'))
-            ->getMock();
+                                  ->disableOriginalConstructor()
+                                  ->setMethods(['getName', 'getIdentifier', 'getFieldNames', 'getFieldValue'])
+                                  ->getMock()
+        ;
         $classMetaDataInfo->expects($this->exactly(3))
-            ->method('getName')
-            ->will($this->returnValue('Cosma\Bundle\TestingBundle\Tests\Fixture\DummyEntity'));
+                          ->method('getName')
+                          ->will($this->returnValue('Cosma\Bundle\TestingBundle\Tests\Fixture\DummyEntity'))
+        ;
         $classMetaDataInfo->expects($this->exactly(2))
-            ->method('getIdentifier')
-            ->will($this->returnValue(array('id')));
+                          ->method('getIdentifier')
+                          ->will($this->returnValue(['id']))
+        ;
         $classMetaDataInfo->expects($this->exactly(2))
-            ->method('getFieldNames')
-            ->will($this->returnValue(array('id', 'name')));
+                          ->method('getFieldNames')
+                          ->will($this->returnValue(['id', 'name']))
+        ;
 //        $classMetaDataInfo->expects($this->once())
 //            ->method('getAssociationMappings')
 //            ->will($this->returnValue(array('anotherEntities')));
         $classMetaDataInfo->expects($this->any())
-            ->method('getFieldValue')
-            ->will($this->returnValue(123));
-
-
+                          ->method('getFieldValue')
+                          ->will($this->returnValue(123))
+        ;
 
         $dumper = new Dumper($entityManager);
 
@@ -179,12 +190,10 @@ class DumperTest extends \PHPUnit_Framework_TestCase
 
         $data = $dumper->getData();
 
-        $expected = array('cosma_bundle_testingbundle_tests_fixture_dummyentity_123' => array( 'id' => 123, 'name' => 123));
+        $expected = ['cosma_bundle_testingbundle_tests_fixture_dummyentity_123' => ['id' => 123, 'name' => 123]];
 
         $this->assertEquals($expected, $data, 'Dump process is not correct');
-
     }
-
 
     /**
      * @see Cosma\Bundle\TestingBundle\Fixture\Dumper::dumpToYaml
@@ -217,45 +226,52 @@ class DumperTest extends \PHPUnit_Framework_TestCase
         $firstDummyEntity->setAnotherEntity($thirdAnotherDummyEntity);
         $secondDummyEntity->setAnotherEntity($secondAnotherDummyEntity);
 
-
         $entityRepository = $this->getMockBuilder('\Doctrine\Common\Persistence\ObjectRepository')
-            ->disableOriginalConstructor()
-            ->setMethods(array('findAll'))
-            ->getMockForAbstractClass();
+                                 ->disableOriginalConstructor()
+                                 ->setMethods(['findAll'])
+                                 ->getMockForAbstractClass()
+        ;
         $entityRepository->expects($this->once())
-            ->method('findAll')
-            ->will($this->returnValue(array($firstDummyEntity, $secondDummyEntity)));
+                         ->method('findAll')
+                         ->will($this->returnValue([$firstDummyEntity, $secondDummyEntity]))
+        ;
 
         $entityManager = $this->getMockBuilder('Doctrine\ORM\EntityManager')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getRepository'))
-            ->getMock();
+                              ->disableOriginalConstructor()
+                              ->setMethods(['getRepository'])
+                              ->getMock()
+        ;
         $entityManager->expects($this->once())
-            ->method('getRepository')
-            ->with('Cosma\Bundle\TestingBundle\Tests\Fixture\DummyEntity')
-            ->will($this->returnValue($entityRepository));
+                      ->method('getRepository')
+                      ->with('Cosma\Bundle\TestingBundle\Tests\Fixture\DummyEntity')
+                      ->will($this->returnValue($entityRepository))
+        ;
 
         $classMetaDataInfo = $this->getMockBuilder('\Doctrine\ORM\Mapping\ClassMetadataInfo')
-            ->disableOriginalConstructor()
-            ->setMethods(array('getName', 'getIdentifier', 'getFieldNames', 'getFieldValue'))
-            ->getMock();
+                                  ->disableOriginalConstructor()
+                                  ->setMethods(['getName', 'getIdentifier', 'getFieldNames', 'getFieldValue'])
+                                  ->getMock()
+        ;
         $classMetaDataInfo->expects($this->exactly(4))
-            ->method('getName')
-            ->will($this->returnValue('Cosma\Bundle\TestingBundle\Tests\Fixture\DummyEntity'));
+                          ->method('getName')
+                          ->will($this->returnValue('Cosma\Bundle\TestingBundle\Tests\Fixture\DummyEntity'))
+        ;
         $classMetaDataInfo->expects($this->exactly(2))
-            ->method('getIdentifier')
-            ->will($this->returnValue(array('id')));
+                          ->method('getIdentifier')
+                          ->will($this->returnValue(['id']))
+        ;
         $classMetaDataInfo->expects($this->never())
-            ->method('getAssociationMappings')
-            ->will($this->returnValue(array('anotherEntities')));
+                          ->method('getAssociationMappings')
+                          ->will($this->returnValue(['anotherEntities']))
+        ;
         $classMetaDataInfo->expects($this->exactly(2))
-            ->method('getFieldNames')
-            ->will($this->returnValue(array('id', 'name')));
+                          ->method('getFieldNames')
+                          ->will($this->returnValue(['id', 'name']))
+        ;
         $classMetaDataInfo->expects($this->any())
-            ->method('getFieldValue')
-            ->will($this->returnValue(456));
-
-
+                          ->method('getFieldValue')
+                          ->will($this->returnValue(456))
+        ;
 
         $dumper = new Dumper($entityManager);
 
@@ -266,8 +282,6 @@ class DumperTest extends \PHPUnit_Framework_TestCase
 
         $this->assertEquals("{$directoryPath}/.yml", $file, 'Dump process is not correct');
 
-
-
         $expected = <<<EOT
 Cosma\Bundle\TestingBundle\Tests\Fixture\DummyEntity:
     cosma_bundle_testingbundle_tests_fixture_dummyentity_456:
@@ -277,12 +291,9 @@ Cosma\Bundle\TestingBundle\Tests\Fixture\DummyEntity:
 EOT;
 
         $this->assertEquals($expected, file_get_contents($file), 'Dump process is not correct');
-
-
     }
 
 }
-
 
 class DummyEntity
 {
@@ -304,7 +315,8 @@ class DummyEntity
     /**
      *
      */
-    public function __construct() {
+    public function __construct()
+    {
         $this->anotherEntities = new ArrayCollection();
     }
 
@@ -358,7 +370,6 @@ class DummyEntity
 
 }
 
-
 class AnotherDummyEntity
 {
     /**
@@ -402,6 +413,5 @@ class AnotherDummyEntity
     {
         $this->name = $name;
     }
-
 
 }

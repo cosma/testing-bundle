@@ -15,6 +15,7 @@
 namespace Cosma\Bundle\TestingBundle\Tests\TestCase;
 
 use Cosma\Bundle\TestingBundle\TestCase\SimpleTestCase;
+use Cosma\Bundle\TestingBundle\Tests\ExampleEntity;
 
 class SimpleTestCaseTest extends SimpleTestCase
 {
@@ -24,7 +25,7 @@ class SimpleTestCaseTest extends SimpleTestCase
     public function testGetMockedEntityWithId()
     {
         /** @var ExampleEntity $mockedEntity */
-        $mockedEntity = $this->getMockedEntityWithId('Cosma\Bundle\TestingBundle\Tests\TestCase\ExampleEntity', 12345);
+        $mockedEntity = $this->getMockedEntityWithId('Cosma\Bundle\TestingBundle\Tests\ExampleEntity', 12345);
         $this->assertEquals(12345, $mockedEntity->getId());
     }
 
@@ -43,8 +44,8 @@ class SimpleTestCaseTest extends SimpleTestCase
     public function testGetEntityWithId()
     {
         /** @var ExampleEntity $entity */
-        $entity = $this->getEntityWithId('Cosma\Bundle\TestingBundle\Tests\TestCase\ExampleEntity', 12345);
-        $this->assertInstanceOf('Cosma\Bundle\TestingBundle\Tests\TestCase\ExampleEntity', $entity);
+        $entity = $this->getEntityWithId('Cosma\Bundle\TestingBundle\Tests\ExampleEntity', 12345);
+        $this->assertInstanceOf('Cosma\Bundle\TestingBundle\Tests\ExampleEntity', $entity);
         $this->assertEquals(12345, $entity->getId());
     }
 
@@ -56,35 +57,12 @@ class SimpleTestCaseTest extends SimpleTestCase
     {
         $this->getEntityWithId('xxxxxxxx', 12345);
     }
-}
-
-class ExampleEntity
-{
-    private $id;
-
-    private $name;
 
     /**
-     * @return mixed
+     * @see SimpleTestCase::getTestClassPath
      */
-    public function getId()
+    public function testGetTestClassPath()
     {
-        return $this->id;
-    }
-
-    /**
-     * @return string
-     */
-    public function getName()
-    {
-        return $this->name;
-    }
-
-    /**
-     * @param string $name
-     */
-    public function setName($name)
-    {
-        $this->name = $name;
+        $this->assertContains('/Tests/TestCase/SimpleTestCaseTest', $this->getTestClassPath());
     }
 }

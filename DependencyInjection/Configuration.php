@@ -14,7 +14,7 @@
 
 namespace Cosma\Bundle\TestingBundle\DependencyInjection;
 
-use Cosma\Bundle\TestingBundle\ORM\SchemaTool;
+use Cosma\Bundle\TestingBundle\ORM\DoctrineORMSchemaTool;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -35,18 +35,19 @@ class Configuration implements ConfigurationInterface
 
         $rootNode
             ->children()
-                ->scalarNode('fixture_path')->defaultValue('Fixture')->end()
-                ->scalarNode('fixture_table_directory')->defaultValue('Table')->end()
-                ->scalarNode('fixture_test_directory')->defaultValue('Test')->end()
+                ->scalarNode('fixture_directory')->defaultValue('Fixture')->end()
+                ->scalarNode('tests_directory')->defaultValue('Tests')->end()
                 ->arrayNode('doctrine')
                     ->canBeUnset()
                     ->children()
                         ->enumNode('cleaning_strategy')
-                            ->defaultValue(SchemaTool::DOCTRINE_CLEANING_TRUNCATE)
-                            ->values(array(
-                                SchemaTool::DOCTRINE_CLEANING_TRUNCATE,
-                                SchemaTool::DOCTRINE_CLEANING_DROP
-                            ))
+                            ->defaultValue(DoctrineORMSchemaTool::DOCTRINE_CLEANING_TRUNCATE)
+                            ->values(
+                                [
+                                    DoctrineORMSchemaTool::DOCTRINE_CLEANING_TRUNCATE,
+                                    DoctrineORMSchemaTool::DOCTRINE_CLEANING_DROP
+                                ]
+                            )
                         ->end()
                     ->end()
                 ->end()
@@ -68,14 +69,13 @@ class Configuration implements ConfigurationInterface
                     ->scalarNode('path')->defaultValue('/')->end()
                     ->scalarNode('timeout')->defaultValue(5)->end()
                     ->scalarNode('index')->defaultValue('test')->end()
-                    ->scalarNode('type')->defaultValue('test')->end()
                     ->end()
                 ->end()
                 ->arrayNode('selenium')
                     ->canBeUnset()
                     ->children()
-                    ->scalarNode('server')->defaultValue('http://127.0.0.1:4444/wd/hub')->end()
-                    ->scalarNode('domain')->defaultValue('http://127.0.0.1')->end()
+                    ->scalarNode('remote_server_url')->defaultValue('http://127.0.0.1:4444/wd/hub')->end()
+                    ->scalarNode('test_domain')->defaultValue('localhost')->end()
                     ->end()
                 ->end()
             ->end();

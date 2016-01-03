@@ -7,7 +7,7 @@
  * For the full copyright and license information, please view the LICENSE
  * file that was distributed with this source code.
  *
- * Date: 01/025/15
+ * Date: 25/01/15
  * Time: 23:33
  */
 
@@ -33,7 +33,7 @@ class Dumper
     /**
      * @var bool
      */
-    private $association = FALSE;
+    private $association = false;
 
     /**
      * @param EntityManagerInterface $entityManager
@@ -41,14 +41,6 @@ class Dumper
     public function __construct(EntityManagerInterface $entityManager)
     {
         $this->entityManager = $entityManager;
-    }
-
-    /**
-     * @return ClassMetadataInfo
-     */
-    public function getClassMetadataInfo()
-    {
-        return $this->classMetadataInfo;
     }
 
     /**
@@ -84,7 +76,7 @@ class Dumper
     {
         $entities = $this->entityManager->getRepository($this->classMetadataInfo->getName())->findAll();
 
-        $tableData = array();
+        $tableData = [];
 
         foreach ($entities as $entity) {
             $tableData += $this->getDataForEntity($entity);
@@ -100,9 +92,9 @@ class Dumper
      */
     public function dumpToYaml($dumpDirectory)
     {
-        $dumpData = array(
+        $dumpData = [
             $this->classMetadataInfo->getName() => $this->getData()
-        );
+        ];
 
         $tableName = $this->classMetadataInfo->getTableName();
 
@@ -122,14 +114,14 @@ class Dumper
 
         $fieldsDataFromRow = $this->getFieldsDataForEntity($entity);
 
-        $associationsDataFromRow = array();
+        $associationsDataFromRow = [];
         if ($this->isAssociation()) {
             $associationsDataFromRow = $this->getOwningAssociationsDataForEntity($entity);
         }
 
-        return array(
+        return [
             $fixtureEntityIdentifier => $fieldsDataFromRow + $associationsDataFromRow
-        );
+        ];
     }
 
     /**
@@ -139,7 +131,7 @@ class Dumper
      */
     private function getFieldsDataForEntity($entity)
     {
-        $data = array();
+        $data = [];
 
         $fieldNames = $this->classMetadataInfo->getFieldNames();
 
@@ -148,7 +140,7 @@ class Dumper
                 continue;
             }
 
-            $data [$fieldName] = $this->getFieldValueFromEntity($fieldName, $entity);
+            $data [ $fieldName ] = $this->getFieldValueFromEntity($fieldName, $entity);
         }
 
         return $data;
@@ -181,7 +173,7 @@ class Dumper
      */
     private function getOwningAssociationsDataForEntity($entity)
     {
-        $data = array();
+        $data = [];
 
         $associationMappings = $this->classMetadataInfo->getAssociationMappings();
 
@@ -189,7 +181,7 @@ class Dumper
             if ($associationMapping['isOwningSide'] > 0) {
                 $targetAssociationIdentifier = $this->getTargetAssociationIdentifier($entity, $associationMapping);
                 if ($targetAssociationIdentifier) {
-                    $data[$associationMapping['fieldName']] = $targetAssociationIdentifier;
+                    $data[ $associationMapping['fieldName'] ] = $targetAssociationIdentifier;
                 }
             }
         }
@@ -199,21 +191,21 @@ class Dumper
 
     /**
      * @param object $entity
-     * @param array $associationMapping
+     * @param array  $associationMapping
      *
      * @return null|string
      */
     private function getTargetAssociationIdentifier($entity, array $associationMapping)
     {
-        $targetIdentifier = NULL;
+        $targetIdentifier = null;
         if ($this->isSingleTargetedAssociation($associationMapping)) {
 
             $targetIdentifier = $this->getSingleTargetAssociationIdentifier($entity, $associationMapping);
-
         } elseif ($this->isMultiTargetedAssociation($associationMapping)) {
 
             $targetIdentifier = $this->getMultiTargetAssociationIdentifier($entity, $associationMapping);
         }
+
         return $targetIdentifier;
     }
 
@@ -225,7 +217,7 @@ class Dumper
     private function isSingleTargetedAssociation(array $associationMapping)
     {
         return ClassMetadataInfo::ONE_TO_ONE == $associationMapping['type'] ||
-        ClassMetadataInfo::MANY_TO_ONE == $associationMapping['type'];
+               ClassMetadataInfo::MANY_TO_ONE == $associationMapping['type'];
     }
 
     /**
@@ -236,12 +228,12 @@ class Dumper
     private function isMultiTargetedAssociation(array $associationMapping)
     {
         return ClassMetadataInfo::ONE_TO_MANY == $associationMapping['type'] ||
-        ClassMetadataInfo::MANY_TO_MANY == $associationMapping['type'];
+               ClassMetadataInfo::MANY_TO_MANY == $associationMapping['type'];
     }
 
     /**
      * @param object $entity
-     * @param array $associationMapping
+     * @param array  $associationMapping
      *
      * @return null|string
      */
@@ -255,38 +247,42 @@ class Dumper
 
             $targetClassMetadataInfo = $this->entityManager
                 ->getMetadataFactory()
-                ->getMetadataFor($associationMapping['targetEntity']);
+                ->getMetadataFor($associationMapping['targetEntity'])
+            ;
 
             $targetIdentifier = '@' . $this->getIdentifierForEntity($targetEntity, $targetClassMetadataInfo);
         }
+
         return $targetIdentifier;
     }
 
     /**
      * @param object $entity
-     * @param array $associationMapping
+     * @param array  $associationMapping
      *
      * @return null|string
      */
     private function getMultiTargetAssociationIdentifier($entity, array $associationMapping)
     {
-        $targetIdentifier = NULL;
+        $targetIdentifier = null;
 
         $targetEntities = $this->classMetadataInfo->getFieldValue($entity, $associationMapping['fieldName']);
         if (count($targetEntities) > 0) {
 
             $targetClassMetadataInfo = $this->entityManager
                 ->getMetadataFactory()
-                ->getMetadataFor($associationMapping['targetEntity']);
+                ->getMetadataFor($associationMapping['targetEntity'])
+            ;
 
-            $targetEntityIdentifierCollection = array();
+            $targetEntityIdentifierCollection = [];
             foreach ($targetEntities as $targetEntity) {
-                $targetEntityIdentifier = $this->getIdentifierForEntity($targetEntity, $targetClassMetadataInfo);
+                $targetEntityIdentifier             = $this->getIdentifierForEntity($targetEntity, $targetClassMetadataInfo);
                 $targetEntityIdentifierCollection[] = '@' . $targetEntityIdentifier;
             }
 
             $targetIdentifier = '[ ' . implode(', ', $targetEntityIdentifierCollection) . ' ]';
         }
+
         return $targetIdentifier;
     }
 
@@ -298,21 +294,20 @@ class Dumper
      */
     private function getIdentifierForEntity($entity, ClassMetadataInfo $classMetadataInfo)
     {
-        $entityName = $classMetadataInfo->getName();
+        $entityName              = $classMetadataInfo->getName();
         $fixtureEntityIdentifier = strtolower(str_replace('\\', '_', $entityName));
 
         $identifiers = $classMetadataInfo->getIdentifier();
 
         foreach ($identifiers as $identifier) {
             $fixtureEntityIdentifier .= '_' . $classMetadataInfo->getFieldValue($entity, $identifier);
-
         }
 
         return $fixtureEntityIdentifier;
     }
 
     /**
-     * @param string $fieldName
+     * @param string                                  $fieldName
      * @param \Doctrine\ORM\Mapping\ClassMetadataInfo $classMetadataInfo
      *
      * @return bool
@@ -320,7 +315,7 @@ class Dumper
     private function isGeneratedIdentity($fieldName, ClassMetadataInfo $classMetadataInfo)
     {
         return ($classMetadataInfo->isIdGeneratorIdentity() &&
-            $classMetadataInfo->isIdentifier($fieldName));
+                $classMetadataInfo->isIdentifier($fieldName));
     }
 
     /**
@@ -354,7 +349,7 @@ class Dumper
         /**
          * strip quotes for associative collection
          */
-        $yamlData = str_replace(array(": '[ ", " ]'"), array(": [ ", " ]"), $yamlData);
+        $yamlData = str_replace([": '[ ", " ]'"], [": [ ", " ]"], $yamlData);
 
         return $yamlData;
     }

@@ -25,37 +25,36 @@ class CosmaTestingExtensionTest extends \PHPUnit_Framework_TestCase
      */
     public function testLoad_ConfigParameters()
     {
-        $config = array(
-            'fixture_path' => 'Some/Fixture/Directory',
-            'doctrine' => array(
+        $config = [
+            'fixture_directory' => 'Some/Fixture/Directory',
+            'doctrine'          => [
                 'cleaning_strategy' => 'drop'
-            ),
-            'solarium' => array(
-                'host' => '127.0.0.1',
-                'port' => 8080,
-                'path' => '/solr',
-                'core' => 'tests',
+            ],
+            'solarium'          => [
+                'host'    => '127.0.0.1',
+                'port'    => 8080,
+                'path'    => '/solr',
+                'core'    => 'tests',
                 'timeout' => 45
-            ),
-            'elastica' => array(
-                'host' => '127.0.0.1',
-                'port' => 9200,
-                'path' => '/',
+            ],
+            'elastica'          => [
+                'host'    => '127.0.0.1',
+                'port'    => 9200,
+                'path'    => '/',
                 'timeout' => 15,
-                'index' => 'tests',
-                'type' => 'tests'
-            ),
-            'selenium' => array(
-                'domain' => '127.0.0.1:4444'
-            )
-        );
+                'index'   => 'tests'
+            ],
+            'selenium'          => [
+                'remote_server_url' => '127.0.0.1:4444',
+                'test_domain' => 'localhost'
+            ]
+        ];
 
         $container = $this->getContainerWithLoadedExtension($config);
 
-        $parameters = array(
-            'cosma_testing.fixture_path',
-            'cosma_testing.fixture_table_directory',
-            'cosma_testing.fixture_test_directory',
+        $parameters = [
+            'cosma_testing.fixture_directory',
+            'cosma_testing.tests_directory',
             'cosma_testing.doctrine.cleaning_strategy',
             'cosma_testing.solarium.host',
             'cosma_testing.solarium.port',
@@ -67,10 +66,9 @@ class CosmaTestingExtensionTest extends \PHPUnit_Framework_TestCase
             'cosma_testing.elastica.path',
             'cosma_testing.elastica.timeout',
             'cosma_testing.elastica.index',
-            'cosma_testing.elastica.type',
-            'cosma_testing.selenium.server',
-            'cosma_testing.selenium.domain'
-        );
+            'cosma_testing.selenium.remote_server_url',
+            'cosma_testing.selenium.test_domain'
+        ];
 
         foreach ($parameters as $parameter) {
             $this->assertTrue($container->hasParameter($parameter), "Container doesn't has the parameter {$parameter}");
@@ -82,34 +80,33 @@ class CosmaTestingExtensionTest extends \PHPUnit_Framework_TestCase
      */
     public function testLoad_ConfigParameters_DefaultCleaning()
     {
-        $config = array(
-            'fixture_path' => 'Some/Fixture/Directory',
-            'solarium' => array(
-                'host' => '127.0.0.1',
-                'port' => 8080,
-                'path' => '/solr',
-                'core' => 'tests',
+        $config = [
+            'fixture_directory' => 'Some/Fixture/Directory',
+            'solarium'          => [
+                'host'    => '127.0.0.1',
+                'port'    => 8080,
+                'path'    => '/solr',
+                'core'    => 'tests',
                 'timeout' => 45
-            ),
-            'elastica' => array(
-                'host' => '127.0.0.1',
-                'port' => 9200,
-                'path' => '/',
+            ],
+            'elastica'          => [
+                'host'    => '127.0.0.1',
+                'port'    => 9200,
+                'path'    => '/',
                 'timeout' => 15,
-                'index' => 'tests',
-                'type' => 'tests'
-            ),
-            'selenium' => array(
-                'domain' => '127.0.0.1:4444'
-            )
-        );
+                'index'   => 'tests'
+            ],
+            'selenium'          => [
+                'remote_server_url' => '127.0.0.1:4444',
+                'test_domain' => 'localhost'
+            ]
+        ];
 
         $container = $this->getContainerWithLoadedExtension($config);
 
-        $parameters = array(
-            'cosma_testing.fixture_path',
-            'cosma_testing.fixture_table_directory',
-            'cosma_testing.fixture_test_directory',
+        $parameters = [
+            'cosma_testing.fixture_directory',
+            'cosma_testing.tests_directory',
             'cosma_testing.doctrine.cleaning_strategy',
             'cosma_testing.solarium.host',
             'cosma_testing.solarium.port',
@@ -121,10 +118,9 @@ class CosmaTestingExtensionTest extends \PHPUnit_Framework_TestCase
             'cosma_testing.elastica.path',
             'cosma_testing.elastica.timeout',
             'cosma_testing.elastica.index',
-            'cosma_testing.elastica.type',
-            'cosma_testing.selenium.server',
-            'cosma_testing.selenium.domain'
-        );
+            'cosma_testing.selenium.remote_server_url',
+            'cosma_testing.selenium.test_domain'
+        ];
 
         foreach ($parameters as $parameter) {
             $this->assertTrue($container->hasParameter($parameter), "Container doesn't has the parameter {$parameter}");
@@ -138,30 +134,30 @@ class CosmaTestingExtensionTest extends \PHPUnit_Framework_TestCase
      */
     public function testLoad_ConfigParameters_Exception()
     {
-        $config = array(
-            'fixture_path' => 'Some/Fixture/Directory',
-            'doctrine'     => array(
+        $config = [
+            'fixture_directory' => 'Some/Fixture/Directory',
+            'doctrine'          => [
                 'cleaning_strategy' => 'qwerty'
-            ),
-            'solarium'     => array(
+            ],
+            'solarium'          => [
                 'host'    => '127.0.0.1',
                 'port'    => 8080,
                 'path'    => '/solr',
                 'core'    => 'tests',
                 'timeout' => 45
-            ),
-            'elastica'     => array(
+            ],
+            'elastica'          => [
                 'host'    => '127.0.0.1',
                 'port'    => 9200,
                 'path'    => '/',
                 'timeout' => 15,
-                'index'   => 'tests',
-                'type'    => 'tests'
-            ),
-            'selenium'     => array(
-                'domain' => '127.0.0.1:4444'
-            )
-        );
+                'index'   => 'tests'
+            ],
+            'selenium'          => [
+                'remote_server_url' => '127.0.0.1:4444',
+                'test_domain' => 'localhost'
+            ]
+        ];
 
         $this->getContainerWithLoadedExtension($config);
     }
@@ -175,15 +171,15 @@ class CosmaTestingExtensionTest extends \PHPUnit_Framework_TestCase
 
         $extension = new CosmaTestingExtension();
 
-        $this->assertEquals('cosma_testing', $extension->getAlias(), 'Bundle ALias is wrong');
+        $this->assertEquals('cosma_testing', $extension->getAlias(), 'Bundle Alias is wrong');
     }
 
-    protected function getContainerWithLoadedExtension(array $config = array())
+    protected function getContainerWithLoadedExtension(array $config = [])
     {
         $container = new ContainerBuilder();
 
         $extension = new CosmaTestingExtension();
-        $extension->load(array($config), $container);
+        $extension->load([$config], $container);
 
         return $container;
     }

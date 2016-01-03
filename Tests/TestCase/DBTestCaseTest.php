@@ -14,33 +14,32 @@
 
 namespace Cosma\Bundle\TestingBundle\Tests\TestCase;
 
-use Cosma\Bundle\TestingBundle\TestCase\ElasticTestCase;
-use Elastica\Client;
-use Elastica\Index;
-use Elastica\Type;
+use Cosma\Bundle\TestingBundle\Tests\AnotherExampleEntity;
+use Cosma\Bundle\TestingBundle\Tests\SomeEntity;
+use Doctrine\DBAL\Exception\InvalidArgumentException;
 
-class ElasticTestCaseTest extends \PHPUnit_Framework_TestCase
+class DBTestCaseTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @see \Cosma\Bundle\TestingBundle\TestCase\ElasticTestCase::setUp
+     * @see Cosma\Bundle\TestingBundle\TestCase\DBTestCase::setUp
      */
     public function testSetUp()
     {
-        $testCase = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\ElasticTestCase')
-                         ->disableOriginalConstructor()
-                         ->setMethods(['recreateIndex'])
-                         ->getMockForAbstractClass()
+        $testCase = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\DBTestCase')
+                           ->disableOriginalConstructor()
+                           ->setMethods(['getFixtureManager'])
+                           ->getMockForAbstractClass()
         ;
 
-        $testCase->expects($this->once())->method('recreateIndex');
+        $testCase->expects($this->once())->method('getFixtureManager');
 
         $reflectionClass = new \ReflectionClass($testCase);
 
-        $classProperty = $reflectionClass->getParentClass()->getProperty('class');
+        $classProperty = $reflectionClass->getParentClass()->getParentClass()->getProperty('class');
         $classProperty->setAccessible(true);
         $classProperty->setValue($testCase, 'Cosma\Bundle\TestingBundle\Tests\AppKernel');
 
-        $method = $reflectionClass->getParentClass()->getMethod('setUp');
+        $method = $reflectionClass->getMethod('setUp');
         $method->setAccessible(true);
         $method->invoke($testCase);
 
@@ -49,10 +48,7 @@ class ElasticTestCaseTest extends \PHPUnit_Framework_TestCase
         $kernel = $kernelProperty->getValue();
 
         $this->assertInstanceOf('Cosma\Bundle\TestingBundle\Tests\AppKernel', $kernel, 'set up is wrong');
-
     }
 }
-
-
 
 
