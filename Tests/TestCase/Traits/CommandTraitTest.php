@@ -23,51 +23,44 @@ class CommandTraitTest extends \PHPUnit_Framework_TestCase
     {
         $kernel = $this->prophesize('Symfony\Component\HttpKernel\KernelInterface');
 
-        $commandTrait = $this->getMockBuilder('\Cosma\Bundle\TestingBundle\TestCase\Traits\CommandTrait')
+        $testCaseTrait = $this->getMockBuilder('\Cosma\Bundle\TestingBundle\TestCase\Traits\CommandTrait')
                             ->disableOriginalConstructor()
                             ->setMethods(['getKernel'])
                             ->getMockForTrait()
         ;
 
-        $commandTrait->expects($this->once())
+        $testCaseTrait->expects($this->once())
                     ->method('getKernel')
                     ->will($this->returnValue($kernel->reveal()))
         ;
 
-        $reflectionClass = new \ReflectionClass($commandTrait);
+        $reflectionClass = new \ReflectionClass($testCaseTrait);
 
         $reflectionMethod = $reflectionClass->getMethod('getConsoleApplication');
         $reflectionMethod->setAccessible(true);
-        $application = $reflectionMethod->invoke($commandTrait);
+        $application = $reflectionMethod->invoke($testCaseTrait);
 
         $this->assertInstanceOf('\Symfony\Bundle\FrameworkBundle\Console\Application', $application);
+
+        return [ $testCaseTrait, $reflectionClass, $application];
     }
 
     /**
      * @see \Cosma\Bundle\TestingBundle\TestCase\Traits\CommandTrait::executeCommand
+     *
+     * @depends testGetConsoleApplication
      */
-    public function testExecuteCommand()
+    public function testExecuteCommand(array $options)
     {
-        $kernel = $this->prophesize('Symfony\Component\HttpKernel\KernelInterface');
+        /** @type \ReflectionClass $reflectionClass */
+        list($testCaseTrait, $reflectionClass, $application) = $options;
 
-        $commandTrait = $this->getMockBuilder('\Cosma\Bundle\TestingBundle\TestCase\Traits\CommandTrait')
-                             ->disableOriginalConstructor()
-                             ->setMethods(['getKernel'])
-                             ->getMockForTrait()
-        ;
-
-        $commandTrait->expects($this->once())
-                     ->method('getKernel')
-                     ->will($this->returnValue($kernel->reveal()))
-        ;
-
-        $reflectionClass = new \ReflectionClass($commandTrait);
 
         $reflectionMethod = $reflectionClass->getMethod('getConsoleApplication');
         $reflectionMethod->setAccessible(true);
 
         /** @type \Symfony\Bundle\FrameworkBundle\Console\Application $application */
-        $application = $reflectionMethod->invoke($commandTrait);
+        $application = $reflectionMethod->invoke($testCaseTrait);
 
         $command = new Command('some:command');
 
@@ -75,6 +68,6 @@ class CommandTraitTest extends \PHPUnit_Framework_TestCase
 
         $reflectionMethod = $reflectionClass->getMethod('executeCommand');
         $reflectionMethod->setAccessible(true);
-        $reflectionMethod->invoke($commandTrait, 'some:command');
+        $reflectionMethod->invoke($testCaseTrait, 'some:command');
     }
 }

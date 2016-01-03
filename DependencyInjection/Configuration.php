@@ -75,8 +75,8 @@ class Configuration implements ConfigurationInterface
                 ->arrayNode('selenium')
                     ->canBeUnset()
                     ->children()
-                    ->scalarNode('server')->defaultValue('http://127.0.0.1:4444/wd/hub')->end()
-                    ->scalarNode('domain')->defaultValue('http://127.0.0.1')->end()
+                    ->scalarNode('remote_server_url')->defaultValue('http://127.0.0.1:4444/wd/hub')->end()
+                    ->scalarNode('test_domain')->defaultValue('localhost')->end()
                     ->end()
                 ->end()
             ->end();

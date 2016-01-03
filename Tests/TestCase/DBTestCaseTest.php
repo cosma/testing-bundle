@@ -25,23 +25,23 @@ class DBTestCaseTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetUp()
     {
-        $DBTestCase = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\DBTestCase')
+        $testCase = $this->getMockBuilder('Cosma\Bundle\TestingBundle\TestCase\DBTestCase')
                            ->disableOriginalConstructor()
                            ->setMethods(['getFixtureManager'])
                            ->getMockForAbstractClass()
         ;
 
-        $DBTestCase->expects($this->once())->method('getFixtureManager');
+        $testCase->expects($this->once())->method('getFixtureManager');
 
-        $reflectionClass = new \ReflectionClass($DBTestCase);
+        $reflectionClass = new \ReflectionClass($testCase);
 
         $classProperty = $reflectionClass->getParentClass()->getParentClass()->getProperty('class');
         $classProperty->setAccessible(true);
-        $classProperty->setValue($DBTestCase, 'Cosma\Bundle\TestingBundle\Tests\AppKernel');
+        $classProperty->setValue($testCase, 'Cosma\Bundle\TestingBundle\Tests\AppKernel');
 
-        $setUpMethod = $reflectionClass->getMethod('setUp');
-        $setUpMethod->setAccessible(true);
-        $setUpMethod->invoke($DBTestCase);
+        $method = $reflectionClass->getMethod('setUp');
+        $method->setAccessible(true);
+        $method->invoke($testCase);
 
         $kernelProperty = $reflectionClass->getProperty('kernel');
         $kernelProperty->setAccessible(true);

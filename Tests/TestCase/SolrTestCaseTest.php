@@ -35,9 +35,15 @@ class SolrTestCaseTest extends \PHPUnit_Framework_TestCase
         $classProperty->setAccessible(true);
         $classProperty->setValue($testCase, 'Cosma\Bundle\TestingBundle\Tests\AppKernel');
 
-        $setUpMethod = $reflectionClass->getParentClass()->getMethod('setUp');
-        $setUpMethod->setAccessible(true);
-        $setUpMethod->invoke($testCase);
+        $method = $reflectionClass->getParentClass()->getMethod('setUp');
+        $method->setAccessible(true);
+        $method->invoke($testCase);
+
+        $kernelProperty = $reflectionClass->getProperty('kernel');
+        $kernelProperty->setAccessible(true);
+        $kernel = $kernelProperty->getValue();
+
+        $this->assertInstanceOf('Cosma\Bundle\TestingBundle\Tests\AppKernel', $kernel, 'set up is wrong');
     }
 }
 

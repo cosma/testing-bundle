@@ -26,11 +26,11 @@ class SolrTraitTest extends \PHPUnit_Framework_TestCase
     {
         $container = new Container();
 
-        $container->setParameter('cosma_testing.solarium.host', 'solr_host');
+        $container->setParameter('cosma_testing.solarium.host', '127.0.0.1');
         $container->setParameter('cosma_testing.solarium.port', 8080);
         $container->setParameter('cosma_testing.solarium.path', '/solr');
         $container->setParameter('cosma_testing.solarium.core', 'test');
-        $container->setParameter('cosma_testing.solarium.timeout', 500);
+        $container->setParameter('cosma_testing.solarium.timeout', 10);
 
         $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\HttpKernelInterface')
                        ->disableOriginalConstructor()
@@ -42,44 +42,52 @@ class SolrTraitTest extends \PHPUnit_Framework_TestCase
                ->will($this->returnValue($container))
         ;
 
-        $solrTrait = $this->getMockBuilder('\Cosma\Bundle\TestingBundle\TestCase\Traits\SolrTrait')
+        $testCaseTrait = $this->getMockBuilder('\Cosma\Bundle\TestingBundle\TestCase\Traits\SolrTrait')
                           ->disableOriginalConstructor()
                           ->setMethods(['getKernel'])
                           ->getMockForTrait()
         ;
-        $solrTrait->expects($this->once())
+        $testCaseTrait->expects($this->once())
                   ->method('getKernel')
                   ->will($this->returnValue($kernel))
         ;
 
-        $reflectionClass = new \ReflectionClass($solrTrait);
+        $reflectionClass = new \ReflectionClass($testCaseTrait);
 
         $reflectionMethod = $reflectionClass->getMethod('getSolariumClient');
         $reflectionMethod->setAccessible(true);
+
         /** @type Client $solariumClient */
-        $solariumClient = $reflectionMethod->invoke($solrTrait);
+        $solariumClient = $reflectionMethod->invoke($testCaseTrait);
 
         $this->assertInstanceOf('\Solarium\Core\Client\Client', $solariumClient);
 
         $this->assertEquals(
             [
                 'scheme'  => 'http',
-                'host'    => 'solr_host',
+                'host'    => '127.0.0.1',
                 'port'    => 8080,
                 'path'    => '/solr',
                 'core'    => 'test',
-                'timeout' => 500,
+                'timeout' => 10,
                 'key'     => 'localhostTesting',
             ],
             $solariumClient->getEndpoint()->getOptions()
         );
+
+        return [ $testCaseTrait, $reflectionClass];
     }
 
     /**
      * @see \Cosma\Bundle\TestingBundle\TestCase\Traits\SolrTrait::resetSolrCore
+     *
+     * @depends testGetSolariumClient
      */
-    public function testResetSolrCore()
+    public function testResetSolrCore(array $options)
     {
+        /** @type \ReflectionClass $reflectionClass */
+        list($testCaseTrait, $reflectionClass) = $options;
+
         $query  = $this->prophesize('\Solarium\QueryType\Update\Query\Query');
         $query->addDeleteQuery("*:*")->shouldBecalled();
         $query->addCommit()->shouldBecalled();
@@ -101,20 +109,12 @@ class SolrTraitTest extends \PHPUnit_Framework_TestCase
                        ->will($this->returnValue($result->reveal()))
         ;
 
+        $property = $reflectionClass->getParentClass()->getProperty('solariumClient');
+        $property->setAccessible(true);
+        $property->setValue($testCaseTrait, $solariumClient);
 
-        $solrTrait = $this->getMockBuilder('\Cosma\Bundle\TestingBundle\TestCase\Traits\SolrTrait')
-                          ->disableOriginalConstructor()
-                          ->getMockForTrait()
-        ;
-
-        $reflectionClass = new \ReflectionClass($solrTrait);
-
-        $solariumClientProperty = $reflectionClass->getParentClass()->getProperty('solariumClient');
-        $solariumClientProperty->setAccessible(true);
-        $solariumClientProperty->setValue($solrTrait, $solariumClient);
-
-        $reflectionMethod = $reflectionClass->getMethod('resetSolrCore');
-        $reflectionMethod->setAccessible(true);
-        $reflectionMethod->invoke($solrTrait);
+        $method = $reflectionClass->getMethod('resetSolrCore');
+        $method->setAccessible(true);
+        $method->invoke($testCaseTrait);
     }
 }

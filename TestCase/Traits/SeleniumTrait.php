@@ -21,36 +21,44 @@ trait SeleniumTrait
     /**
      * @var RemoteWebDriver
      */
-    private $webDriver;
+    private $remoteWebDriver;
 
     protected function setUp()
     {
         parent::setUp();
 
-        $this->getWebDriver();
+        $this->getRemoteWebDriver();
     }
 
     protected function tearDown()
     {
         parent::tearDown();
 
-        $this->webDriver->close();
-        $this->webDriver = null;
+        $this->remoteWebDriver->close();
+        $this->remoteWebDriver = null;
     }
 
     /**
      * @return RemoteWebDriver
      */
-    protected function getWebDriver()
+    protected function getRemoteWebDriver()
     {
-        if (null === $this->webDriver) {
-            $this->webDriver = RemoteWebDriver::create(
-                $this->getKernel()->getContainer()->getParameter('cosma_testing.selenium.server'),
+        if (null === $this->remoteWebDriver) {
+            $this->remoteWebDriver = RemoteWebDriver::create(
+                $this->getKernel()->getContainer()->getParameter('cosma_testing.selenium.remote_server_url'),
                 DesiredCapabilities::chrome()
             );
         }
 
-        return $this->webDriver;
+        return $this->remoteWebDriver;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTestDomain()
+    {
+        return $this->getKernel()->getContainer()->getParameter('cosma_testing.selenium.test_domain');
     }
 
     /**
@@ -60,14 +68,17 @@ trait SeleniumTrait
      */
     public function open($url)
     {
-        return $this->getWebDriver()->get($this->getDomain() . $url);
+        return $this->getRemoteWebDriver()->get('http://'.$this->getTestDomain() . $url);
     }
 
+
     /**
-     * @return string
+     * @param $url
+     *
+     * @return RemoteWebDriver
      */
-    public function getDomain()
+    public function openSecure($url)
     {
-        return $this->getKernel()->getContainer()->getParameter('cosma_testing.selenium.domain');
+        return $this->getRemoteWebDriver()->get('https://'.$this->getTestDomain() . $url);
     }
 }

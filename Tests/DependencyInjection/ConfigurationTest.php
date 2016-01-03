@@ -62,7 +62,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         /** @var \Symfony\Component\Config\Definition\ScalarNode[] $seleniumOptions */
         $seleniumOptions = $options['selenium']->getChildren();
         $this->assertCount(2, $seleniumOptions);
-        $this->assertEquals('http://127.0.0.1:4444/wd/hub', $seleniumOptions['server']->getDefaultValue());
-        $this->assertEquals('http://127.0.0.1', $seleniumOptions['domain']->getDefaultValue());
+        $this->assertEquals('http://127.0.0.1:4444/wd/hub', $seleniumOptions['remote_server_url']->getDefaultValue());
+        $this->assertEquals('localhost', $seleniumOptions['test_domain']->getDefaultValue());
     }
 }

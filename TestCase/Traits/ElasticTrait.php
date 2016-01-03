@@ -81,7 +81,7 @@ trait ElasticTrait
     /**
      * void
      */
-    private function recreateIndex()
+    protected function recreateIndex()
     {
         if ($this->getElasticIndex()->exists()) {
             $this->getElasticIndex()->delete();
