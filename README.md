@@ -99,7 +99,7 @@ Supports the following Test Cases:
 * [Solr Test Case](#solr-test-case)
 * [Elastic Search Test Case](#elastic-search-test-case)
 * [Selenium Test Case](#selenium-test-case)
-* [Composed Test Case](#composed-test-case)
+* [Composed Test Cases](#composed-test-cases)
 
 
 ## Simple Test Case
