@@ -42,8 +42,7 @@ class CosmaTestingExtensionTest extends \PHPUnit_Framework_TestCase
                 'port'    => 9200,
                 'path'    => '/',
                 'timeout' => 15,
-                'index'   => 'tests',
-                'type'    => 'tests'
+                'index'   => 'tests'
             ],
             'selenium'          => [
                 'remote_server_url' => '127.0.0.1:4444',
@@ -67,7 +66,6 @@ class CosmaTestingExtensionTest extends \PHPUnit_Framework_TestCase
             'cosma_testing.elastica.path',
             'cosma_testing.elastica.timeout',
             'cosma_testing.elastica.index',
-            'cosma_testing.elastica.type',
             'cosma_testing.selenium.remote_server_url',
             'cosma_testing.selenium.test_domain'
         ];
@@ -96,8 +94,7 @@ class CosmaTestingExtensionTest extends \PHPUnit_Framework_TestCase
                 'port'    => 9200,
                 'path'    => '/',
                 'timeout' => 15,
-                'index'   => 'tests',
-                'type'    => 'tests'
+                'index'   => 'tests'
             ],
             'selenium'          => [
                 'remote_server_url' => '127.0.0.1:4444',
@@ -121,7 +118,6 @@ class CosmaTestingExtensionTest extends \PHPUnit_Framework_TestCase
             'cosma_testing.elastica.path',
             'cosma_testing.elastica.timeout',
             'cosma_testing.elastica.index',
-            'cosma_testing.elastica.type',
             'cosma_testing.selenium.remote_server_url',
             'cosma_testing.selenium.test_domain'
         ];
@@ -155,8 +151,7 @@ class CosmaTestingExtensionTest extends \PHPUnit_Framework_TestCase
                 'port'    => 9200,
                 'path'    => '/',
                 'timeout' => 15,
-                'index'   => 'tests',
-                'type'    => 'tests'
+                'index'   => 'tests'
             ],
             'selenium'          => [
                 'remote_server_url' => '127.0.0.1:4444',

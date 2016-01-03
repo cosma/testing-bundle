@@ -51,13 +51,12 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
 
         /** @var \Symfony\Component\Config\Definition\ScalarNode[] $elasticaOptions */
         $elasticaOptions = $options['elastica']->getChildren();
-        $this->assertCount(6, $elasticaOptions);
+        $this->assertCount(5, $elasticaOptions);
         $this->assertEquals('127.0.0.1', $elasticaOptions['host']->getDefaultValue());
         $this->assertEquals('9200', $elasticaOptions['port']->getDefaultValue());
         $this->assertEquals('/', $elasticaOptions['path']->getDefaultValue());
         $this->assertEquals('5', $elasticaOptions['timeout']->getDefaultValue());
         $this->assertEquals('test', $elasticaOptions['index']->getDefaultValue());
-        $this->assertEquals('test', $elasticaOptions['type']->getDefaultValue());
 
         /** @var \Symfony\Component\Config\Definition\ScalarNode[] $seleniumOptions */
         $seleniumOptions = $options['selenium']->getChildren();
