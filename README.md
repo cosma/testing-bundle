@@ -18,7 +18,7 @@ The Testing Bundle offers loading Fixtures from .yml ,  dropping and recreating 
 # Table of Contents
  - [Installation](#installation)
  - [Configuration](#configuration)
- - [Usage](#usage)
+ - [Test Cases](#test-cases)
  - [Fixtures](#fixtures)
  - [Advanced Usage](#advanced-usage)
  - [Run Tests](#run-tests)
@@ -88,9 +88,7 @@ cosma_testing:
 
 
 
-# Usage
-
-## Test Cases
+# Test Cases
 
 
 Supports the following Test Cases:
@@ -104,7 +102,7 @@ Supports the following Test Cases:
 * [Composed Test Case](#composed-test-case)
 
 
-### Simple Test Case
+## Simple Test Case
 This case is an extension of PHPUnit_Framework_TestCase, with two extra simple methods:
 
 * **getMockedEntityWithId** ($entity, $id)
@@ -132,7 +130,7 @@ class SomeVerySimpleUnitTest extends SimpleTestCase
 ```
  
  
-### Web Test Case
+## Web Test Case
 This case is an extension of Symfony2 WebTestCase -  Symfony\Bundle\FrameworkBundle\Test\WebTestCase
 It has the following methods:
 
@@ -166,7 +164,7 @@ class SomeWebFunctionalTest extends WebTestCase
 ```
 
 
-### DB Test Case
+## DB Test Case
 This case is an extension of Symfony WebTestCase with Database and fixtures support  
 It has the following methods:
 
@@ -236,7 +234,7 @@ class SomeFunctionalWebDBTest extends WebTestCase
 }
 ```
 
-### Solr Test Case
+## Solr Test Case
 This case is an extension of WebTestCase, from current bundle, with extra Solr support
 It has the following methods:
 
@@ -296,7 +294,7 @@ class SomeSolrTest extends SolrTestCase
 
 
 
-### Elastic Search Test Case
+## Elastic Search Test Case
 This case is an extension of WebTestCase, from current bundle, with extra ElasticSearch support
 It has the following methods:
 
@@ -408,7 +406,7 @@ class SomeElasticTest extends ElasticTestCase
 ```
 
 
-### Selenium Test Case
+## Selenium Test Case
 This case is an extension of WebTestCase, with extra Selenium support
 It has the following methods:
 
