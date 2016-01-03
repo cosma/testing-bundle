@@ -1,5 +1,5 @@
-# Testing Bundle
-
+Testing Bundle
+===============
 
 
 [![Circle CI](https://circleci.com/gh/cosma/testing-bundle.svg?style=svg)](https://circleci.com/gh/cosma/testing-bundle)
@@ -19,6 +19,17 @@ Supports following test cases:
 * SolrTestCase
 * ElasticTestCase
 * SeleniumTestCase
+
+
+# Table of Contents
+ - [Introduction](#introduction)
+ - [Installation](#installation)
+ - [Configuration](#configuration)
+ - [Configuration](#configuration)
+ - [Configuration](#configuration)
+ - [Configuration](#configuration)
+ - [Configuration](#configuration)
+ - [Configuration](#configuration)
 
 
 
