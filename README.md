@@ -25,11 +25,8 @@ Supports following test cases:
  - [Introduction](#introduction)
  - [Installation](#installation)
  - [Configuration](#configuration)
- - [Configuration](#configuration)
- - [Configuration](#configuration)
- - [Configuration](#configuration)
- - [Configuration](#configuration)
- - [Configuration](#configuration)
+ - [Usage](#usage)
+ - [License](#license)
 
 
 
@@ -605,7 +602,7 @@ services:
 ```
 
 
-### Run Tests ###
+### Run Tests
 
 vendor/phpunit/phpunit/phpunit -c phpunit.xml.dist --coverage-text --coverage-html=Tests/coverage Tests
 
