@@ -9,37 +9,24 @@ Testing Bundle
 
 An extension of [h4cc/AliceFixturesBundle](https://github.com/h4cc/AliceFixturesBundle) , a Symfony2 bundle for flexible usage of  [nelmio/alice](https://github.com/nelmio/alice)  fixtures integrated with very powerful data generator  [fzaninotto/Faker](https://github.com/fzaninotto/Faker).
 This bundle integrates [mockery/mockery](https://github.com/padraic/mockery) library, too.
+The Testing Bundle bundle works with data fixtures in .yml format, detached from the common Doctrine DataFixtures.
+There are multiple ways of loading fixture files.
+The Testing Bundle offers loading Fixtures from .yml ,  dropping and recreating the ORM Schema.
 
-
-Supports following test cases:
-
-* SimpleTestCase
-* WebTestCase
-* DBTestCase
-* SolrTestCase
-* ElasticTestCase
-* SeleniumTestCase
 
 
 # Table of Contents
- - [Introduction](#introduction)
  - [Installation](#installation)
  - [Configuration](#configuration)
  - [Usage](#usage)
+ - [Fixture](#fixture)
+ - [Advanced Usage](#advanced-usage)
+ - [Run Tests](#run-tests)
  - [License](#license)
 
 
-
-
-## Introduction
-
-This bundle works with data fixtures in .yml format, detached from the common Doctrine DataFixtures.
-There are multiple ways of loading fixture files.
-This bundle offers loading Fixtures from .yml ,  dropping and recreating the ORM Schema.
-
-
-
-## Installation
+# Installation
+    
 
 ```bash
     $   php composer.phar require cosma/testing-bundle '2.0.*'
@@ -69,8 +56,7 @@ public function registerBundles()
 ```
 
 
-
-## Configuration
+# Configuration
 
 In case you want to change default paths of fixture directory you can configure the testing bundle's fixture_path. 
 This sets a new relative path to the fixture directory in your bundle.
@@ -102,12 +88,22 @@ cosma_testing:
 
 
 
-## Usage
+# Usage
 
-### Test Cases
+## Test Cases
 
 
-#### Simple Test Case
+Supports following test cases:
+
+* SimpleTestCase
+* WebTestCase
+* DBTestCase
+* SolrTestCase
+* ElasticTestCase
+* SeleniumTestCase
+
+
+### Simple Test Case
 This case is an extension of PHPUnit_Framework_TestCase, with two extra simple methods:
 
 * **getMockedEntityWithId** ($entity, $id)
@@ -135,7 +131,7 @@ class SomeVerySimpleUnitTest extends SimpleTestCase
 ```
  
  
-#### Web Test Case
+### Web Test Case
 This case is an extension of Symfony2 WebTestCase -  Symfony\Bundle\FrameworkBundle\Test\WebTestCase
 It has the following methods:
 
@@ -169,7 +165,7 @@ class SomeWebFunctionalTest extends WebTestCase
 ```
 
 
-#### DB Test Case
+### DB Test Case
 This case is an extension of Symfony WebTestCase with Database and fixtures support  
 It has the following methods:
 
@@ -239,7 +235,7 @@ class SomeFunctionalWebDBTest extends WebTestCase
 }
 ```
 
-#### Solr Test Case
+### Solr Test Case
 This case is an extension of WebTestCase, from current bundle, with extra Solr support
 It has the following methods:
 
@@ -299,7 +295,7 @@ class SomeSolrTest extends SolrTestCase
 
 
 
-#### Elastic Search Test Case
+### Elastic Search Test Case
 This case is an extension of WebTestCase, from current bundle, with extra ElasticSearch support
 It has the following methods:
 
@@ -411,7 +407,7 @@ class SomeElasticTest extends ElasticTestCase
 ```
 
 
-#### Selenium Test Case
+### Selenium Test Case
 This case is an extension of WebTestCase, with extra Selenium support
 It has the following methods:
 
@@ -455,7 +451,7 @@ class SomeSeleniumTest extends SeleniumTestCase
 ```
 
 
-### Composed Test Cases
+## Composed Test Cases
 You can build composed Test Cases using the following defined traits under \Cosma\Bundle\TestingBundle\TestCase\Traits:
 Supports following test cases:
 
@@ -496,7 +492,7 @@ abstract class ComposedTestCase extends WebTestCase
 ```
 
 
-### Fixtures
+# Fixtures
 
 [Alice](https://github.com/nelmio/alice) fixtures are integrated with [Faker](https://github.com/fzaninotto/Faker).
 
@@ -519,7 +515,7 @@ Nelmio\Entity\Group:
         users: [@user1, @user4, @user7]      
 ```
 
-#### Importing/Exporting Fixture Files
+## Importing/Exporting Fixture Files
 
 You can easily dump Database data to Yaml fixture files with the command cosma_testing:fixtures:dump
 
@@ -546,8 +542,42 @@ You can easily import Yaml fixture to Database with command h4cc_alice_fixtures:
 ```
 
 
+# Advanced Usage
 
-### Mockery
+## Adding own Providers for Faker
+
+A provider for Faker can be any class, that has public methods.
+These methods can be used in the fixture files for own testdata or even calculations.
+To register a provider, create a service and tag it.
+
+Example:
+
+```yaml
+services:
+    your.faker.provider:
+        class: YourProviderClass
+        tags:
+            -  { name: h4cc_alice_fixtures.provider }
+```
+
+
+## Adding own Processors for Alice
+
+A alice processor can be used to manipulate a object _before_ and _after_ persisting.
+To register a own processor, create a service and tag it.
+
+Example:
+
+```yaml
+services:
+    your.alice.processor:
+        class: YourProcessorClass
+        tags:
+            -  { name: h4cc_alice_fixtures.processor }
+```
+
+
+## Mockery
 
 [Mockery](https://github.com/padraic/mockery) is a simple yet flexible PHP mock object framework for use in unit testing
 
@@ -569,44 +599,11 @@ class SomeUnitTest extends SimpleTestCase
 ```
 
 
-### Adding own Providers for Faker
-
-A provider for Faker can be any class, that has public methods.
-These methods can be used in the fixture files for own testdata or even calculations.
-To register a provider, create a service and tag it.
-
-Example:
-
-```yaml
-services:
-    your.faker.provider:
-        class: YourProviderClass
-        tags:
-            -  { name: h4cc_alice_fixtures.provider }
-```
-
-
-### Adding own Processors for Alice
-
-A alice processor can be used to manipulate a object _before_ and _after_ persisting.
-To register a own processor, create a service and tag it.
-
-Example:
-
-```yaml
-services:
-    your.alice.processor:
-        class: YourProcessorClass
-        tags:
-            -  { name: h4cc_alice_fixtures.processor }
-```
-
-
-### Run Tests
+# Run Tests
 
 vendor/phpunit/phpunit/phpunit -c phpunit.xml.dist --coverage-text --coverage-html=Tests/coverage Tests
 
 
-## License
+# License
 
 The bundle is licensed under MIT.
