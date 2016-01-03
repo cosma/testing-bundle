@@ -43,6 +43,7 @@ After that, add the h4ccAliceFixturesBundle and TestingBundle to your Kernel, mo
 
 ```php
 # app/AppKernel.php
+
 <?php
 
 public function registerBundles()
@@ -133,12 +134,10 @@ It has the following methods:
 * **getKernel** ()
 * **getContainer** ()
 * **getClient** (array $server)
-
+ 
 * **getMockedEntityWithId** ($entity, $id)
 * **getEntityWithId** ($entity, $id)
 * **getTestClassPath** ()
-
-
 
 
 ```php
@@ -180,7 +179,7 @@ class SomeWebFunctionalTest extends WebTestCase
 ```
 
 #### DB Test Case
-This case is an extension of Symfony WebTestCase with DB nd fixtures support  
+This case is an extension of Symfony WebTestCase with Database and fixtures support  
 It has the following methods:
 
 * **dropDatabase** ()
@@ -195,8 +194,6 @@ It has the following methods:
 * **getMockedEntityWithId** ($entity, $id)
 * **getEntityWithId** ($entity, $id)
 * **getTestClassPath** ()
-
-
 
 
 ```php
