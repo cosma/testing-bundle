@@ -42,8 +42,8 @@ Follow the 'dev-master' branch for latest dev version. But i recommend to use mo
 After that, add the h4ccAliceFixturesBundle and TestingBundle to your Kernel, most likely in the "dev" or "test" environment.
 
 ```php
+# app/AppKernel.php
 <?php
-// app/AppKernel.php
 
 public function registerBundles()
 {
