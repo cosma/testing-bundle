@@ -172,7 +172,7 @@ It has the following methods:
 * **getFixtureManager** ()
 
 ```php
-use Cosma\Bundle\TestingBundle\TestCase\WebTestCase;
+use Cosma\Bundle\TestingBundle\TestCase\DBTestCase;
 
 class SomeFunctionalWebDBTest extends WebTestCase
 {
@@ -291,7 +291,7 @@ class SomeSolrTest extends SolrTestCase
 
 
 
-#### ElasticSearch Test Case
+#### Elastic Search Test Case
 This case is an extension of WebTestCase, from current bundle, with extra ElasticSearch support
 It has the following methods:
 
@@ -442,6 +442,47 @@ class SomeSeleniumTest extends SeleniumTestCase
         // open https url https://testdomain/securePage.html 
         $webDriver = $this->openSecure('/securePage.html');
         $this->assertContains('Some Title', $webDriver->getTitle());
+    }
+}
+```
+
+
+### Composed Test Cases
+You can build composed Test Cases using the following defined traits under \Cosma\Bundle\TestingBundle\TestCase\Traits:
+Supports following test cases:
+
+* SimpleTrait
+* DBTrait
+* CommandTrait
+* ElasticTrait
+* SeleniumTrait
+* SolrTrait
+
+All composed TestCases can use one or more traits and extends Cosma\Bundle\TestingBundle\TestCase\WebTestCase 
+
+```php
+namespace Acme\AppBundle\Testing\TestCase;
+
+use Cosma\Bundle\TestingBundle\TestCase\WebTestCase;
+use Cosma\Bundle\TestingBundle\TestCase\Traits\DBTrait;
+use Cosma\Bundle\TestingBundle\TestCase\Traits\ElasticTrait;
+use Cosma\Bundle\TestingBundle\TestCase\Traits\SeleniumTrait;
+
+abstract class ComposedTestCase extends WebTestCase
+{
+    /**
+    *   This Test Case combines: DB, Elastic and Selenium Test Cases 
+    */
+    use DBTrait;
+    use ElasticTrait;
+    use SeleniumTrait;
+    
+    public function setUp()
+    {
+        parent::setUp();
+        $this->getFixtureManager();     // from DBTrait
+        $this->recreateIndex();         // from ElasticTrait
+        $this->getRemoteWebDriver();    // from SeleniumTrait
     }
 }
 ```
