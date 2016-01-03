@@ -22,7 +22,7 @@ trait CommandTrait
     /**
      * @type Application
      */
-    private $application;
+    private $consoleApplication;
 
     /**
      * @return void
@@ -31,20 +31,20 @@ trait CommandTrait
     {
         parent::setUp();
 
-        $this->getApplication();
+        $this->getConsoleApplication();
     }
 
     /**
      * @return Application
      */
-    protected function getApplication()
+    protected function getConsoleApplication()
     {
-        if (null === $this->application) {
-            $this->application = new Application($this->getKernel());
-            $this->application->setAutoExit(false);
+        if (null === $this->consoleApplication) {
+            $this->consoleApplication = new Application($this->getKernel());
+            $this->consoleApplication->setAutoExit(false);
         }
 
-        return $this->application;
+        return $this->consoleApplication;
     }
 
     /**
@@ -61,7 +61,7 @@ trait CommandTrait
         $input         = new StringInput($command);
         $output        = new StreamOutput($temporaryFile);
 
-        $this->application->run($input, $output);
+        $this->getConsoleApplication()->run($input, $output);
 
         fseek($temporaryFile, 0);
         $output = '';

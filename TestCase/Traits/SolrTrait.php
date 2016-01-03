@@ -34,19 +34,6 @@ trait SolrTrait
     }
 
     /**
-     * @return \Solarium\QueryType\Update\Result
-     */
-    private function resetSolrCore()
-    {
-        $update = $this->getSolariumClient()->createUpdate();
-
-        $update->addDeleteQuery('*:*');
-        $update->addCommit();
-
-        return $this->getSolariumClient()->update($update);
-    }
-
-    /**
      * @return SolariumClient
      */
     protected function getSolariumClient()
@@ -71,5 +58,18 @@ trait SolrTrait
         }
 
         return $this->solariumClient;
+    }
+
+    /**
+     * @return \Solarium\QueryType\Update\Result
+     */
+    protected function resetSolrCore()
+    {
+        $update = $this->getSolariumClient()->createUpdate();
+
+        $update->addDeleteQuery('*:*');
+        $update->addCommit();
+
+        return $this->getSolariumClient()->update($update);
     }
 }

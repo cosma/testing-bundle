@@ -21,7 +21,7 @@ trait DBTrait
     /**
      * @var FixtureManager
      */
-    protected $fixtureManager;
+    private $fixtureManager;
 
     /**
      * @return void

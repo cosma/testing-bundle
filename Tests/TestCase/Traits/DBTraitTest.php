@@ -18,7 +18,6 @@ use Symfony\Component\DependencyInjection\Container;
 
 class DBTraitTest extends \PHPUnit_Framework_TestCase
 {
-
     /**
      * @see \Cosma\Bundle\TestingBundle\TestCase\Traits\DBTrait::getEntityManager
      */
@@ -112,7 +111,7 @@ class DBTraitTest extends \PHPUnit_Framework_TestCase
         ;
 
         $reflectionClass        = new \ReflectionClass($mockDBTrait);
-        $fixtureManagerProperty = $reflectionClass->getProperty('fixtureManager');
+        $fixtureManagerProperty = $reflectionClass->getParentClass()->getProperty('fixtureManager');
         $fixtureManagerProperty->setAccessible(true);
         $fixtureManagerProperty->setValue($mockDBTrait, $fixtureManager);
 
@@ -234,7 +233,7 @@ class DBTraitTest extends \PHPUnit_Framework_TestCase
         ;
 
         $reflectionClass        = new \ReflectionClass($mockDBTrait);
-        $fixtureManagerProperty = $reflectionClass->getProperty('fixtureManager');
+        $fixtureManagerProperty = $reflectionClass->getParentClass()->getProperty('fixtureManager');
         $fixtureManagerProperty->setAccessible(true);
         $fixtureManagerProperty->setValue($mockDBTrait, $fixtureManager);
 
@@ -318,7 +317,7 @@ class DBTraitTest extends \PHPUnit_Framework_TestCase
         ;
 
         $reflectionClass        = new \ReflectionClass($mockDBTrait);
-        $fixtureManagerProperty = $reflectionClass->getProperty('fixtureManager');
+        $fixtureManagerProperty = $reflectionClass->getParentClass()->getProperty('fixtureManager');
         $fixtureManagerProperty->setAccessible(true);
         $fixtureManagerProperty->setValue($mockDBTrait, $fixtureManager);
 
