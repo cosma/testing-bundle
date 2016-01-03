@@ -95,8 +95,8 @@ cosma_testing:
 
 Supports following test cases:
 
-* SimpleTestCase
-* WebTestCase
+* [Simple Test Case](#simple-test-case)
+* [Web Test Case](#web-test-case)
 * DBTestCase
 * SolrTestCase
 * ElasticTestCase
