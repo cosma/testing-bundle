@@ -479,9 +479,9 @@ You can easily dump Database data to Yaml fixture files with the command cosma_t
     # Argument :: entity  - if not specified will save all entities : default *
     # Option :: --associations / -a - saves the associations between entities, too
         
-    $   php app/console cosma_testing:fixtures:dump [-a|--associations] dumpDirectory [entity]
+    $   php app/console cosma_testing:fixtures:export [-a|--associations] dumpDirectory [entity]
     
-    $   php app/console cosma_testing:fixtures:dump -a "path/to/dump/directory" BundleName:Entity
+    $   php app/console cosma_testing:fixtures:export -a "path/to/dump/directory" BundleName:Entity
 ```
 
 
@@ -493,7 +493,7 @@ You can easily import Yaml fixture to Database with command h4cc_alice_fixtures:
     # Option :: --drop / -d : drop and create schema before loading
     # Option :: --no-persist / - np :  persist loaded entities in database
          
-    $   php app/console h4cc_alice_fixtures:load:files [--drop] /path/to/fixtureFileOne.yml  /path/to/fixtureFileTwo.yml
+    $   php app/console cosma_testing:fixtures:import [--drop] /path/to/fixtureFileOne.yml  /path/to/fixtureFileTwo.yml
 ```
 
 
