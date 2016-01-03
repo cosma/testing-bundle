@@ -93,13 +93,13 @@ cosma_testing:
 ## Test Cases
 
 
-Supports following test cases:
+Supports the following Test Cases:
 
 * [Simple Test Case](#simple-test-case)
 * [Web Test Case](#web-test-case)
 * [DB Test Case](#db-test-case)
-* [Solr Test Case](#dolr-test-case)
-* [Elastic Test Case](#elastic-test-case)
+* [Solr Test Case](#solr-test-case)
+* [Elastic Search Test Case](#elastic-search-test-case)
 * [Selenium Test Case](#selenium-test-case)
 * [Composed Test Case](#composed-test-case)
 
