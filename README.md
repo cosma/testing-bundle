@@ -19,7 +19,7 @@ The Testing Bundle offers loading Fixtures from .yml ,  dropping and recreating 
  - [Installation](#installation)
  - [Configuration](#configuration)
  - [Usage](#usage)
- - [Fixture](#fixture)
+ - [Fixtures](#fixtures)
  - [Advanced Usage](#advanced-usage)
  - [Run Tests](#run-tests)
  - [License](#license)
