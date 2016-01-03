@@ -97,10 +97,11 @@ Supports following test cases:
 
 * [Simple Test Case](#simple-test-case)
 * [Web Test Case](#web-test-case)
-* DBTestCase
-* SolrTestCase
-* ElasticTestCase
-* SeleniumTestCase
+* [DB Test Case](#db-test-case)
+* [Solr Test Case](#dolr-test-case)
+* [Elastic Test Case](#elastic-test-case)
+* [Selenium Test Case](#selenium-test-case)
+* [Composed Test Case](#composed-test-case)
 
 
 ### Simple Test Case
