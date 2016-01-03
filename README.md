@@ -1,5 +1,5 @@
-Testing Bundle
-================
+# Testing Bundle
+
 
 
 [![Circle CI](https://circleci.com/gh/cosma/testing-bundle.svg?style=svg)](https://circleci.com/gh/cosma/testing-bundle)
@@ -15,6 +15,7 @@ Supports following test cases:
 
 * SimpleTestCase
 * WebTestCase
+* DBTestCase
 * SolrTestCase
 * ElasticTestCase
 * SeleniumTestCase
@@ -102,12 +103,13 @@ This case is an extension of PHPUnit_Framework_TestCase, with two extra simple m
 
 * **getMockedEntityWithId** ($entity, $id)
 * **getEntityWithId** ($entity, $id)
+* **getTestClassPath** ()
 
 
 ```php
 use Cosma\Bundle\TestingBundle\TestCase\SimpleTestCase;
  
-class SomeUnitTest extends SimpleTestCase
+class SomeVerySimpleUnitTest extends SimpleTestCase
 {
     public function testSomething()
     {
@@ -118,26 +120,23 @@ class SomeUnitTest extends SimpleTestCase
         $userFullNamespace = $this->getEntityWithId('Acme\AppBundle\Entity\User', 3);
                 
         $userBundleNamespace = $this->getEntityWithId('AppBundle:User', 4); 
+        
+        $thisTestClassPath = $this->getTestClassPath(); 
     }
 }
 ```
  
-
-
 #### Web Test Case
-This case is an extension of Symfony WebTestCase, the functional test case in Symfony2 
+This case is an extension of Symfony2 WebTestCase -  Symfony\Bundle\FrameworkBundle\Test\WebTestCase
 It has the following methods:
 
-* **loadTableFixtures** (array $fixtures, $dropDatabaseBefore = true)
-* **loadTestFixtures** (array $fixtures, $dropDatabaseBefore = true)
-* **loadCustomFixtures** (array $fixtures, $dropDatabaseBefore = true)
-* **getClient** ()
+* **getKernel** ()
 * **getContainer** ()
-* **getEntityManager** ()
-* **getEntityRepository** ()
+* **getClient** (array $server)
 
-* **getMockedEntityWithId** ($entityNamespaceClass, $id)
-* **getEntityWithId** ($entityNamespaceClass, $id)
+* **getMockedEntityWithId** ($entity, $id)
+* **getEntityWithId** ($entity, $id)
+* **getTestClassPath** ()
 
 
 
@@ -145,68 +144,131 @@ It has the following methods:
 ```php
 use Cosma\Bundle\TestingBundle\TestCase\WebTestCase;
 
-class SomeFunctionalTest extends WebTestCase
+class SomeWebFunctionalTest extends WebTestCase
 {
     public function setUp()
     {
         /**
-         * Boot the Symfony kernel
-         */
+        * Required call that boots the Symfony kernel
+        */
         parent::setUp();
-
-        /**
-         * Fixtures loaded the table directory where mostly resides data for DB tables
-         * Data from one table is in one file.
-         */
-        $this->loadTableFixtures(array('User', 'Group'));
-
-        /**
-         * Fixtures from test specific directory path.
-         * Every test has its own file.
-         */
-        $this->loadTestFixtures(array('Car', 'Series'), false );
-
-        /**
-         *  Custom path fixture with
-         *  No database dropping(default behaviour)
-         */
-        $this->loadCustomFixtures(array('/var/www/Acme/BundleDemo/Fixture/Colleague'), false);
-
     }
 
     /**
-     * @see SomeFunctional::Something
+     * @see SomeWebFunctional::Something
+     */
+    public function testSomething()
+    {
+        $kernel = $this->getKernel();
+        
+        $container = $this->getContainer();
+            
+        // Client for functional tests. Emulates a browser
+        $client = $this->getClient();
+
+        $mockedUserFullNamespace = $this->getMockedEntityWithId('Acme\AppBundle\Entity\User', 1);
+                
+        $mockedUserBundleNamespace = $this->getMockedEntityWithId('AppBundle:User', 2);
+         
+        $userFullNamespace = $this->getEntityWithId('Acme\AppBundle\Entity\User', 3);
+                
+        $userBundleNamespace = $this->getEntityWithId('AppBundle:User', 4); 
+        
+        $thisTestClassPath = $this->getTestClassPath();
+    }
+}
+```
+
+#### DB Test Case
+This case is an extension of Symfony WebTestCase with DB nd fixtures support  
+It has the following methods:
+
+* **dropDatabase** ()
+* **loadFixtures** (array $fixtures, $dropDatabaseBefore = true)
+* **getEntityManager** ()
+* **getEntityRepository** ($entity)
+* **getFixtureManager** ()
+
+* **getKernel** ()
+* **getContainer** ()
+* **getClient** (array $server)
+* **getMockedEntityWithId** ($entity, $id)
+* **getEntityWithId** ($entity, $id)
+* **getTestClassPath** ()
+
+
+
+
+```php
+use Cosma\Bundle\TestingBundle\TestCase\WebTestCase;
+
+class SomeFunctionalWebDBTest extends WebTestCase
+{
+    public function setUp()
+    {
+        /**
+        * Required call that boots the Symfony kernel
+        */
+        parent::setUp();
+        
+        /**
+        * drops database tables before every test. 
+        * has two strategies set by parameter cosma_testing.doctrine.cleaning_strategy:
+        * 1. truncate (default,  faster)
+        * 2. drop     (actual drop, slower)
+        */
+        $this->dropDatabase();
+
+        /**
+         * 1. Truncates the tables user and group(default behaviour)
+         * 2. Loads two fixtures files located in src/AppBundle/Fixture/Table/User.yml and src/AnotherBundle/Fixture/Table/Group.yml
+         * 
+         */
+        $this->loadFixtures(
+                        [
+                            'AppBundle:Table:User', 
+                            'AnotherBundle:Table:Group'
+                        ]
+        );
+
+        /**
+         * Loads a fixtures file located in src/SomeBundle/Fixture/SomeDirectory/Book.yml
+         * Doesn't truncate the table 
+         */
+        $this->loadFixtures(
+                        [
+                            'SomeBundle:SomeDirectory:Book'
+                        ],
+                        false
+        );
+    }
+
+    /**
+     * @see SomeFunctionalWebDB::Something
      */
     public function testSomething()
     {
         /**
          * Fixtures can be load inside a test, too.
          */
-        $this->loadTableFixtures(array('Favorite', 'Music'));
+        $this->loadFixtures(['SomeBundle:SomeDirectory:Author']);
 
-
-        $mockedUserAbsolute = $this->getMockedEntityWithId('Acme\DemoBundle\Entity\User', 11);
-
-        $mockedUserRelative = $this->getMockedEntityWithId('User', 1200);
-
-        $userAbsolute = $this->getEntityWithId('Acme\DemoBundle\Entity\User', 134);
-
-        $userRelative = $this->getEntityWithId('User', 12);
-
-        /**
-         *  Client for functional tests. Emulates a browser
-         */
+        $kernel = $this->getKernel();
+                
+        $container = $this->getContainer();
+            
+        // Client for functional tests. Emulates a browser
         $client = $this->getClient();
 
-        /**
-         *  EntityManager - Doctrine
-         */
-        $entityManager = $this->getEntityManger();
-
-        /**
-         *  EntityRepository for User
-         */
-        $userRepository = $this->getEntityRepository('User');
+        $mockedUserFullNamespace = $this->getMockedEntityWithId('Acme\AppBundle\Entity\User', 1);
+                
+        $mockedUserBundleNamespace = $this->getMockedEntityWithId('AppBundle:User', 2);
+         
+        $userFullNamespace = $this->getEntityWithId('Acme\AppBundle\Entity\User', 3);
+                
+        $userBundleNamespace = $this->getEntityWithId('AppBundle:User', 4); 
+        
+        $thisTestClassPath = $this->getTestClassPath();
     }
 }
 ```

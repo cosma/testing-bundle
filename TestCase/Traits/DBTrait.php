@@ -42,13 +42,13 @@ trait DBTrait
     }
 
     /**
-     * @param $entityName
+     * @param $entity
      *
      * @return \Doctrine\ORM\EntityRepository
      */
-    protected function getEntityRepository($entityName)
+    protected function getEntityRepository($entity)
     {
-        return $this->getEntityManager()->getRepository($entityName);
+        return $this->getEntityManager()->getRepository($entity);
     }
 
     /**
