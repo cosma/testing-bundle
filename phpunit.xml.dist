@@ -29,7 +29,6 @@
                 <directory>./vendor</directory>
                 <directory>./Resources</directory>
                 <directory>./Tests</directory>
-                <directory>./Tests/bootstrap.php</directory>
             </exclude>
         </whitelist>
     </filter>
