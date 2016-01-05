@@ -464,9 +464,11 @@ Supports following test cases:
 All composed TestCases can use one or more traits and extends Cosma\Bundle\TestingBundle\TestCase\WebTestCase 
 
 ```php
-namespace Acme\AppBundle\Testing\TestCase;
+namespace Acme\AppBundle\TestCase;
 
 use Cosma\Bundle\TestingBundle\TestCase\WebTestCase;
+
+// add the rest of traits
 use Cosma\Bundle\TestingBundle\TestCase\Traits\DBTrait;
 use Cosma\Bundle\TestingBundle\TestCase\Traits\ElasticTrait;
 use Cosma\Bundle\TestingBundle\TestCase\Traits\SeleniumTrait;

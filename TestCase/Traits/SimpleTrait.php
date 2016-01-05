@@ -13,7 +13,10 @@
 
 namespace Cosma\Bundle\TestingBundle\TestCase\Traits;
 
+use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityNotFoundException;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 trait SimpleTrait
 {
@@ -42,11 +45,17 @@ trait SimpleTrait
                                ->getClassName()
             ;
         } elseif (method_exists($this, 'getContainer')) {
-            $entityName = $this->getContainer()
-                               ->get('doctrine.orm.entity_manager')
-                               ->getRepository($entityName)
-                               ->getClassName()
-            ;
+            $container = $this->getContainer();
+
+            if ($container instanceof ContainerInterface) {
+                $entityManager = $container->get('doctrine.orm.entity_manager');
+                if ($entityManager instanceof EntityManager) {
+                    $entityName = $entityManager
+                        ->getRepository($entityName)
+                        ->getClassName()
+                    ;
+                }
+            }
         }
 
         if (!class_exists($entityName)) {
