@@ -36,8 +36,17 @@ trait SimpleTrait
      */
     protected function getMockedEntityWithId($entityName, $id)
     {
-        if(method_exists($this,'getEntityManager')){
-            $entityName = $this->getEntityManager()->getRepository($entityName)->getClassName();
+        if (method_exists($this, 'getEntityManager')) {
+            $entityName = $this->getEntityManager()
+                               ->getRepository($entityName)
+                               ->getClassName()
+            ;
+        } elseif (method_exists($this, 'getContainer')) {
+            $entityName = $this->getContainer()
+                               ->get('doctrine.orm.entity_manager')
+                               ->getRepository($entityName)
+                               ->getClassName()
+            ;
         }
 
         if (!class_exists($entityName)) {
@@ -45,10 +54,10 @@ trait SimpleTrait
         }
 
         $entityModel = $this->getMock($entityName, ['getId']);
-        $entityModel
-            ->expects($this->any())
-            ->method('getId')
-            ->will($this->returnValue($id))
+
+        $entityModel->expects($this->any())
+                    ->method('getId')
+                    ->will($this->returnValue($id))
         ;
 
         return $entityModel;
@@ -63,7 +72,7 @@ trait SimpleTrait
      */
     protected function getEntityWithId($entityName, $id)
     {
-        if(method_exists($this,'getEntityManager')){
+        if (method_exists($this, 'getEntityManager')) {
             $entityName = $this->getEntityManager()->getRepository($entityName)->getClassName();
         }
 

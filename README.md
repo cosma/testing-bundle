@@ -483,6 +483,7 @@ abstract class ComposedTestCase extends WebTestCase
     public function setUp()
     {
         parent::setUp();
+        
         $this->getFixtureManager();     // from DBTrait
         $this->recreateIndex();         // from ElasticTrait
         $this->getRemoteWebDriver();    // from SeleniumTrait
