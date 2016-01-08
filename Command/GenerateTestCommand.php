@@ -105,10 +105,10 @@ EOT
             $question = new ConfirmationQuestion("<question>Generate Test file for class $class ? </question> y/n (y): ", true);
             if ($this->questionHelper->ask($input, $output, $question)) {
 
-                $this->createTestFile($class);
+                $testFilePath = $this->createTestFile($class);
 
                 $this->output->writeln("");
-                $this->output->writeln("<info>Test file for class $class was generated</info>");
+                $this->output->writeln("<info>Test file for class $class was generated in $testFilePath </info>");
                 $this->output->writeln("");
                 $this->output->writeln("");
             }
@@ -161,6 +161,8 @@ EOT
 
     /**
      * @param string $class
+     *
+     * @return string
      */
     private function createTestFile($class)
     {
@@ -184,6 +186,8 @@ EOT
         fwrite($fileHandle, $this->generateTestContent($reflectionClass));
 
         fclose($fileHandle);
+
+        return $testFileName;
     }
 
     /**
@@ -330,7 +334,7 @@ EOD;
         $testDirectory = dirname($testFileName);
 
         if (!is_dir($testDirectory)) {
-            mkdir($testDirectory, '0755', 1);
+            mkdir($testDirectory, '0777', 1);
         }
 
         return $testDirectory;
