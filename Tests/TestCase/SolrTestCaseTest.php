@@ -114,7 +114,7 @@ class SolrTestCaseTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->setMethods(array('getContainer'))
             ->getMockForAbstractClass();
-        $kernel->expects($this->exactly(6))
+        $kernel->expects($this->exactly(5))
             ->method('getContainer')
             ->will($this->returnValue($container));
 
