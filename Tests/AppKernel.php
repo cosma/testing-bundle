@@ -15,13 +15,31 @@
 
 namespace Cosma\Bundle\TestingBundle\Tests;
 
+use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\HttpKernel\HttpKernel;
 
 class AppKernel extends HttpKernel
 {
     public function __construct(){}
+
+    /**
+     * @return array
+     */
+    public function registerBundles()
+    {
+        return [];
+    }
+    /**
+     * @param \Symfony\Component\Config\Loader\LoaderInterface $loader
+     */
+    public function registerContainerConfiguration(LoaderInterface $loader)
+    {
+    }
     public function boot(){}
     public function shutdown(){}
     public function getBundles(){}
+    public function getContainer()
+    {
+    }
 
 }

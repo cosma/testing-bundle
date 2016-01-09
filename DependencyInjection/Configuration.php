@@ -14,7 +14,7 @@
 
 namespace Cosma\Bundle\TestingBundle\DependencyInjection;
 
-use Cosma\Bundle\TestingBundle\ORM\SchemaTool;
+use Cosma\Bundle\TestingBundle\ORM\DoctrineORMSchemaTool;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
 
@@ -42,10 +42,10 @@ class Configuration implements ConfigurationInterface
                     ->canBeUnset()
                     ->children()
                         ->enumNode('cleaning_strategy')
-                            ->defaultValue(SchemaTool::DOCTRINE_CLEANING_TRUNCATE)
+                            ->defaultValue(DoctrineORMSchemaTool::DOCTRINE_CLEANING_TRUNCATE)
                             ->values(array(
-                                SchemaTool::DOCTRINE_CLEANING_TRUNCATE,
-                                SchemaTool::DOCTRINE_CLEANING_DROP
+                                DoctrineORMSchemaTool::DOCTRINE_CLEANING_TRUNCATE,
+                                DoctrineORMSchemaTool::DOCTRINE_CLEANING_DROP
                             ))
                         ->end()
                     ->end()
