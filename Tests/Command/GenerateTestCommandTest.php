@@ -57,49 +57,4 @@ class GenerateTestCommandTest extends \PHPUnit_Framework_TestCase
         $configureMethod->setAccessible(true);
         $configureMethod->invoke($command);
     }
-
-    /**
-     * @see GenerateTestCommand::execute
-     */
-    public function testExecute()
-    {
-        $managerMock = $this->getMockBuilder('\h4cc\AliceFixturesBundle\Fixtures\FixtureManagerInterface')
-                            ->setMethods(['load', 'createFixtureSet'])
-                            ->getMockForAbstractClass()
-        ;
-
-        $managerMock->expects($this->any())->method('createFixtureSet')->will(
-            $this->returnValue(new FixtureSet())
-        )
-        ;
-
-        $application = new Application();
-        $application->add(new GenerateTestCommand());
-
-        $container = new Container();
-        $container->set('h4cc_alice_fixtures.manager', $managerMock);
-
-        /** @type GenerateTestCommand $command */
-        $command = $application->find('cosma_testing:generate:test');
-        $command->setContainer($container);
-
-        $this->assertEquals(['cosma_testing:make:test'], $command->getAliases(), 'command is wrong');
-
-        $temporaryFile = tmpfile();
-
-        $input = new StringInput("cosma_testing:generate:test --file=tmp ");
-
-        print_r($input->getArguments());
-
-//        $argument = $input->hasArgument('hoho');
-//
-//        var_dump($argument);
-//        die();
-
-        //$input->setArgument('file', 'dsadda');
-
-        $output = new StreamOutput($temporaryFile);
-         //
-        $result = $command->execute($input, $output);
-    }
 }
