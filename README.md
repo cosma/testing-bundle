@@ -93,6 +93,16 @@ cosma_testing:
 ```
 
 
+## Generate Test Class
+
+With the command cosma_testing:generate:test you can generate stub Test Classes for classes and traits from a php file.
+
+```bash
+    # Argument :: file - required
+        
+    $   php app/console cosma_testing:generate:test  /path/to/file/containing/classes_or_traits.php
+```
+
 
 ## Usage
 
