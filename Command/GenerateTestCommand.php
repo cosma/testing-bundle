@@ -48,6 +48,7 @@ class GenerateTestCommand extends ContainerAwareCommand
         'SolrTestCase',
         'SeleniumTestCase',
         'CommandTestCase',
+        'RedisTestCase',
     ];
 
     /**

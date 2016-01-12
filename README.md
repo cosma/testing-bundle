@@ -18,6 +18,7 @@ The Testing Bundle offers loading Fixtures from .yml ,  dropping and recreating 
 # Table of Contents
  - [Installation](#installation)
  - [Configuration](#configuration)
+ - [Generate Test Class](#generate-test-class)
  - [Test Cases](#test-cases)
  - [Fixtures](#fixtures)
  - [Advanced Usage](#advanced-usage)
@@ -92,6 +93,16 @@ cosma_testing:
         timeout: 5      
 ```
 
+
+# Generate Test Class
+
+With the command cosma_testing:generate:test you can generate stub Test Classes for classes and traits from a php file.
+
+```bash
+    # Argument :: file - required
+        
+    $   php app/console cosma_testing:generate:test  /path/to/file/containing/classes_or_traits.php
+```
 
 
 # Test Cases
