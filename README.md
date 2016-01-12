@@ -83,7 +83,13 @@ cosma_testing:
         index: test
     selenium:
         remote_server_url: http://127.0.0.1:4444/wd/hub
-        test_domain: example.com    
+        test_domain: example.com   
+    redis:
+        scheme: tcp
+        host: 127.0.0.1
+        port: 6379
+        database: 13
+        timeout: 5      
 ```
 
 
@@ -99,6 +105,7 @@ Supports the following Test Cases:
 * [Solr Test Case](#solr-test-case)
 * [Elastic Search Test Case](#elastic-search-test-case)
 * [Selenium Test Case](#selenium-test-case)
+* [Redis Test Case](#redis-test-case)
 * [Composed Test Cases](#composed-test-cases)
 
 
@@ -450,6 +457,38 @@ class SomeSeleniumTest extends SeleniumTestCase
 ```
 
 
+## Redis Test Case
+This case is an extension of WebTestCase, with extra Redis support
+It has the following methods:
+
+* **getRedisClient** ()
+
+```php
+use Cosma\Bundle\TestingBundle\TestCase\RedisTestCase;
+
+class SomeSeleniumTest extends RedisTestCase
+{
+
+    public function setUp()
+    {
+        /**
+        * Required call that boots the Symfony kernel and initialize selenium remote web driver
+        */
+        parent::setUp();
+    }
+
+    /**
+     * read title from google site
+     */
+    public function testGoogleTitle()
+    {
+        $redisClient = $this->getRedisClient();
+        
+        $redisClient->set('key' , 'value');
+    }
+}
+```
+
 ## Composed Test Cases
 You can build composed Test Cases using the following defined traits under \Cosma\Bundle\TestingBundle\TestCase\Traits:
 Supports following test cases:
@@ -458,8 +497,10 @@ Supports following test cases:
 * DBTrait
 * CommandTrait
 * ElasticTrait
-* SeleniumTrait
 * SolrTrait
+* SeleniumTrait
+* RedisTrait
+
 
 All composed TestCases can use one or more traits and extends Cosma\Bundle\TestingBundle\TestCase\WebTestCase 
 
@@ -472,6 +513,7 @@ use Cosma\Bundle\TestingBundle\TestCase\WebTestCase;
 use Cosma\Bundle\TestingBundle\TestCase\Traits\DBTrait;
 use Cosma\Bundle\TestingBundle\TestCase\Traits\ElasticTrait;
 use Cosma\Bundle\TestingBundle\TestCase\Traits\SeleniumTrait;
+use Cosma\Bundle\TestingBundle\TestCase\Traits\RedisTrait;
 
 abstract class ComposedTestCase extends WebTestCase
 {
@@ -481,6 +523,7 @@ abstract class ComposedTestCase extends WebTestCase
     use DBTrait;
     use ElasticTrait;
     use SeleniumTrait;
+    use RedisTrait;
     
     public function setUp()
     {
@@ -489,6 +532,7 @@ abstract class ComposedTestCase extends WebTestCase
         $this->getFixtureManager();     // from DBTrait
         $this->recreateIndex();         // from ElasticTrait
         $this->getRemoteWebDriver();    // from SeleniumTrait
+        $this->resetRedisDatabase();    // from RedisTrait
     }
 }
 ```

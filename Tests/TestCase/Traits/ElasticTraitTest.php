@@ -43,13 +43,13 @@ class ElasticTraitTest extends \PHPUnit_Framework_TestCase
         ;
 
         $testCaseTrait = $this->getMockBuilder('\Cosma\Bundle\TestingBundle\TestCase\Traits\ElasticTrait')
-                          ->disableOriginalConstructor()
-                          ->setMethods(['getKernel'])
-                          ->getMockForTrait()
+                              ->disableOriginalConstructor()
+                              ->setMethods(['getKernel'])
+                              ->getMockForTrait()
         ;
         $testCaseTrait->expects($this->any())
-                  ->method('getKernel')
-                  ->will($this->returnValue($kernel))
+                      ->method('getKernel')
+                      ->will($this->returnValue($kernel))
         ;
 
         $reflectionClass = new \ReflectionClass($testCaseTrait);
@@ -80,18 +80,28 @@ class ElasticTraitTest extends \PHPUnit_Framework_TestCase
             $elasticClient->getConfig()
         );
 
-        return [ $testCaseTrait, $reflectionClass, $kernel];
+        return [$testCaseTrait, $reflectionClass, $kernel, $container];
     }
 
     /**
-     * @see \Cosma\Bundle\TestingBundle\TestCase\Traits\ElasticTrait::getElasticIndex
+     * @see     \Cosma\Bundle\TestingBundle\TestCase\Traits\ElasticTrait::getElasticIndex
      *
      * @depends testGetElasticClient
      */
     public function testGetElasticIndex(array $options)
     {
         /** @type \ReflectionClass $reflectionClass */
-        list($testCaseTrait, $reflectionClass) = $options;
+        list($testCaseTrait, $reflectionClass, $kernel, $container) = $options;
+
+        $kernel->expects($this->any())
+               ->method('getContainer')
+               ->will($this->returnValue($container))
+        ;
+
+        $testCaseTrait->expects($this->any())
+                      ->method('getKernel')
+                      ->will($this->returnValue($kernel))
+        ;
 
         $reflectionMethod = $reflectionClass->getMethod('getElasticIndex');
         $reflectionMethod->setAccessible(true);
@@ -103,11 +113,11 @@ class ElasticTraitTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('test_index', $elasticIndex->getName()
         );
 
-        return [ $testCaseTrait, $reflectionClass];
+        return [$testCaseTrait, $reflectionClass];
     }
 
     /**
-     * @see \Cosma\Bundle\TestingBundle\TestCase\Traits\ElasticTrait::recreateIndex
+     * @see     \Cosma\Bundle\TestingBundle\TestCase\Traits\ElasticTrait::recreateIndex
      *
      * @depends testGetElasticIndex
      */
@@ -117,16 +127,16 @@ class ElasticTraitTest extends \PHPUnit_Framework_TestCase
         list($testCaseTrait, $reflectionClass) = $options;
 
         $elasticIndex = $this->getMockBuilder('\Elastica\Index')
-                               ->disableOriginalConstructor()
-                               ->setMethods(['exists', 'delete', 'create'])
-                               ->getMockForAbstractClass()
+                             ->disableOriginalConstructor()
+                             ->setMethods(['exists', 'delete', 'create'])
+                             ->getMockForAbstractClass()
         ;
         $elasticIndex->expects($this->once())
-                       ->method('exists')
-                       ->will($this->returnValue(true))
+                     ->method('exists')
+                     ->will($this->returnValue(true))
         ;
         $elasticIndex->expects($this->once())
-                       ->method('delete')
+                     ->method('delete')
         ;
         $elasticIndex->expects($this->once())
                      ->method('create')
@@ -142,7 +152,7 @@ class ElasticTraitTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @see \Cosma\Bundle\TestingBundle\TestCase\Traits\ElasticTrait::recreateIndex
+     * @see     \Cosma\Bundle\TestingBundle\TestCase\Traits\ElasticTrait::recreateIndex
      *
      * @depends testGetElasticIndex
      */
