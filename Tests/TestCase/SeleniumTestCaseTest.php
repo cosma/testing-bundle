@@ -21,7 +21,7 @@ use Facebook\WebDriver\Exception\WebDriverCurlException;
 class SeleniumTestCaseTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @see SeleniumTestCase::setUp
+     * @covers SeleniumTestCase::setUp
      */
     public function testSetUp()
     {
@@ -65,7 +65,7 @@ class SeleniumTestCaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @see SeleniumTestCase::tearDown
+     * @covers SeleniumTestCase::tearDown
      */
     public function testTearDown()
     {
@@ -110,7 +110,7 @@ class SeleniumTestCaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @see SeleniumTestCase::getWebDriver
+     * @covers SeleniumTestCase::getWebDriver
      */
     public function testGetWebDriver()
     {
@@ -138,7 +138,7 @@ class SeleniumTestCaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @see SeleniumTestCase::getWebDriver
+     * @covers SeleniumTestCase::getWebDriver
      *
      * @expectedException \Facebook\WebDriver\Exception\WebDriverCurlException
      */
@@ -183,7 +183,7 @@ class SeleniumTestCaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @see SeleniumTestCase::open
+     * @covers SeleniumTestCase::open
      */
     public function testOpen()
     {
@@ -243,7 +243,7 @@ class SeleniumTestCaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @see SeleniumTestCase::getDomain
+     * @covers SeleniumTestCase::getDomain
      */
     public function testGetDomain()
     {

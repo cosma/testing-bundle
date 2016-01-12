@@ -26,7 +26,7 @@ use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 class WebTestCaseTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @see Cosma\Bundle\TestingBundle\TestCase\WebTestCase
+     * @covers Cosma\Bundle\TestingBundle\TestCase\WebTestCase
      */
     public function testStaticAttributes()
     {
@@ -36,7 +36,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @see SolrTestCase::setUpBeforeClass
+     * @covers SolrTestCase::setUpBeforeClass
      */
     public function testSetUpBeforeClass()
     {
@@ -85,7 +85,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @see SolrTestCase::setUp
+     * @covers SolrTestCase::setUp
      */
     public function testSetUp()
     {
@@ -115,7 +115,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @see Cosma\Bundle\TestingBundle\TestCase\WebTestCase::tearDownAfterClass
+     * @covers Cosma\Bundle\TestingBundle\TestCase\WebTestCase::tearDownAfterClass
      */
     public function testTearDownAfterClass()
     {
@@ -156,7 +156,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @see Cosma\Bundle\TestingBundle\TestCase\WebTestCase::getClient
+     * @covers Cosma\Bundle\TestingBundle\TestCase\WebTestCase::getClient
      */
     public function testGetClient()
     {
@@ -205,7 +205,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @see Cosma\Bundle\TestingBundle\TestCase\WebTestCase::getEntityManager
+     * @covers Cosma\Bundle\TestingBundle\TestCase\WebTestCase::getEntityManager
      */
     public function testGetEntityManager()
     {
@@ -263,7 +263,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @see Cosma\Bundle\TestingBundle\TestCase\WebTestCase::getEntityRepository
+     * @covers Cosma\Bundle\TestingBundle\TestCase\WebTestCase::getEntityRepository
      */
     public function testGetEntityRepository()
     {
@@ -329,7 +329,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @see Cosma\Bundle\TestingBundle\TestCase\WebTestCase::getEntityRepository
+     * @covers Cosma\Bundle\TestingBundle\TestCase\WebTestCase::getEntityRepository
      */
     public function testGetEntityRepository_ShortName()
     {
@@ -407,7 +407,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @see Cosma\Bundle\TestingBundle\TestCase\WebTestCase::getMockedEntityWithId
+     * @covers Cosma\Bundle\TestingBundle\TestCase\WebTestCase::getMockedEntityWithId
      * @expectedException \Doctrine\ORM\EntityNotFoundException
      */
     public function testGetMockedEntityWithId_Exception()
@@ -423,7 +423,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @see Cosma\Bundle\TestingBundle\TestCase\WebTestCase::getMockedEntityWithId
+     * @covers Cosma\Bundle\TestingBundle\TestCase\WebTestCase::getMockedEntityWithId
      */
     public function testGetMockedEntityWithId_FullNamespace()
     {
@@ -447,7 +447,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @see Cosma\Bundle\TestingBundle\TestCase\WebTestCase::getMockedEntityWithId
+     * @covers Cosma\Bundle\TestingBundle\TestCase\WebTestCase::getMockedEntityWithId
      */
     public function testGetMockedEntityWithId_BundleAndEntity()
     {
@@ -535,7 +535,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @see Cosma\Bundle\TestingBundle\TestCase\WebTestCase::getMockedEntityWithId
+     * @covers Cosma\Bundle\TestingBundle\TestCase\WebTestCase::getMockedEntityWithId
      */
     public function testGetMockedEntityWithId_Entity()
     {
@@ -624,7 +624,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @see Cosma\Bundle\TestingBundle\TestCase\WebTestCase::getEntityWithId
+     * @covers Cosma\Bundle\TestingBundle\TestCase\WebTestCase::getEntityWithId
      * @expectedException \Doctrine\ORM\EntityNotFoundException
      */
     public function testGetEntityWithId_Exception()
@@ -640,7 +640,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @see Cosma\Bundle\TestingBundle\TestCase\WebTestCase::getEntityWithId
+     * @covers Cosma\Bundle\TestingBundle\TestCase\WebTestCase::getEntityWithId
      */
     public function testGetEntityWithId_FullNamespace()
     {
@@ -661,7 +661,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @see Cosma\Bundle\TestingBundle\TestCase\WebTestCase::getEntityWithId
+     * @covers Cosma\Bundle\TestingBundle\TestCase\WebTestCase::getEntityWithId
      */
     public function testGetEntityWithId_BundleAndEntity()
     {
@@ -749,7 +749,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @see Cosma\Bundle\TestingBundle\TestCase\WebTestCase::getEntityWithId
+     * @covers Cosma\Bundle\TestingBundle\TestCase\WebTestCase::getEntityWithId
      */
     public function testGetEntityWithId_Entity()
     {
@@ -838,7 +838,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @see Cosma\Bundle\TestingBundle\TestCase\WebTestCase::loadTableFixtures
+     * @covers Cosma\Bundle\TestingBundle\TestCase\WebTestCase::loadTableFixtures
      *
      * @expectedException InvalidArgumentException
      */
@@ -856,7 +856,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @see Cosma\Bundle\TestingBundle\TestCase\WebTestCase::loadTableFixtures
+     * @covers Cosma\Bundle\TestingBundle\TestCase\WebTestCase::loadTableFixtures
      */
     public function testLoadTableFixtures()
     {
@@ -933,7 +933,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @see Cosma\Bundle\TestingBundle\TestCase\WebTestCase::loadTestFixtures
+     * @covers Cosma\Bundle\TestingBundle\TestCase\WebTestCase::loadTestFixtures
      *
      * @expectedException InvalidArgumentException
      */
@@ -951,7 +951,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @see Cosma\Bundle\TestingBundle\TestCase\WebTestCase::loadTestFixtures
+     * @covers Cosma\Bundle\TestingBundle\TestCase\WebTestCase::loadTestFixtures
      */
     public function testLoadTestFixtures()
     {
@@ -1032,7 +1032,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @see Cosma\Bundle\TestingBundle\TestCase\WebTestCase::loadCustomFixtures
+     * @covers Cosma\Bundle\TestingBundle\TestCase\WebTestCase::loadCustomFixtures
      *
      * @expectedException InvalidArgumentException
      */
@@ -1050,7 +1050,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @see Cosma\Bundle\TestingBundle\TestCase\WebTestCase::loadCustomFixtures
+     * @covers Cosma\Bundle\TestingBundle\TestCase\WebTestCase::loadCustomFixtures
      */
     public function testLoadCustomFixtures()
     {

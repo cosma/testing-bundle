@@ -20,7 +20,7 @@ use Symfony\Component\Console\Input\StringInput;
 class CommandTestCaseTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @see CommandTestCase::setUp
+     * @covers CommandTestCase::setUp
      */
     public function testSetUp()
     {
@@ -55,7 +55,7 @@ class CommandTestCaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @see CommandTestCase::executeCommand
+     * @covers CommandTestCase::executeCommand
      */
     public function testExecuteCommand()
     {
@@ -91,7 +91,7 @@ class CommandTestCaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @see CommandTestCase::getApplication
+     * @covers CommandTestCase::getApplication
      */
     public function testGetApplication()
     {

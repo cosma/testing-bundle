@@ -22,7 +22,7 @@ class DumperTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
-     * @see Cosma\Bundle\TestingBundle\Fixture\Dumper::getData
+     * @covers Cosma\Bundle\TestingBundle\Fixture\Dumper::getData
      */
     public function testGetData_NoAssociation()
     {
@@ -104,7 +104,7 @@ class DumperTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @see Cosma\Bundle\TestingBundle\Fixture\Dumper::getData
+     * @covers Cosma\Bundle\TestingBundle\Fixture\Dumper::getData
      */
     public function testGetData_WithAssociation()
     {
@@ -187,7 +187,7 @@ class DumperTest extends \PHPUnit_Framework_TestCase
 
 
     /**
-     * @see Cosma\Bundle\TestingBundle\Fixture\Dumper::dumpToYaml
+     * @covers Cosma\Bundle\TestingBundle\Fixture\Dumper::dumpToYaml
      */
     public function testDumpToYaml()
     {

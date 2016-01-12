@@ -20,7 +20,7 @@ use Solarium\Client;
 class SolrTestCaseTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @see SolrTestCase
+     * @covers SolrTestCase
      */
     public function testStaticAttributes()
     {
@@ -28,7 +28,7 @@ class SolrTestCaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @see SolrTestCase::setUp
+     * @covers SolrTestCase::setUp
      */
     public function testSetUp()
     {
@@ -90,7 +90,7 @@ class SolrTestCaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @see SolrTestCase::getSolariumClient
+     * @covers SolrTestCase::getSolariumClient
      */
     public function testGetSolariumClient()
     {

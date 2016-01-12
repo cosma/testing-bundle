@@ -19,7 +19,7 @@ use Cosma\Bundle\TestingBundle\TestingBundle;
 class TestingBundleTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @see TestingBundle::getContainerExtension
+     * @covers TestingBundle::getContainerExtension
      */
     public function testGetContainerExtension()
     {

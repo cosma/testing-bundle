@@ -24,7 +24,7 @@ use Symfony\Component\DependencyInjection\Container;
 class GenerateTestCommandTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @see GenerateTestCommand::configure
+     * @covers GenerateTestCommand::configure
      */
     public function testConfigure()
     {

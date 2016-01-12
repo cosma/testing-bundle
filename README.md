@@ -192,7 +192,7 @@ class SomeFunctionalTest extends WebTestCase
     }
 
     /**
-     * @see SomeFunctional::Something
+     * @covers SomeFunctional::Something
      */
     public function testSomething()
     {
@@ -352,7 +352,7 @@ class SomeElasticTest extends ElasticTestCase
     }
 
     /**
-     * @see SomeElasticController::indexAction
+     * @covers SomeElasticController::indexAction
      */
     public function testIndex()
     {
