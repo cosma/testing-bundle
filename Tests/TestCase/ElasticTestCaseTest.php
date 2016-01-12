@@ -22,7 +22,7 @@ use Elastica\Type;
 class ElasticTestCaseTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @covers ElasticTestCase
+     * @see ElasticTestCase
      */
     public function testStaticAttributes()
     {
@@ -32,7 +32,7 @@ class ElasticTestCaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers ElasticTestCase::setUp
+     * @see ElasticTestCase::setUp
      */
     public function testSetUp()
     {
@@ -83,7 +83,7 @@ class ElasticTestCaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers ElasticTestCase::getElasticClient
+     * @see ElasticTestCase::getElasticClient
      */
     public function testGetElasticClient()
     {
@@ -141,7 +141,7 @@ class ElasticTestCaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers ElasticTestCase::getElasticIndex
+     * @see ElasticTestCase::getElasticIndex
      */
     public function testGetElasticIndex()
     {
@@ -199,7 +199,7 @@ class ElasticTestCaseTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers ElasticTestCase::getElasticType
+     * @see ElasticTestCase::getElasticType
      */
     public function testGetElasticType()
     {

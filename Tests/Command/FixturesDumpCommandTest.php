@@ -30,7 +30,7 @@ use Symfony\Component\DependencyInjection\Container;
 class FixturesDumpCommandTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @covers FixturesDumpCommand::configure
+     * @see FixturesDumpCommand::configure
      */
     public function testConfigure()
     {
@@ -63,7 +63,7 @@ class FixturesDumpCommandTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers FixturesDumpCommand::execute
+     * @see FixturesDumpCommand::execute
      */
     public function testExecute_SpecificEntity_Association()
     {
@@ -162,7 +162,7 @@ class FixturesDumpCommandTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers FixturesDumpCommand::execute
+     * @see FixturesDumpCommand::execute
      */
     public function testExecute_NoSpecificEntity_NoAssociation()
     {

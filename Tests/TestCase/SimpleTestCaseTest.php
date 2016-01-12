@@ -19,7 +19,7 @@ use Cosma\Bundle\TestingBundle\TestCase\SimpleTestCase;
 class SimpleTestCaseTest extends SimpleTestCase
 {
     /**
-     * @covers SimpleTestCase::getMockedEntityWithId
+     * @see SimpleTestCase::getMockedEntityWithId
      */
     public function testGetMockedEntityWithId()
     {
@@ -29,7 +29,7 @@ class SimpleTestCaseTest extends SimpleTestCase
     }
 
     /**
-     * @covers SimpleTestCase::getMockedEntityWithId
+     * @see SimpleTestCase::getMockedEntityWithId
      * @expectedException \Doctrine\ORM\EntityNotFoundException
      */
     public function testGetMockedEntityWithId_Exception()
@@ -38,7 +38,7 @@ class SimpleTestCaseTest extends SimpleTestCase
     }
 
     /**
-     * @covers SimpleTestCase::getEntityWithId
+     * @see SimpleTestCase::getEntityWithId
      */
     public function testGetEntityWithId()
     {
@@ -49,7 +49,7 @@ class SimpleTestCaseTest extends SimpleTestCase
     }
 
     /**
-     * @covers SimpleTestCase::getEntityWithId
+     * @see SimpleTestCase::getEntityWithId
      * @expectedException \Doctrine\ORM\EntityNotFoundException
      */
     public function testGetEntityWithId_Exception()

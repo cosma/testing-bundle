@@ -21,7 +21,7 @@ use Symfony\Component\DependencyInjection\Loader;
 class CosmaTestingExtensionTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @covers CosmaTestingExtension::load
+     * @see CosmaTestingExtension::load
      */
     public function testLoad_ConfigParameters()
     {
@@ -78,7 +78,7 @@ class CosmaTestingExtensionTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers CosmaTestingExtension::load
+     * @see CosmaTestingExtension::load
      */
     public function testLoad_ConfigParameters_DefaultCleaning()
     {
@@ -132,7 +132,7 @@ class CosmaTestingExtensionTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers CosmaTestingExtension::load
+     * @see CosmaTestingExtension::load
      *
      * @expectedException \Symfony\Component\Config\Definition\Exception\InvalidConfigurationException
      */
@@ -167,7 +167,7 @@ class CosmaTestingExtensionTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers CosmaTestingExtension::getAlias
+     * @see CosmaTestingExtension::getAlias
      */
     public function testGetAlias()
     {
