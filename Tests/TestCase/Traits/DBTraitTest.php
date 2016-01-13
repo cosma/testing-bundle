@@ -1,13 +1,14 @@
 <?php
 /**
- * This file is part of the TestingBundle project.
+ * This file is part of the "cosma/testing-bundle" project
  *
- * @project    TestingBundle
- * @author     Cosmin Voicu <cosmin.voicu@oconotech.com>
- * @copyright  2015 - ocono Tech GmbH
- * @license    http://www.ocono-tech.com proprietary
- * @link       http://www.ocono-tech.com
- * @date       29/12/15
+ * (c) Cosmin Voicu<cosmin.voicu@gmail.com>
+ *
+ * For the full copyright and license information, please view the LICENSE
+ * file that was distributed with this source code.
+ *
+ * Date: 01/01/16
+ * Time: 23:33
  */
 
 namespace TestCase\Traits;
