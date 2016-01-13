@@ -21,8 +21,6 @@ Supports following test cases:
 * RedisTestCase
 
 
-
-
 ## Introduction
 
 This bundle works with data fixtures in .yml format, detached from the common Doctrine DataFixtures.
