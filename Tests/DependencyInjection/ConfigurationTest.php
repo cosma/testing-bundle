@@ -28,7 +28,7 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
 
         /** @var \Symfony\Component\Config\Definition\ScalarNode[] $options */
         $options = $node->getChildren();
-        $this->assertCount(7, $options);
+        $this->assertCount(8, $options);
         $this->assertEquals('Fixture', $options['fixture_path']->getDefaultValue());
         $this->assertEquals('Table', $options['fixture_table_directory']->getDefaultValue());
         $this->assertEquals('Test', $options['fixture_test_directory']->getDefaultValue());
