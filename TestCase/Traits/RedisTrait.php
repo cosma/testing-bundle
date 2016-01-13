@@ -55,7 +55,7 @@ trait RedisTrait
     }
 
     /**
-     * @return \Solarium\QueryType\Update\Result
+     * @return mixed
      */
     protected function resetRedisDatabase()
     {
