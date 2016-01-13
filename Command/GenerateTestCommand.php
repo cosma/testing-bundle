@@ -43,11 +43,11 @@ class GenerateTestCommand extends ContainerAwareCommand
     private static $testCases = [
         'SimpleTestCase',
         'WebTestCase',
-        'DBTestCase',
         'ElasticTestCase',
         'SolrTestCase',
         'SeleniumTestCase',
         'CommandTestCase',
+        'RedisTestCase',
     ];
 
     /**

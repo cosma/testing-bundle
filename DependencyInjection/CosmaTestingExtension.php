@@ -103,6 +103,22 @@ class CosmaTestingExtension extends Extension
         if(isset($config['selenium']['domain'])) {
             $container->setParameter('cosma_testing.selenium.domain', $config['selenium']['domain']);
         }
+
+        if (isset($config['redis']['scheme'])) {
+            $container->setParameter('cosma_testing.redis.scheme', $config['redis']['scheme']);
+        }
+        if (isset($config['redis']['host'])) {
+            $container->setParameter('cosma_testing.redis.host', $config['redis']['host']);
+        }
+        if (isset($config['redis']['port'])) {
+            $container->setParameter('cosma_testing.redis.port', $config['redis']['port']);
+        }
+        if (isset($config['redis']['database'])) {
+            $container->setParameter('cosma_testing.redis.database', $config['redis']['database']);
+        }
+        if (isset($config['redis']['timeout'])) {
+            $container->setParameter('cosma_testing.redis.timeout', $config['redis']['timeout']);
+        }
     }
 
     public function getAlias()

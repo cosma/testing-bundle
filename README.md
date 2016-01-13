@@ -18,6 +18,7 @@ Supports following test cases:
 * SolrTestCase
 * ElasticTestCase
 * SeleniumTestCase
+* RedisTestCase
 
 
 
@@ -89,7 +90,13 @@ cosma_testing:
         type: test
     selenium:
         server: http://127.0.0.1:4444/wd/hub
-        domain: http://www.example.com    
+        domain: http://www.example.com   
+    redis:
+        scheme: tcp
+        host: 127.0.0.1
+        port: 6379
+        database: 13
+        timeout: 5     
 ```
 
 
@@ -471,6 +478,55 @@ class SomeSeleniumTest extends SeleniumTestCase
     {
         $webDriver = $this->open('http://google.de');
         $this->assertContains('Google', $webDriver->getTitle());
+    }
+}
+```
+
+
+#### Redis Test Case
+This case is an extension of WebTestCase, from current bundle, with extra Redis support
+It has the following methods:
+
+* **getRedisClient** ()
+
+* **loadTableFixtures** (array $fixtures, $dropDatabaseBefore = true)
+* **loadTestFixtures** (array $fixtures, $dropDatabaseBefore = true)
+* **loadCustomFixtures** (array $fixtures, $dropDatabaseBefore = true)
+* **getClient** ()
+* **getContainer** ()
+* **getEntityManager** ()
+* **getEntityRepository** ()
+
+* **getMockedEntityWithId** ($entityNamespaceClass, $id)
+* **getEntityWithId** ($entityNamespaceClass, $id)
+
+
+```php
+use Cosma\Bundle\TestingBundle\TestCase\RedisTestCase;
+
+class SomeRedisTest extends RedisTestCase
+{
+
+    public function setUp()
+    {
+        /**
+         * Boot the Symfony kernel
+         */
+        parent::setUp();
+
+        $this->loadTableFixtures(array('User', 'Group'));
+    }
+
+    /**
+     * read title from google site
+     */
+    public function testGoogleTitle()
+    {
+    
+        $redisClient = $this->getRedisClient();
+        
+        $redisClient->executeRaw(['SET', 'foo', 'bar']);
+         ...
     }
 }
 ```

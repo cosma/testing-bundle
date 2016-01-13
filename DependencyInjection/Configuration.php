@@ -78,6 +78,16 @@ class Configuration implements ConfigurationInterface
                     ->scalarNode('domain')->defaultValue('http://127.0.0.1')->end()
                     ->end()
                 ->end()
+                ->arrayNode('redis')
+                    ->canBeUnset()
+                    ->children()
+                    ->scalarNode('scheme')->defaultValue('tcp')->end()
+                    ->scalarNode('host')->defaultValue('127.0.0.1')->end()
+                    ->scalarNode('port')->defaultValue(6379)->end()
+                    ->scalarNode('database')->defaultValue('13')->end()
+                    ->scalarNode('timeout')->defaultValue('5')->end()
+                    ->end()
+                ->end()
             ->end();
 
         return $treeBuilder;
