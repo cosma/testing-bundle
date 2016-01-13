@@ -62,5 +62,14 @@ class ConfigurationTest extends \PHPUnit_Framework_TestCase
         $this->assertCount(2, $seleniumOptions);
         $this->assertEquals('http://127.0.0.1:4444/wd/hub', $seleniumOptions['server']->getDefaultValue());
         $this->assertEquals('http://127.0.0.1', $seleniumOptions['domain']->getDefaultValue());
+
+        /** @var \Symfony\Component\Config\Definition\ScalarNode[] $redisOptions */
+        $redisOptions = $options['redis']->getChildren();
+        $this->assertCount(5, $redisOptions);
+        $this->assertEquals('tcp', $redisOptions['scheme']->getDefaultValue());
+        $this->assertEquals('127.0.0.1', $redisOptions['host']->getDefaultValue());
+        $this->assertEquals('6379', $redisOptions['port']->getDefaultValue());
+        $this->assertEquals('13', $redisOptions['database']->getDefaultValue());
+        $this->assertEquals('5', $redisOptions['timeout']->getDefaultValue());
     }
 }
