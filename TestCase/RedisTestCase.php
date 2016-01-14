@@ -32,14 +32,6 @@ abstract class RedisTestCase extends WebTestCase
     }
 
     /**
-     * @return void
-     */
-    protected function tearDown()
-    {
-        parent::tearDown();
-    }
-
-    /**
      * @return Client
      */
     protected function getRedisClient()
