@@ -13,7 +13,7 @@
 
 namespace Cosma\Bundle\TestingBundle\Command;
 
-use Sensio\Bundle\GeneratorBundle\Command\Helper\QuestionHelper;
+use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -40,6 +40,8 @@ class GenerateTestCommand extends ContainerAwareCommand
 
     const TESTCASES_NAMESPACE = '\Cosma\Bundle\TestingBundle\TestCase';
 
+    const DEFAULT_TESTCASE = '\PHPUnit_Framework_TestCase';
+
     private static $testCases = [
         'SimpleTestCase',
         'WebTestCase',
@@ -49,6 +51,7 @@ class GenerateTestCommand extends ContainerAwareCommand
         'SeleniumTestCase',
         'CommandTestCase',
         'RedisTestCase',
+        self::DEFAULT_TESTCASE
     ];
 
     /**
@@ -115,7 +118,6 @@ EOT
             }
         }
     }
-
 
     /**
      * @param string $file
@@ -239,14 +241,18 @@ EOT
 EOD;
         $content .= $comment . PHP_EOL . PHP_EOL;
 
-        $testNamespace     = $this->getTestNamespace($classNamespace);
-        //$testCase          = 'SimpleTestCase';
-        $testCaseNamespace = self::TESTCASES_NAMESPACE . '\\' . $testCase;
+        $testNamespace = $this->getTestNamespace($classNamespace);
+
+        $testCaseNamespace = '';
+
+        if ($testCase != self::DEFAULT_TESTCASE) {
+            $testCaseNamespace = 'use ' . self::TESTCASES_NAMESPACE . '\\' . $testCase . ';';
+        }
 
         $testClass = <<<EOD
 namespace $testNamespace;
 
-use {$testCaseNamespace};
+$testCaseNamespace
 
 class {$classShortName}Test extends {$testCase}
 {
