@@ -111,10 +111,14 @@ EOT
 
                 $testFilePath = $this->createTestFile($class);
 
-                $this->output->writeln("");
-                $this->output->writeln("<info>Test file for class $class was generated in $testFilePath </info>");
-                $this->output->writeln("");
-                $this->output->writeln("");
+                if(!empty($testFilePath)){
+                    $this->output->writeln("");
+                    $this->output->writeln("<info>Test file for class $class was generated in $testFilePath </info>");
+                    $this->output->writeln("");
+                    $this->output->writeln("");
+                }
+
+
             }
         }
     }
@@ -164,9 +168,9 @@ EOT
     }
 
     /**
-     * @param string $class
+     * @param $class
      *
-     * @return string
+     * @return bool|string
      */
     private function createTestFile($class)
     {
@@ -179,7 +183,8 @@ EOT
             $question = new ConfirmationQuestion("<question>Are you sure you want to rewrite the file $testFileName ? </question> y/n (n): ",
                                                  false);
             if (!$this->questionHelper->ask($this->input, $this->output, $question)) {
-                return $this->output->writeln("<comment>The generation for the file $testFileName was aborted </comment>");
+                $this->output->writeln("<comment>The generation for the file $testFileName was aborted </comment>");
+                return false;
             }
         }
 
