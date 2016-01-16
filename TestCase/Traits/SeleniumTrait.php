@@ -33,8 +33,8 @@ trait SeleniumTrait
     protected function tearDown()
     {
         parent::tearDown();
-        
-        if (!is_null(remoteWebDriver)) {
+
+        if (!is_null($this->remoteWebDriver)) {
             $this->remoteWebDriver->close();
             $this->remoteWebDriver = null;
         }
