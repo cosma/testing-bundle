@@ -33,9 +33,11 @@ trait SeleniumTrait
     protected function tearDown()
     {
         parent::tearDown();
-
-        $this->remoteWebDriver->close();
-        $this->remoteWebDriver = null;
+        
+        if (!is_null(remoteWebDriver)) {
+            $this->remoteWebDriver->close();
+            $this->remoteWebDriver = null;
+        }
     }
 
     /**
@@ -68,9 +70,8 @@ trait SeleniumTrait
      */
     public function open($url)
     {
-        return $this->getRemoteWebDriver()->get('http://'.$this->getTestDomain() . $url);
+        return $this->getRemoteWebDriver()->get('http://' . $this->getTestDomain() . $url);
     }
-
 
     /**
      * @param $url
@@ -79,6 +80,6 @@ trait SeleniumTrait
      */
     public function openSecure($url)
     {
-        return $this->getRemoteWebDriver()->get('https://'.$this->getTestDomain() . $url);
+        return $this->getRemoteWebDriver()->get('https://' . $this->getTestDomain() . $url);
     }
 }
