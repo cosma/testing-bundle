@@ -75,7 +75,7 @@ class GenerateTestCommandTest extends \PHPUnit_Framework_TestCase
         $question = $command->getHelper('question');
         $question->setInputStream(
             $this->get_console_input_stream(
-                "y\n n\n"
+                "y\n n\n n\n n\n n\n"
             )
         );
 
