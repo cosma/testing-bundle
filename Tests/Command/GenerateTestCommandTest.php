@@ -62,7 +62,7 @@ class GenerateTestCommandTest extends \PHPUnit_Framework_TestCase
     /**
      * @see GenerateTestCommand::execute
      */
-    public function testExecute_Aborted()
+    public function atestExecute_Aborted()
     {
         $application = new Application();
         $application->setAutoExit(true);
