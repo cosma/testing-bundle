@@ -60,6 +60,8 @@ class GenerateTestCommandTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * this test does not work in circleci
+     *
      * @group notincircleci
      *
      * @see GenerateTestCommand::execute
