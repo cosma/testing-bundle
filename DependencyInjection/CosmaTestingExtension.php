@@ -15,7 +15,6 @@
 namespace Cosma\Bundle\TestingBundle\DependencyInjection;
 
 use Cosma\Bundle\TestingBundle\ORM\DoctrineORMSchemaTool;
-use Cosma\Bundle\TestingBundle\ORM\SchemaTool;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Loader;
@@ -29,7 +28,10 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 class CosmaTestingExtension extends Extension
 {
     /**
-     * {@inheritdoc}
+     * @param array                                                   $configs
+     * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
+     *
+     * @return \Symfony\Component\DependencyInjection\ContainerBuilder
      */
     public function load(array $configs, ContainerBuilder $container)
     {
@@ -39,7 +41,40 @@ class CosmaTestingExtension extends Extension
         $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yml');
 
-        $container = $this->setDoctrineCleaningStrategy($container, $config);
+        $defaultValues = [
+            'fixture_directory' => 'Fixture',
+            'tests_directory'   => 'Tests',
+            'doctrine' =>[
+                'cleaning_strategy' => DoctrineORMSchemaTool::DOCTRINE_CLEANING_TRUNCATE
+            ],
+            'solarium'          => [
+                'host'    => '127.0.0.1',
+                'port'    => 8080,
+                'path'    => '/solr',
+                'core'    => 'test',
+                'timeout' => 5,
+            ],
+            'elastica'          => [
+                'host'    => '127.0.0.1',
+                'port'    => 9200,
+                'path'    => '/',
+                'index'   => 'test',
+                'timeout' => 5,
+            ],
+            'selenium'          => [
+                'remote_server_url' => 'http://127.0.0.1:4444/wd/hub',
+                'test_domain'       => 'localhost',
+            ],
+            'redis'             => [
+                'scheme'   => 'tcp',
+                'host'     => '127.0.0.1',
+                'port'     => 6379,
+                'database' => 13,
+                'timeout'  => 5,
+            ],
+        ];
+
+        $config = array_merge($defaultValues, $config);
 
         if (isset($config['fixture_directory'])) {
             $container->setParameter('cosma_testing.fixture_directory', $config['fixture_directory']);
@@ -47,6 +82,10 @@ class CosmaTestingExtension extends Extension
 
         if (isset($config['tests_directory'])) {
             $container->setParameter('cosma_testing.tests_directory', $config['tests_directory']);
+        }
+
+        if (isset($config['doctrine']['cleaning_strategy'])) {
+            $container->setParameter('cosma_testing.doctrine.cleaning_strategy', $config['doctrine']['cleaning_strategy']);
         }
 
         if (isset($config['solarium']['host'])) {
@@ -116,30 +155,9 @@ class CosmaTestingExtension extends Extension
         if (isset($config['redis']['timeout'])) {
             $container->setParameter('cosma_testing.redis.timeout', $config['redis']['timeout']);
         }
-    }
 
-    public function getAlias()
-    {
-        return 'cosma_testing';
-    }
 
-    /**
-     * @param ContainerBuilder $container
-     * @param array            $config
-     *
-     * @return ContainerBuilder
-     */
-    private function setDoctrineCleaningStrategy(ContainerBuilder $container, $config)
-    {
-        if (isset($config['doctrine']['cleaning_strategy'])) {
-            $doctrineCleaningStrategy = $config['doctrine']['cleaning_strategy'];
-        } else {
-            $doctrineCleaningStrategy = DoctrineORMSchemaTool::DOCTRINE_CLEANING_TRUNCATE;
-        }
-
-        $container->setParameter('cosma_testing.doctrine.cleaning_strategy', $doctrineCleaningStrategy);
-
-        if (DoctrineORMSchemaTool::DOCTRINE_CLEANING_TRUNCATE == $doctrineCleaningStrategy) {
+        if (DoctrineORMSchemaTool::DOCTRINE_CLEANING_TRUNCATE == $container->getParameter('cosma_testing.doctrine.cleaning_strategy')) {
             $container->setParameter(
                 'h4cc_alice_fixtures.orm.schema_tool.doctrine.class',
                 'Cosma\Bundle\TestingBundle\ORM\DoctrineORMSchemaTool'
@@ -147,5 +165,10 @@ class CosmaTestingExtension extends Extension
         }
 
         return $container;
+    }
+
+    public function getAlias()
+    {
+        return 'cosma_testing';
     }
 }
