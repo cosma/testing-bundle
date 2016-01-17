@@ -60,6 +60,8 @@ class GenerateTestCommandTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @group notincircleci
+     *
      * @see GenerateTestCommand::execute
      */
     public function testExecute_Aborted()
