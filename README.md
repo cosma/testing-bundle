@@ -667,8 +667,6 @@ class SomeUnitTest extends SimpleTestCase
 
 vendor/phpunit/phpunit/phpunit -c phpunit.xml.dist --coverage-text --coverage-html=Tests/coverage Tests
 
-vendor/phpunit/phpunit/phpunit -c phpunit.xml.dist --log-junit $CIRCLE_TEST_REPORTS/phpunit/junit.xml --coverage-text Tests
-
 # License
 
 The bundle is licensed under MIT.
