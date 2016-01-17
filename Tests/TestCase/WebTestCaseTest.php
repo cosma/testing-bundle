@@ -1082,7 +1082,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->setMethods(array('getContainer', 'getBundles'))
             ->getMockForAbstractClass();
-        $kernel->expects($this->exactly(1))
+        $kernel->expects($this->exactly(2))
             ->method('getContainer')
             ->will($this->returnValue($container));
 

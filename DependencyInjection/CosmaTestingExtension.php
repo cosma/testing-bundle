@@ -28,72 +28,114 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 class CosmaTestingExtension extends Extension
 {
     /**
-     * {@inheritdoc}
+     * @param array                                                   $configs
+     * @param \Symfony\Component\DependencyInjection\ContainerBuilder $container
+     *
+     * @return \Symfony\Component\DependencyInjection\ContainerBuilder
      */
     public function load(array $configs, ContainerBuilder $container)
     {
         $configuration = new Configuration();
         $config        = $this->processConfiguration($configuration, $configs);
 
-        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
+        $loader = new Loader\YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
         $loader->load('services.yml');
 
-        $container = $this->setDoctrineCleaningStrategy($container, $config);
+        $defaultValues = [
+            'fixture_path' => 'Fixture',
+            'fixture_table_directory'   => 'Table',
+            'fixture_test_directory'   => 'Test',
+            'doctrine' =>[
+                'cleaning_strategy' => DoctrineORMSchemaTool::DOCTRINE_CLEANING_TRUNCATE
+            ],
+            'solarium'          => [
+                'host'    => '127.0.0.1',
+                'port'    => 8080,
+                'path'    => '/solr',
+                'core'    => 'test',
+                'timeout' => 5,
+            ],
+            'elastica'          => [
+                'host'    => '127.0.0.1',
+                'port'    => 9200,
+                'path'    => '/',
+                'index'   => 'test',
+                'type'   => 'test',
+                'timeout' => 5,
+            ],
+            'selenium'          => [
+                'server' => 'http://127.0.0.1:4444/wd/hub',
+                'domain'       => 'http://127.0.0.1',
+            ],
+            'redis'             => [
+                'scheme'   => 'tcp',
+                'host'     => '127.0.0.1',
+                'port'     => 6379,
+                'database' => 13,
+                'timeout'  => 5,
+            ],
+        ];
 
-        if(isset($config['fixture_path'])){
+        $config = array_merge($defaultValues, $config);
+
+        if (isset($config['fixture_path'])) {
             $container->setParameter('cosma_testing.fixture_path', $config['fixture_path']);
         }
 
-        if(isset($config['fixture_table_directory'])){
+        if (isset($config['fixture_table_directory'])) {
             $container->setParameter('cosma_testing.fixture_table_directory', $config['fixture_table_directory']);
         }
 
-        if(isset($config['fixture_test_directory'])){
+        if (isset($config['fixture_test_directory'])) {
             $container->setParameter('cosma_testing.fixture_test_directory', $config['fixture_test_directory']);
         }
 
-        if(isset($config['solarium']['host'])){
+        if (isset($config['doctrine']['cleaning_strategy'])) {
+            $container->setParameter('cosma_testing.doctrine.cleaning_strategy', $config['doctrine']['cleaning_strategy']);
+        }
+
+        if (isset($config['solarium']['host'])) {
             $container->setParameter('cosma_testing.solarium.host', $config['solarium']['host']);
         }
 
-        if(isset($config['solarium']['port'])){
+        if (isset($config['solarium']['port'])) {
             $container->setParameter('cosma_testing.solarium.port', $config['solarium']['port']);
         }
 
-        if(isset($config['solarium']['path'])){
+        if (isset($config['solarium']['path'])) {
             $container->setParameter('cosma_testing.solarium.path', $config['solarium']['path']);
         }
 
-        if(isset($config['solarium']['core'])){
+        if (isset($config['solarium']['core'])) {
             $container->setParameter('cosma_testing.solarium.core', $config['solarium']['core']);
         }
 
-        if(isset($config['solarium']['timeout'])){
+        if (isset($config['solarium']['timeout'])) {
             $container->setParameter('cosma_testing.solarium.timeout', $config['solarium']['timeout']);
         }
 
-        if(isset($config['elastica']['host'])){
+        if (isset($config['elastica']['host'])) {
             $container->setParameter('cosma_testing.elastica.host', $config['elastica']['host']);
         }
 
-        if(isset($config['elastica']['port'])){
+        if (isset($config['elastica']['port'])) {
             $container->setParameter('cosma_testing.elastica.port', $config['elastica']['port']);
         }
 
-        if(isset($config['elastica']['path'])){
+        if (isset($config['elastica']['path'])) {
             $container->setParameter('cosma_testing.elastica.path', $config['elastica']['path']);
         }
 
-        if(isset($config['elastica']['timeout'])){
-            $container->setParameter('cosma_testing.elastica.timeout', $config['elastica']['timeout']);
-        }
-
-        if(isset($config['elastica']['index'])){
+        if (isset($config['elastica']['index'])) {
             $container->setParameter('cosma_testing.elastica.index', $config['elastica']['index']);
         }
 
-        if(isset($config['elastica']['type'])) {
+        if (isset($config['elastica']['type'])) {
             $container->setParameter('cosma_testing.elastica.type', $config['elastica']['type']);
+        }
+
+        if (isset($config['elastica']['timeout'])) {
+            $container->setParameter('cosma_testing.elastica.timeout', $config['elastica']['timeout']);
         }
 
         if(isset($config['selenium']['server'])) {
@@ -107,48 +149,36 @@ class CosmaTestingExtension extends Extension
         if (isset($config['redis']['scheme'])) {
             $container->setParameter('cosma_testing.redis.scheme', $config['redis']['scheme']);
         }
+
         if (isset($config['redis']['host'])) {
             $container->setParameter('cosma_testing.redis.host', $config['redis']['host']);
         }
+
         if (isset($config['redis']['port'])) {
             $container->setParameter('cosma_testing.redis.port', $config['redis']['port']);
         }
+
         if (isset($config['redis']['database'])) {
             $container->setParameter('cosma_testing.redis.database', $config['redis']['database']);
         }
+
         if (isset($config['redis']['timeout'])) {
             $container->setParameter('cosma_testing.redis.timeout', $config['redis']['timeout']);
         }
+
+
+        if (DoctrineORMSchemaTool::DOCTRINE_CLEANING_TRUNCATE == $container->getParameter('cosma_testing.doctrine.cleaning_strategy')) {
+            $container->setParameter(
+                'h4cc_alice_fixtures.orm.schema_tool.doctrine.class',
+                'Cosma\Bundle\TestingBundle\ORM\DoctrineORMSchemaTool'
+            );
+        }
+
+        return $container;
     }
 
     public function getAlias()
     {
         return 'cosma_testing';
-    }
-
-    /**
-     * @param ContainerBuilder $container
-     * @param array            $config
-     *
-     * @return ContainerBuilder
-     */
-    private function setDoctrineCleaningStrategy(ContainerBuilder $container, $config)
-    {
-        if (isset($config['doctrine']['cleaning_strategy'])) {
-            $doctrineCleaningStrategy = $config['doctrine']['cleaning_strategy'];
-        } else {
-            $doctrineCleaningStrategy = DoctrineORMSchemaTool::DOCTRINE_CLEANING_TRUNCATE;
-        }
-        $container->setParameter('cosma_testing.doctrine.cleaning_strategy', $doctrineCleaningStrategy);
-        if (DoctrineORMSchemaTool::DOCTRINE_CLEANING_TRUNCATE == $doctrineCleaningStrategy) {
-            $container->setParameter(
-                'h4cc_alice_fixtures.orm.schema_tool.doctrine.class',
-                'Cosma\Bundle\TestingBundle\ORM\DoctrineORMSchemaTool'
-            );
-
-            return $container;
-        }
-
-        return $container;
     }
 }

@@ -108,7 +108,7 @@ class ElasticTestCaseTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->setMethods(array('getContainer'))
             ->getMockForAbstractClass();
-        $kernel->expects($this->exactly(4))
+        $kernel->expects($this->exactly(5))
             ->method('getContainer')
             ->will($this->returnValue($container));
 
@@ -166,7 +166,7 @@ class ElasticTestCaseTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->setMethods(array('getContainer'))
             ->getMockForAbstractClass();
-        $kernel->expects($this->exactly(1))
+        $kernel->expects($this->exactly(2))
             ->method('getContainer')
             ->will($this->returnValue($container));
 
@@ -224,7 +224,7 @@ class ElasticTestCaseTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->setMethods(array('getContainer'))
             ->getMockForAbstractClass();
-        $kernel->expects($this->exactly(1))
+        $kernel->expects($this->exactly(2))
             ->method('getContainer')
             ->will($this->returnValue($container));
 
