@@ -16,6 +16,7 @@ The Testing Bundle offers loading Fixtures from .yml ,  dropping and recreating 
 
 
 # Table of Contents
+
  - [Installation](#installation)
  - [Configuration](#configuration)
  - [Generate Test Class](#generate-test-class)
@@ -28,7 +29,6 @@ The Testing Bundle offers loading Fixtures from .yml ,  dropping and recreating 
 
 # Installation
     
-
 ```bash
     $   php composer.phar require cosma/testing-bundle '2.0.*'
 ```
@@ -107,7 +107,6 @@ With the command cosma_testing:generate:test you can generate stub Test Classes 
 
 # Test Cases
 
-
 Supports the following Test Cases:
 
 * [Simple Test Case](#simple-test-case)
@@ -121,6 +120,7 @@ Supports the following Test Cases:
 
 
 ## Simple Test Case
+
 This case is an extension of PHPUnit_Framework_TestCase, with two extra simple methods:
 
 * **getMockedEntityWithId** ($entity, $id)
@@ -149,6 +149,7 @@ class SomeVerySimpleUnitTest extends SimpleTestCase
  
  
 ## Web Test Case
+
 This case is an extension of Symfony2 WebTestCase -  Symfony\Bundle\FrameworkBundle\Test\WebTestCase
 It has the following methods:
 
@@ -183,6 +184,7 @@ class SomeWebFunctionalTest extends WebTestCase
 
 
 ## DB Test Case
+
 This case is an extension of Symfony WebTestCase with Database and fixtures support  
 It has the following methods:
 
@@ -253,6 +255,7 @@ class SomeFunctionalWebDBTest extends WebTestCase
 ```
 
 ## Solr Test Case
+
 This case is an extension of WebTestCase, from current bundle, with extra Solr support
 It has the following methods:
 
@@ -313,6 +316,7 @@ class SomeSolrTest extends SolrTestCase
 
 
 ## Elastic Search Test Case
+
 This case is an extension of WebTestCase, from current bundle, with extra ElasticSearch support
 It has the following methods:
 
@@ -425,6 +429,7 @@ class SomeElasticTest extends ElasticTestCase
 
 
 ## Selenium Test Case
+
 This case is an extension of WebTestCase, with extra Selenium support
 It has the following methods:
 
@@ -469,6 +474,7 @@ class SomeSeleniumTest extends SeleniumTestCase
 
 
 ## Redis Test Case
+
 This case is an extension of WebTestCase, with extra Redis support
 It has the following methods:
 
@@ -501,6 +507,7 @@ class SomeSeleniumTest extends RedisTestCase
 ```
 
 ## Composed Test Cases
+
 You can build composed Test Cases using the following defined traits under \Cosma\Bundle\TestingBundle\TestCase\Traits:
 Supports following test cases:
 
