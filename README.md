@@ -337,92 +337,51 @@ class SomeElasticTest extends ElasticTestCase
 
     public function testSomethingElastic()
     {
-        $elasticIndex = $this->getElasticIndex();
-        
+        // get default Elastica client
         $elasticClient = $this->getElasticClient();
+            
+        // get default index - test
+        $elasticIndex  = $this->getElasticIndex();
         
-        $anotherElasticIndex = $elasticaClient->getIndex('another_index');
+        // create another index
+        $anotherElasticIndex = $elasticClient->getIndex('another_index');
+        $anotherElasticIndex->create([], true);
         
         //Create a type
-        $elasticType = $elasticIndex->getType('tweet');
-        
-        
-        // Define mapping
-        $mapping = new \Elastica\Type\Mapping();
-        $mapping->setType($elasticaType);
-        $mapping->setParam('index_analyzer', 'indexAnalyzer');
-        $mapping->setParam('search_analyzer', 'searchAnalyzer');
-        
-        // Define boost field
-        $mapping->setParam('_boost', array('name' => '_boost', 'null_value' => 1.0));
-        
-        // Set mapping
-        $mapping->setProperties(array(
-            'id'      => array('type' => 'integer', 'include_in_all' => FALSE),
-            'user'    => array(
-                'type' => 'object',
-                'properties' => array(
-                    'name'      => array('type' => 'string', 'include_in_all' => TRUE),
-                    'fullName'  => array('type' => 'string', 'include_in_all' => TRUE)
-                ),
-            ),
-            'msg'     => array('type' => 'string', 'include_in_all' => TRUE),
-            'tstamp'  => array('type' => 'date', 'include_in_all' => FALSE),
-            'location'=> array('type' => 'geo_point', 'include_in_all' => FALSE),
-            '_boost'  => array('type' => 'float', 'include_in_all' => FALSE)
-        ));
-        
-        // Send mapping to type
-        $mapping->send();
+        /** @type \Elastica\Type $type **/
+        $type = $this->getElasticIndex()->getType('type');
 
-
-        /**
-         * first fixture document
-         */
-        $idOne = 1;
-        $dataOne = array(
-            'id'      => $idOne,
-            'user'    => array(
-                'name'      => 'mewantcookie',
-                'fullName'  => 'Cookie Monster'
-            ),
-            'msg'     => 'Me wish there were expression for cookies ',
-            'tstamp'  => '1238081389',
-            'location'=> '41.12,-71.34',
-            '_boost'  => 1.0
+        // index documents
+        $type->addDocument(
+            new \Elastica\Document(1, ['username' => 'someUser'])
         );
 
-        $documentOne = new \Elastica\Document($idOne, $dataOne);
-
-
-        /**
-         * second fixture document
-         */
-        $idTwo = 2;
-        $dataTwo = array(
-            'id'      => $idTwo,
-            'user'    => array(
-                'name'      => 'shewantcookie',
-                'fullName'  => 'Cookie Witch'
-            ),
-            'msg'     => 'blah blah blah expresion.',
-            'tstamp'  => '143567',
-            'location'=> '43.12,-78.34',
-            '_boost'  => 3.0
+        $type->addDocument(
+            new \Elastica\Document(2, ['username' => 'anotherUser'])
         );
 
-        $documentTwo = new \Elastica\Document($idTwo, $dataTwo);
+        $type->addDocument(
+            new \Elastica\Document(3, ['username' => 'someotherUser'])
+        );
+        
+        $elasticIndex->refresh();
+        
+        //query for documents
+        $query = array(
+            'query' => array(
+                'query_string' => array(
+                    'query' => '*User',
+                )
+            )
+        );
 
-        /**
-         * add documents to type
-         */
-        $elasticType->addDocument($documentOne);
-        $elasticType->addDocument($documentTwo);
+        $path = $elasticIndex->getName() . '/' . $type->getName() . '/_search';
 
-        /**
-         * refresh index
-         */
-        $elasticType->getIndex()->refresh();
+        $response = $elasticClient->request($path, Request::GET, $query);
+
+        $responseArray = $response->getData();
+
+        $this->assertEquals(3, $responseArray['hits']['total']);
     }
 }
 ```
