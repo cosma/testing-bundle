@@ -14,6 +14,7 @@
 
 namespace Cosma\Bundle\TestingBundle\DependencyInjection\Compiler;
 
+use Cosma\Bundle\TestingBundle\ORM\DoctrineORMSchemaTool;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 
@@ -26,8 +27,12 @@ class DoctrineMigrationsPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container)
     {
-        if ($container->hasParameter('doctrine_migrations.table_name')) {
+        $cleaningStrategy = $container->getParameter('cosma_testing.doctrine.cleaning_strategy');
 
+        if (
+            DoctrineORMSchemaTool::DOCTRINE_CLEANING_TRUNCATE == $cleaningStrategy &&
+            $container->hasParameter('doctrine_migrations.table_name')
+        ) {
             $doctrineMigrationsTable = $container->getParameter('doctrine_migrations.table_name');
             $definition              = $container->findDefinition('h4cc_alice_fixtures.orm.schema_tool.doctrine');
 
