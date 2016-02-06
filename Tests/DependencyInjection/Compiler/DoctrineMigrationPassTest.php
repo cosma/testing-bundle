@@ -23,10 +23,11 @@ class DoctrineMigrationsPassTest extends \PHPUnit_Framework_TestCase
     /**
      * @see DoctrineMigrationsPass::process
      */
-    public function testProcess()
+    public function testProcess_truncate()
     {
         $containerBuilder = new ContainerBuilder();
         $containerBuilder->setDefinition('h4cc_alice_fixtures.orm.schema_tool.doctrine', new Definition());
+        $containerBuilder->setParameter('cosma_testing.doctrine.cleaning_strategy', 'truncate');
 
         $doctrinePass = new DoctrineMigrationsPass();
 
@@ -49,6 +50,32 @@ class DoctrineMigrationsPassTest extends \PHPUnit_Framework_TestCase
                     ]
                 ]
             ],
+            $containerBuilder->getDefinition('h4cc_alice_fixtures.orm.schema_tool.doctrine')->getMethodCalls()
+        );
+    }
+
+    /**
+     * @see DoctrineMigrationsPass::process
+     */
+    public function testProcess_drop()
+    {
+        $containerBuilder = new ContainerBuilder();
+        $containerBuilder->setDefinition('h4cc_alice_fixtures.orm.schema_tool.doctrine', new Definition());
+        $containerBuilder->setParameter('cosma_testing.doctrine.cleaning_strategy', 'drop');
+
+        $doctrinePass = new DoctrineMigrationsPass();
+
+        $doctrinePass->process($containerBuilder);
+
+        $this->assertEmpty(
+            $containerBuilder->getDefinition('h4cc_alice_fixtures.orm.schema_tool.doctrine')->getMethodCalls()
+        );
+
+        $containerBuilder->setParameter('doctrine_migrations.table_name', 'doctrine_table');
+
+        $doctrinePass->process($containerBuilder);
+
+        $this->assertEmpty(
             $containerBuilder->getDefinition('h4cc_alice_fixtures.orm.schema_tool.doctrine')->getMethodCalls()
         );
     }
