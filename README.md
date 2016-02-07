@@ -21,6 +21,7 @@ The Testing Bundle offers loading Fixtures from .yml ,  dropping and recreating 
  - [Configuration](#configuration)
  - [Generate Test Class](#generate-test-class)
  - [Test Cases](#test-cases)
+ - [Retry Tests](#retry-tests)
  - [Fixtures](#fixtures)
  - [Advanced Usage](#advanced-usage)
  - [Run Tests](#run-tests)
@@ -510,6 +511,42 @@ abstract class ComposedTestCase extends WebTestCase
         $this->recreateIndex();         // from ElasticTrait
         $this->getRemoteWebDriver();    // from SeleniumTrait
         $this->resetRedisDatabase();    // from RedisTrait
+    }
+}
+```
+
+
+# Retry Tests
+
+Use the @retry annotation for a Class or Method to retry tests in case of failure.
+Method annotations are overwriting Class annotation.
+
+```php
+use Cosma\Bundle\TestingBundle\TestCase\SimpleTestCase;
+
+/**
+* Will retry 10 times all the Class tests that are failing
+*
+* @retry 10 
+*/ 
+class SomeVerySimpleUnitTest extends SimpleTestCase
+{
+    /**
+    * Will retry 10 times this test if is failing because of the class annotation from above
+    */
+    public function testFirst()
+    {
+        // ...
+    }
+    
+    /**
+    * Will retry 4 times this test if is failing because of the method annotation from below
+    *
+    * @retry 4 
+    */
+    public function testSecond()
+    {
+        // ...
     }
 }
 ```

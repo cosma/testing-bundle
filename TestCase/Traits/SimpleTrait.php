@@ -116,4 +116,63 @@ trait SimpleTrait
 
         return $testClassPath;
     }
+
+    /*
+     * {@inheritdoc}
+     *
+     */
+    public function runBare()
+    {
+        for ($i = 0; $i <= $this->getNumberOfRetries(); $i++) {
+            try {
+                if ($i > 0) {
+                    //purple on yellow background colour
+                    echo "\033[35m\033[43mR\033[0m";
+                }
+                parent::runBare();
+                parent::runTest();
+
+
+                return;
+            } catch (\Exception $exception) {
+            }
+        }
+        if ($exception) {
+            throw $exception;
+        }
+    }
+
+    /**
+     * @return int
+     */
+    private function getNumberOfRetries()
+    {
+        $annotations = $this->getAnnotations();
+
+        if (isset($annotations['method']['retry'])) {
+            if (
+                isset($annotations['method']['retry'][0]) &&
+                is_numeric($annotations['method']['retry'][0])
+
+            ) {
+                return $annotations['method']['retry'][0];
+            }
+
+            return 1;
+        }
+
+        if (isset($annotations['class']['retry'])) {
+            if (
+                isset($annotations['class']['retry'][0]) &&
+                is_numeric($annotations['class']['retry'][0])
+
+            ) {
+                return $annotations['class']['retry'][0];
+            }
+
+            return 1;
+        }
+
+        return 0;
+    }
 }
