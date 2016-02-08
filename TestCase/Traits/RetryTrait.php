@@ -29,8 +29,6 @@ trait RetryTrait
                     echo "\033[35m\033[43mR\033[0m";
                 }
                 parent::runBare();
-                parent::runTest();
-
 
                 return;
             } catch (\Exception $exception) {
