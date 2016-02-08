@@ -88,7 +88,7 @@ class RedisTestCaseTest extends \PHPUnit_Framework_TestCase
                        ->setMethods(['getContainer'])
                        ->getMockForAbstractClass()
         ;
-        $kernel->expects($this->exactly(5))
+        $kernel->expects($this->exactly(4))
                ->method('getContainer')
                ->will($this->returnValue($container))
         ;

@@ -530,6 +530,41 @@ class SomeRedisTest extends RedisTestCase
 ```
 
 
+# Retry Tests
+
+Use the @retry annotation for a Class or Method to retry tests in case of failure.
+Method annotations are overwriting Class annotation.
+
+```php
+use Cosma\Bundle\TestingBundle\TestCase\SimpleTestCase;
+
+/**
+* Will retry 10 times all the Class tests that are failing
+*
+* @retry 10 
+*/ 
+class SomeVerySimpleUnitTest extends SimpleTestCase
+{
+    /**
+    * Will retry 10 times this test if is failing because of the class annotation from above
+    */
+    public function testFirst()
+    {
+        // ...
+    }
+    
+    /**
+    * Will retry 4 times this test if is failing because of the method annotation from below
+    *
+    * @retry 4 
+    */
+    public function testSecond()
+    {
+        // ...
+    }
+}
+```
+
 ### Fixtures
 
 [Alice](https://github.com/nelmio/alice) fixtures are integrated with [Faker](https://github.com/fzaninotto/Faker).

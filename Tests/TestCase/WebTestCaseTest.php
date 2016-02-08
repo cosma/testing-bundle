@@ -23,6 +23,7 @@ use Symfony\Bundle\FrameworkBundle\Client;
 use Cosma\Bundle\TestingBundle\TestCase\WebTestCase;
 use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 
+
 class WebTestCaseTest extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -1082,7 +1083,7 @@ class WebTestCaseTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->setMethods(array('getContainer', 'getBundles'))
             ->getMockForAbstractClass();
-        $kernel->expects($this->exactly(2))
+        $kernel->expects($this->exactly(1))
             ->method('getContainer')
             ->will($this->returnValue($container));
 

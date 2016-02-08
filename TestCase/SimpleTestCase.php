@@ -13,10 +13,13 @@
 
 namespace Cosma\Bundle\TestingBundle\TestCase;
 
+use Cosma\Bundle\TestingBundle\TestCase\Traits\RetryTrait;
 use Doctrine\ORM\EntityNotFoundException;
 
 abstract class SimpleTestCase extends \PHPUnit_Framework_TestCase
 {
+    use RetryTrait;
+
     /**
      * @return void
      */

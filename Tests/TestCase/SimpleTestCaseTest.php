@@ -16,8 +16,29 @@ namespace Cosma\Bundle\TestingBundle\Tests\TestCase;
 
 use Cosma\Bundle\TestingBundle\TestCase\SimpleTestCase;
 
+/**
+ * @retry 6
+ */
 class SimpleTestCaseTest extends SimpleTestCase
 {
+    /**
+     * @type int
+     */
+    private static $counterFirstTest = 0;
+    /**
+     * @type int
+     */
+    private static $counterSecondTest = 0;
+    /**
+     * @type int
+     */
+    private static $counterThirdTest = 0;
+    /**
+     * @type int
+     */
+    private static $counterForthTest = 0;
+
+
     /**
      * @see SimpleTestCase::getMockedEntityWithId
      */
@@ -55,6 +76,76 @@ class SimpleTestCaseTest extends SimpleTestCase
     public function testGetEntityWithId_Exception()
     {
         $this->getEntityWithId('xxxxxxxx', 12345);
+    }
+
+    /**
+     * @see                      SimpleTestCase::runBare
+     *
+     * @expectedException \Exception
+     *
+     * @expectedExceptionMessage This test needs at least 6 retries
+     */
+    public function testRunBare_NoRetry()
+    {
+        self::$counterFirstTest++;
+
+        if (self::$counterFirstTest > 6) {
+            $this->assertTrue(true);
+        } else {
+            throw new \Exception('This test needs at least 6 retries');
+        }
+    }
+
+    /**
+     * @see                      SimpleTestCase::runBare
+     *
+     * @retry                    4
+     *
+     * @expectedException \Exception
+     *
+     * @expectedExceptionMessage This test needs at least 6 retries
+     */
+    public function testRunBare_NotEnough()
+    {
+        self::$counterSecondTest++;
+
+        if (self::$counterSecondTest > 6) {
+            $this->assertTrue(true);
+        } else {
+            throw new \Exception('This test needs at least 6 retries');
+        }
+    }
+
+    /**
+     * @see                      SimpleTestCase::runBare
+     *
+     * @retry                    10
+     *
+     */
+    public function testRunBare_MethodRetry()
+    {
+        self::$counterThirdTest++;
+
+        if (self::$counterThirdTest > 6) {
+            $this->assertTrue(true);
+        } else {
+            throw new \Exception('This test needs at least 6 retries');
+        }
+    }
+
+    /**
+     * @see                      SimpleTestCase::runBare
+     *
+     */
+    public function testRunBare_ClassRetry()
+    {
+        self::$counterForthTest++;
+
+        if (self::$counterForthTest > 6) {
+            $this->assertTrue(true);
+        } else {
+            throw new \Exception('This test needs at least 6 retries');
+        }
     }
 }
 

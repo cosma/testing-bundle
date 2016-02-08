@@ -13,6 +13,7 @@
 
 namespace Cosma\Bundle\TestingBundle\TestCase;
 
+use Cosma\Bundle\TestingBundle\TestCase\Traits\RetryTrait;
 use Doctrine\Common\Persistence\Mapping\ClassMetadataFactory;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\EntityNotFoundException;
@@ -24,6 +25,8 @@ use Symfony\Component\HttpKernel\Bundle\BundleInterface;
 
 abstract class WebTestCase extends WebTestCaseBase
 {
+    use RetryTrait;
+
     /**
      * @var BundleInterface
      */
