@@ -15,7 +15,6 @@
 namespace Cosma\Bundle\TestingBundle\Tests\Command;
 
 use Cosma\Bundle\TestingBundle\Command\GenerateTestCommand;
-use Cosma\Bundle\TestingBundle\Tests\AppKernel;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\StringInput;
