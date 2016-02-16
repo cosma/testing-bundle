@@ -15,6 +15,7 @@
 namespace Cosma\Bundle\TestingBundle\Tests\Command;
 
 use Cosma\Bundle\TestingBundle\Command\GenerateTestCommand;
+use Cosma\Bundle\TestingBundle\Tests\AppKernel;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Input\StringInput;
@@ -64,22 +65,43 @@ class GenerateTestCommandTest extends \PHPUnit_Framework_TestCase
      *
      * @group notincircleci
      *
-     * @see GenerateTestCommand::execute
+     * @see   GenerateTestCommand::execute
      */
     public function testExecute_Aborted()
     {
         $application = new Application();
         $application->setAutoExit(true);
-        $application->add(new GenerateTestCommand());
 
-        $command       = $application->find('cosma_testing:generate:test');
+        $generateCommand = new GenerateTestCommand();
+
+        $container = new Container();
+
+        $kernel = $this->getMockBuilder('Symfony\Component\HttpKernel\Kernel')
+                       ->disableOriginalConstructor()
+                       ->setMethods(['getRootDir',])
+                       ->getMockForAbstractClass()
+        ;
+
+        $kernel->expects($this->once())
+               ->method('getRootDir')
+               ->will($this->returnValue('/some/directory/'))
+        ;
+
+        $container->set('kernel', $kernel);
+
+        $generateCommand->setContainer($container);
+
+        $application->add($generateCommand);
+
+        $command = $application->find('cosma_testing:generate:test');
+
         $commandTester = new CommandTester($command);
 
         /** @type QuestionHelper $question */
         $question = $command->getHelper('question');
         $question->setInputStream(
             $this->get_console_input_stream(
-                "y\n n\n n\n n\n n\n"
+                "y\n n\n 0\n n\n"
             )
         );
 
