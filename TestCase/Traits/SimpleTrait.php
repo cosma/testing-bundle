@@ -13,7 +13,6 @@
 
 namespace Cosma\Bundle\TestingBundle\TestCase\Traits;
 
-use Doctrine\Common\Persistence\ManagerRegistry;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityNotFoundException;
 use Symfony\Component\DependencyInjection\ContainerInterface;
