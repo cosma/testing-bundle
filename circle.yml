@@ -19,5 +19,7 @@ dependencies:
 test:
   override:
     - mkdir -p $CIRCLE_TEST_REPORTS/phpunit
-    - vendor/phpunit/phpunit/phpunit -c phpunit.xml.dist --coverage-text --log-junit $CIRCLE_TEST_REPORTS/phpunit/junit.xml --exclude-group notincircleci Tests/
+    - vendor/bin/phpunit -c phpunit.xml.dist --coverage-text --log-junit $CIRCLE_TEST_REPORTS/phpunit/junit.xml --exclude-group notincircleci Tests/
+    - vendor/bin/phpunit -c phpunit.xml.dist  --exclude-group notincircleci Tests/
+    - vendor/bin/paratest -c phpunit.xml.dist --exclude-group notincircleci Tests/
 

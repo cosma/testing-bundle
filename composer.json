@@ -22,7 +22,8 @@
         "ruflin/elastica": "1.4.*",
         "facebook/webdriver": "1.1.*",
         "predis/predis": "1.0.*",
-        "mockery/mockery": "0.9.*"
+        "mockery/mockery": "0.9.*",
+        "brianium/paratest": "0.7.*"
     },
     "require-dev": {
         "symfony/browser-kit": "2.8.*"
