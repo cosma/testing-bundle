@@ -15,12 +15,16 @@
 namespace Cosma\Bundle\TestingBundle\Tests\Command;
 
 use Cosma\Bundle\TestingBundle\Command\GenerateTestCommand;
+use Cosma\Bundle\TestingBundle\TestCase\SimpleTestCase;
 use Symfony\Component\Console\Application;
 use Symfony\Component\Console\Helper\QuestionHelper;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\DependencyInjection\Container;
 
-class GenerateTestCommandTest extends \PHPUnit_Framework_TestCase
+/**
+ * @retry 3
+ */
+class GenerateTestCommandTest extends SimpleTestCase
 {
     /**
      * @see GenerateTestCommand::configure
