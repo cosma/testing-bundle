@@ -19,7 +19,7 @@
         "doctrine/orm": "~2.2,>=2.2.3",
         "symfony/framework-bundle": "2.7.*",
         "solarium/solarium": "3.*",
-        "ruflin/elastica": "1.3.*",
+        "ruflin/elastica": "3.*",
         "facebook/webdriver": "~1.0",
         "predis/predis": "1.0.*",
         "mockery/mockery": "*"
