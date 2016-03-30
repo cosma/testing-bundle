@@ -77,6 +77,9 @@ class ElasticTraitTest extends \PHPUnit_Framework_TestCase
                 'log'                => false,
                 'retryOnConflict'    => 0,
                 'connectionStrategy' => 'Simple',
+                'bigintConversion'   => false,
+                'username'           => null,
+                'password'           => null,
             ],
             $elasticClient->getConfig()
         );
