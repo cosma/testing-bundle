@@ -19,7 +19,7 @@
         "symfony/framework-bundle": "2.8.*",
         "h4cc/alice-fixtures-bundle": "0.5.*",
         "solarium/solarium": "3.4.*",
-        "ruflin/elastica": "1.4.*",
+        "ruflin/elastica": "3.*",
         "facebook/webdriver": "1.1.*",
         "predis/predis": "1.0.*",
         "mockery/mockery": "0.9.*"
