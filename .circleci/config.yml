@@ -1,23 +1,52 @@
-checkout:
-  post:
-    - git submodule sync
-    - git submodule update --init
+version: 2
+jobs:
+  build-test:
+    docker:
+      - image: circleci/php:5.6.14
+    steps:
+      - checkout
+      - run: git submodule sync
+      - run: git submodule update --init
+  test:
+    docker:
+      - image: circleci/php:5.6.14
+    steps:
+      - checkout
+      - run: echo "zend_extension=xdebug.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+      - run: mkdir -p $CIRCLE_TEST_REPORTS/phpunit
+      - run: vendor/bin/phpunit -c phpunit.xml.dist --coverage-text --log-junit $CIRCLE_TEST_REPORTS/phpunit/junit.xml
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
+      - test
 
-machine:
-  timezone:
-    UTC
-  php:
-    version: 5.6.14
 
-dependencies:
-  pre:
-    - echo "zend_extension=xdebug.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
 
-  cache_directories:
-    - "vendor"
 
-test:
-  override:
-    - mkdir -p $CIRCLE_TEST_REPORTS/phpunit
-    - vendor/bin/phpunit -c phpunit.xml.dist --coverage-text --log-junit $CIRCLE_TEST_REPORTS/phpunit/junit.xml
+#
+#
+#checkout:
+#  post:
+#    - git submodule sync
+#    - git submodule update --init
+#
+#machine:
+#  timezone:
+#    UTC
+#  php:
+#    version: 5.6.14
+#
+#dependencies:
+#  pre:
+#    - echo "zend_extension=xdebug.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
+#
+#  cache_directories:
+#    - "vendor"
+#
+#test:
+#  override:
+#    - mkdir -p $CIRCLE_TEST_REPORTS/phpunit
+#    - vendor/bin/phpunit -c phpunit.xml.dist --coverage-text --log-junit $CIRCLE_TEST_REPORTS/phpunit/junit.xml
 
