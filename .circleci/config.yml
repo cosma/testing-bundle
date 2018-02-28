@@ -7,6 +7,7 @@ jobs:
       - checkout
       - run: git submodule sync
       - run: git submodule update --init
+      - run: composer install
       - run: vendor/bin/phpunit -c phpunit.xml.dist
 workflows:
   version: 2
