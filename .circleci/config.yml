@@ -2,14 +2,14 @@ version: 2
 jobs:
   build:
     docker:
-      - image: circleci/php:5.6.14
+      - image: circleci/php:5.6
     steps:
       - checkout
       - run: git submodule sync
       - run: git submodule update --init
   test:
     docker:
-      - image: circleci/php:5.6.14
+      - image: circleci/php:5.6
     steps:
       - checkout
       - run: echo "zend_extension=xdebug.so" >> ~/.phpenv/versions/$(phpenv version-name)/etc/php.ini
